@@ -35,6 +35,7 @@ class Account < ApplicationRecord
 	has_many :events, foreign_key: 'creator_id', dependent: :nullify
 	has_many :likes, dependent: :nullify
 	has_many :account_updates, dependent: :nullify
+	has_many :fan_tickets, dependent: :nullify
 
 
 	def get_attrs
