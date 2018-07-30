@@ -2160,37 +2160,6 @@
       ]
     },
     {
-      "path": "/accounts/{id}/verify.json",
-      "operations": [
-        {
-          "summary": "Verify account",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Account id",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 404,
-              "responseModel": null,
-              "message": "Not Found"
-            },
-            {
-              "code": 422,
-              "responseModel": null,
-              "message": "Unprocessable Entity"
-            }
-          ],
-          "nickname": "Accounts#verify",
-          "method": "post"
-        }
-      ]
-    },
-    {
       "path": "/accounts/{id}/preferences.json",
       "operations": [
         {

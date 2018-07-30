@@ -108,6 +108,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  post 'events/:id/verify', action: :verify, controller: 'events'
   post 'events/:id/launch', action: :launch, controller: 'events'
   post 'events/:id/deactivate', action: :set_inactive, controller: 'events'
   post 'events/:id/like', action: :like, controller: 'events'
