@@ -289,6 +289,7 @@ class AccountsController < ApplicationController
       param :form, :genres, :string, :optional, "Fan/Artist/Venue (public only) Genres ['genre1', 'genre2', ...]"
       param :form, :address, :string, :optional, "Fan/Venue address"
       param :form, :preferred_address, :string, :optional, "Artist preferred address to perform"
+      param :form, :units, :string, :optional, "Distance units"
       param :form, :lat, :float, :optional, "Fan/Artist/Venue lat"
       param :form, :lng, :float, :optional, "Fan/Artist/Venue lng"
       param :form, :first_name, :string, :optional, "Fan/Artist first name"
@@ -499,10 +500,11 @@ class AccountsController < ApplicationController
     def update
         set_image
         set_base64_image
-
+        
         render status: :unprocessable_entity and return if not set_fan_params
         render status: :unprocessable_entity and return if not set_venue_params
         render status: :unprocessable_entity and return if not set_artist_params
+
         if @account.update(account_update_params)
             render json: @account, extended: true, my: true, except: :password, status: :ok
         else
@@ -537,6 +539,8 @@ class AccountsController < ApplicationController
       param :query, :price_from, :integer, :optional, "Artist/Venue price from"
       param :query, :price_to, :integer, :optional, "Artist/Venue price to"
       param :query, :address, :string, :optional, "Artist/Venue address"
+      param :query, :distance, :integer, :optional, "Artist/Venue max dist of address"
+      param :query, :units, :string, :optional, "Artist/Venue address units of distance - 'mi' or 'km'"
       param :query, :capacity_from, :integer, :optional, "Venue capacity from"
       param :query, :capacity_to, :integer, :optional, "Venue capacity to"
       param :query, :types_of_space, :string, :optional, "Venue types of space array ['night_club', 'concert_hall', ...]"
@@ -544,6 +548,7 @@ class AccountsController < ApplicationController
       param :query, :exclude_event_id, :integer, :optional, "Exclude artists/venues added to event"
       param :query, :extended, :boolean, :optional, "Extended info"
       param :query, :sort_by_popularity, :boolean, :optional, "Sort results by popularity"
+      param :query, :units, :string, :optional, "'km' or 'mile', if empty - km"
       param :query, :limit, :integer, :optional, "Limit"
       param :query, :offset, :integer, :optional, "Offset"
     end
@@ -1044,11 +1049,19 @@ class AccountsController < ApplicationController
     def search_address
       if params[:address]
         if params[:type] == 'artist'
-          artists = Artist.near(params[:address]).select{|a| a.id}
-          @accounts = @accounts.where(artist_id: artists)
+          if params[:distance] and params[:units]
+            @arts = Artist.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}   
+          else
+            @arts = Artist.near(params[:address]).select{|a| a.id}        
+          end  
+          @accounts = @accounts.where(artist_id: @arts)
         elsif params[:type] == 'venue'
-          venues = Venue.near(params[:address]).select{|a| a.id}
-          @accounts = @accounts.where(venue_id: venues)
+          if params[:distance] and params[:units]
+            @vens = Venue.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}   
+          else
+            @vens = Venue.near(params[:address]).select{|a| a.id}        
+          end  
+          @accounts = @accounts.where(venue_id: @vens)
         end
       end
     end

@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.datetime "updated_at", null: false
     t.integer "inbox_message_id"
     t.integer "event_id"
-    t.integer "currency", default: 0
   end
 
   create_table "account_updates", force: :cascade do |t|
@@ -85,7 +84,6 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.integer "artist_event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "currency", default: 0
   end
 
   create_table "artist_albums", force: :cascade do |t|
@@ -206,16 +204,6 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "currencies", force: :cascade do |t|
-    t.integer "num_code"
-    t.string "char_code"
-    t.integer "nominal"
-    t.string "name"
-    t.float "value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "decline_messages", force: :cascade do |t|
     t.integer "reason"
     t.string "additional_text"
@@ -290,7 +278,6 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.integer "status", default: 0
     t.boolean "has_private_venue"
     t.integer "processed_by"
-    t.integer "currency", default: 0
   end
 
   create_table "fan_genres", force: :cascade do |t|
@@ -307,7 +294,6 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.integer "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "currency", default: 0
   end
 
   create_table "fans", force: :cascade do |t|
@@ -343,6 +329,16 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.integer "attempt_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "history_actions", force: :cascade do |t|
+    t.integer "action"
+    t.integer "object_type"
+    t.integer "field"
+    t.integer "object_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "image_types", force: :cascade do |t|
@@ -451,9 +447,9 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.integer "inbox_message_id"
     t.integer "event_id"
     t.datetime "expiration_date"
+    t.integer "remain_time"
     t.integer "time_frame_range", default: 0
     t.integer "time_frame_number", default: 0
-    t.integer "currency", default: 0
   end
 
   create_table "resized_images", force: :cascade do |t|
@@ -479,7 +475,6 @@ ActiveRecord::Schema.define(version: 20180729122219) do
     t.string "promotional_description"
     t.datetime "promotional_date_from"
     t.datetime "promotional_date_to"
-    t.integer "currency", default: 0
   end
 
   create_table "tickets_types", force: :cascade do |t|
