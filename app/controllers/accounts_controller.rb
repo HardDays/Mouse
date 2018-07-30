@@ -540,6 +540,8 @@ class AccountsController < ApplicationController
       param :query, :price_from, :integer, :optional, "Artist/Venue price from"
       param :query, :price_to, :integer, :optional, "Artist/Venue price to"
       param :query, :address, :string, :optional, "Artist/Venue address"
+      param :query, :distance, :integer, :optional, "Artist/Venue address max distance"
+      param :query, :units, :string, :optional, "Artist/Venue distance units of search 'km' or 'mi'"
       param :query, :capacity_from, :integer, :optional, "Venue capacity from"
       param :query, :capacity_to, :integer, :optional, "Venue capacity to"
       param :query, :types_of_space, :string, :optional, "Venue types of space array ['night_club', 'concert_hall', ...]"
@@ -1032,11 +1034,19 @@ class AccountsController < ApplicationController
     def search_address
       if params[:address]
         if params[:type] == 'artist'
-          artists = Artist.near(params[:address]).select{|a| a.id}
-          @accounts = @accounts.where(artist_id: artists)
+          if params[:distance] and params[:units]
+            @arts = Artist.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}   
+          else
+            @arts = Artist.near(params[:address]).select{|a| a.id}        
+          end  
+          @accounts = @accounts.where(artist_id: @arts)
         elsif params[:type] == 'venue'
-          venues = Venue.near(params[:address]).select{|a| a.id}
-          @accounts = @accounts.where(venue_id: venues)
+          if params[:distance] and params[:units]
+            @vens = Venue.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}   
+          else
+            @vens = Venue.near(params[:address]).select{|a| a.id}        
+          end  
+          @accounts = @accounts.where(venue_id: @vens)
         end
       end
     end
