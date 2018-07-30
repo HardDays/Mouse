@@ -538,9 +538,9 @@ class EventVenuesController < ApplicationController
     @event.city_lat = @event.old_city_lat
     @event.city_lng = @event.old_city_lng
 
-    venue_acc = Account.find(@event.venue_id)
+    venue = Account.find(@event.venue_id)
     @event.venue_id = nil
-    if venue_acc.venue.venue_type == 'private_residence'
+    if venue.venue_type == 'private_residence'
       @event.has_private_venue = false
     end
 
