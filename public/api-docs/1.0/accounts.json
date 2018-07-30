@@ -1548,6 +1548,20 @@
             },
             {
               "paramType": "query",
+              "name": "distance",
+              "type": "integer",
+              "description": "Artist/Venue address max distance",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "units",
+              "type": "string",
+              "description": "Artist/Venue distance units of search 'km' or 'mi'",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "capacity_from",
               "type": "integer",
               "description": "Venue capacity from",
