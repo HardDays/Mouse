@@ -36,6 +36,7 @@ class Account < ApplicationRecord
 	has_many :likes, dependent: :nullify
 	has_many :account_updates, dependent: :nullify
 	has_many :fan_tickets, dependent: :nullify
+	has_many :comments, dependent: :nullify
 
 
 	def get_attrs
