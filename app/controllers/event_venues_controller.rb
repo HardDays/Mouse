@@ -529,7 +529,7 @@ class EventVenuesController < ApplicationController
     @event.address = @venue_acc.venue.address
     @event.city_lat = @venue_acc.venue.lat
     @event.city_lng = @venue_acc.venue.lng
-    @event.venue_id = @venue_acc.id
+    @event.venue_id = @venue_acc.venue.id
     @event.save!
   end
 
