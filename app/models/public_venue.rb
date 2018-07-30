@@ -2,7 +2,6 @@ class PublicVenue < ApplicationRecord
   validates :country, presence: true
   validates :city, presence: true
   validates :state, presence: true
-  validates :zipcode, presence: true
   # validates :audio_description, presence: true
   # validates :stage_description, presence: true
   # validates :lighting_description, presence: true
