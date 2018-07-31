@@ -20,6 +20,7 @@ class CurrencyHelper
       old_currency_value = 1
     end
 
-    return (price.to_i / new_currency_value) * old_currency_value
+    new_price = (price.to_i / new_currency_value) * old_currency_value
+    return new_price.round(2)
   end
 end
