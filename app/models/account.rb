@@ -32,7 +32,6 @@ class Account < ApplicationRecord
 	has_many :collaborated, through: :event_collaborators, source: :event, class_name: 'Event'
 	has_many :events, foreign_key: 'creator_id', dependent: :nullify
 	has_many :likes, dependent: :nullify
-	has_many :event_likes, dependent: :nullify
 	has_many :account_updates, dependent: :nullify
 	has_many :fan_tickets, dependent: :nullify
 	has_many :comments, dependent: :nullify
