@@ -13,7 +13,6 @@ class EventArtistsController < ApplicationController
     param :path, :event_id, :integer, :required, "Event id"
     param :form, :account_id, :integer, :required, "Authorized account id"
     param :form, :artist_id, :integer, :required, "Artist account id"
-    param :form, :price, :integer, :optional, "Estimated price to perform"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -23,12 +22,6 @@ class EventArtistsController < ApplicationController
     if artist_available?
       @event.artists << @artist_acc
       @event.save
-
-      if @artist_acc.user == @creator.user and number_valid?
-        @artist_event = @event.artist_events.find_by(artist_id: @artist_acc.id)
-        @artist_event.update(status: 'owner_accepted')
-        set_agreement
-      end
 
       render status: :ok
     else

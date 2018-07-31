@@ -13,7 +13,6 @@ class EventVenuesController < ApplicationController
     param :path, :event_id, :integer, :required, "Event id"
     param :form, :account_id, :integer, :required, "Authorized account id"
     param :form, :venue_id, :integer, :required, "Venue account id"
-    param :form, :price, :integer, :optional, "Estimated price to perform"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -23,18 +22,6 @@ class EventVenuesController < ApplicationController
     if venue_available?
       @event.venues << @venue_acc
       @event.save
-
-      if @venue_acc.user == @creator.user and @event.venue == nil
-        if @venue_acc.venue.venue_type == 'private_residence'
-          @event.has_private_venue = true
-        end
-
-        @venue_event = @event.venue_events.find_by(venue_id: @venue_acc.id)
-        @venue_event.update(status: 'owner_accepted')
-        @event.venue_id = @venue_acc.venue.id
-        set_agreement
-        @event.save
-      end
 
       render status: :ok
     else
@@ -537,12 +524,7 @@ class EventVenuesController < ApplicationController
     @event.address = @event.old_address
     @event.city_lat = @event.old_city_lat
     @event.city_lng = @event.old_city_lng
-
-    venue = Venue.find(@event.venue_id)
     @event.venue_id = nil
-    if venue.venue_type == 'private_residence'
-      @event.has_private_venue = false
-    end
 
     @event.save!
   end
