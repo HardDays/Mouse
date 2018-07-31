@@ -42,7 +42,6 @@ class UsersController < ApplicationController
       user = @user.as_json
       user[:token] = token.token
       user.delete("password")
-      set_base64_image
       if @phone_validation
         @phone_validation.is_used = true
         @phone_validation.save
@@ -81,8 +80,6 @@ class UsersController < ApplicationController
     end
 
     if @user.update(user_update_params)
-      set_base64_image
-
       render json: @user, except: :password, status: :ok
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -102,7 +99,9 @@ class UsersController < ApplicationController
     response :unauthorized
   end
   def set_preferences
+    old_currency = @user.preferred_currency
     if @user.update(user_preferences_params)
+      recalculate_all_accounts(old_currency)
       render json: @user, preferences: true, status: :ok
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -174,12 +173,25 @@ class UsersController < ApplicationController
                   :preferred_date, :preferred_distance, :preferred_currency, :preferred_time)
   end
 
-  def set_base64_image
-    if params[:image_base64]
-      image = Image.new(base64: params[:image_base64])
-      image.save
-      @user.image = image
-      @user.save
+  def recalculate_all_accounts(old_currency)
+    @user.accounts.each do |account|
+      if account.artist
+        account.artist.price_from = CurrencyHelper.convert(account.artist.price_from,
+                                                           old_currency, params[:preferred_currency])
+        account.artist.price_to = CurrencyHelper.convert(account.artist.price_to,
+                                                         old_currency, params[:preferred_currency])
+        account.artist.additional_hours_price = CurrencyHelper.convert(account.artist.additional_hours_price,
+                                                                       old_currency, params[:preferred_currency])
+        account.artist.late_cancellation_fee = CurrencyHelper.convert(account.artist.late_cancellation_fee,
+                                                                      old_currency, params[:preferred_currency])
+        account.artist.save
+      elsif account.venue and account.venue.venue_type == "public_venue"
+        account.venue.public_venue.price_for_daytime = CurrencyHelper.convert(account.venue.public_venue.price_for_daytime,
+                                                                              old_currency, params[:preferred_currency])
+        account.venue.public_venue.price_for_nighttime = CurrencyHelper.convert(account.venue.public_venue.price_for_nighttime,
+                                                                                old_currency, params[:preferred_currency])
+        account.venue.public_venue.save
+      end
     end
   end
 end

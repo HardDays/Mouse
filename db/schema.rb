@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180731123923) do
+ActiveRecord::Schema.define(version: 20180731161656) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
   create_table "accept_messages", force: :cascade do |t|
     t.datetime "preferred_date_from"
     t.datetime "preferred_date_to"
-    t.integer "price"
+    t.float "price"
     t.integer "travel_price"
     t.integer "hotel_price"
     t.integer "transportation_price"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
   create_table "agreed_date_time_and_prices", force: :cascade do |t|
     t.datetime "datetime_from"
     t.datetime "datetime_to"
-    t.integer "price"
+    t.float "price"
     t.integer "venue_event_id"
     t.integer "artist_event_id"
     t.datetime "created_at", null: false
@@ -161,9 +161,9 @@ ActiveRecord::Schema.define(version: 20180731123923) do
     t.string "manager_name"
     t.integer "performance_min_time"
     t.integer "performance_max_time"
-    t.integer "price_from"
-    t.integer "price_to"
-    t.integer "additional_hours_price"
+    t.float "price_from"
+    t.float "price_to"
+    t.float "additional_hours_price"
     t.boolean "is_hide_pricing_from_profile", default: false
     t.boolean "is_hide_pricing_from_search", default: false
     t.integer "days_to_travel"
@@ -178,7 +178,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
     t.string "preferred_venue_text"
     t.integer "min_time_to_book"
     t.integer "min_time_to_free_cancel"
-    t.integer "late_cancellation_fee"
+    t.float "late_cancellation_fee"
     t.string "refund_policy"
     t.string "artist_email"
   end
@@ -238,7 +238,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
     t.string "description", limit: 500
     t.datetime "funding_from"
     t.datetime "funding_to"
-    t.integer "funding_goal", default: 0
+    t.float "funding_goal", default: 0.0
     t.integer "creator_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -269,7 +269,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
     t.datetime "old_date_from"
     t.datetime "old_date_to"
     t.string "hashtag"
-    t.integer "additional_cost"
+    t.float "additional_cost"
     t.integer "family_and_friends_amount"
     t.integer "status", default: 0
     t.boolean "has_private_venue"
@@ -288,7 +288,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
     t.integer "ticket_id"
     t.integer "account_id"
     t.string "code"
-    t.integer "price"
+    t.float "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "currency", default: 0
@@ -405,8 +405,8 @@ ActiveRecord::Schema.define(version: 20180731123923) do
     t.integer "zipcode"
     t.integer "minimum_notice"
     t.boolean "is_flexible"
-    t.integer "price_for_daytime"
-    t.integer "price_for_nighttime"
+    t.float "price_for_daytime"
+    t.float "price_for_nighttime"
     t.time "performance_time_from"
     t.time "performance_time_to"
     t.string "other_genre_description"
@@ -449,7 +449,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
   create_table "request_messages", force: :cascade do |t|
     t.integer "time_frame"
     t.boolean "is_personal", default: false
-    t.integer "estimated_price"
+    t.float "estimated_price"
     t.string "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -473,7 +473,7 @@ ActiveRecord::Schema.define(version: 20180731123923) do
   create_table "tickets", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.integer "price"
+    t.float "price"
     t.integer "count"
     t.boolean "is_for_personal_use"
     t.integer "event_id"
