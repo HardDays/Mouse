@@ -56,7 +56,7 @@ class FeedItemsController < ApplicationController
     # #
     # @feed = likes.concat(event_updates).sort_by{|u| u[:created_at]}.reverse
 
-    render json: feed
+    render json: feed, user: @user
   end
 
 
