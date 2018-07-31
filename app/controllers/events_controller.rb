@@ -24,7 +24,7 @@ class EventsController < ApplicationController
     param :path, :id, :integer, :required, "Event id"
     response :ok
   end
-  def show  
+  def show
     render json: @event, extended: true, status: :ok
   end
 
@@ -261,7 +261,8 @@ class EventsController < ApplicationController
     param :query, :location, :string, :optional, "Address"
     param :query, :lat, :float, :optional, "Latitude (lng and distance must be present)"
     param :query, :lng, :float, :optional, "Longitude (lat and distance must be present)"
-    param :query, :distance, :float, :optional, "Radius in km (lat, lng must be present)"
+    param :query, :distance, :integer, :optional, "Artist/Venue address max distance"
+    param :query, :units, :string, :optional, "Artist/Venue distance units of search 'km' or 'mi'"
     param :query, :from_date, :datetime, :optional, "Left bound of date (to_date must be presenty)"
     param :query, :to_date, :datetime, :optional, "Right bound of date (from_date must be present)"
     param :query, :genres, :string, :optional, "Genres list ['pop', 'rock', ...]"
@@ -375,8 +376,10 @@ class EventsController < ApplicationController
     end
 
     def search_distance
-      if params[:distance] and params[:lng] and params[:lat]
-        @events = @events.near([params[:lat], params[:lng]], params[:distance])
+      if params[:distance] and params[:lng] and params[:lat] and params[:units]
+        @events = @events.near([params[:lat], params[:lng]], params[:distance], units: params[:units])
+      else
+        @vens = @events.near([params[:lat], params[:lng]], params[:distance])
       end
     end
 
