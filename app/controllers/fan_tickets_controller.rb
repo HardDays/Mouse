@@ -110,7 +110,7 @@ class FanTicketsController < ApplicationController
                 quantity: count }]},
             amount: {
               total: @ticket.price * count,
-              currency: "USD" },
+              currency: @ticket.currency },
             description: "Buy ticket" }]
       })
         

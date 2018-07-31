@@ -1,4 +1,4 @@
-class AddCurrency < ActiveRecord::Migration[5.1]
+class CreateCurrencies < ActiveRecord::Migration[5.1]
   def change
     create_table :currencies do |t|
       t.integer :num_code
