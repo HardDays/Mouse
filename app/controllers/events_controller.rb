@@ -370,7 +370,7 @@ class EventsController < ApplicationController
 
     def search_active
       if params[:is_active]
-        @events = @events.where(is_active: params[:is_active])
+        @events = @events.where(status: "active")
       end
     end
 
