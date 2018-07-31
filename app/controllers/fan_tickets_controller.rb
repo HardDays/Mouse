@@ -1,9 +1,14 @@
+require 'paypal-sdk-rest'
+include PayPal::SDK::REST
+
 class FanTicketsController < ApplicationController
-  before_action :authorize_account, only: [:create, :create_many, :destroy]
-  before_action :set_ticket, only: [:create, :create_many]
-  before_action :check_ticket, only: [:create, :create_many]
+  before_action :authorize_account, only: [:create, :create_many, :start_purchase, :destroy]
+  before_action :set_ticket, only: [:create, :create_many, :start_purchase]
+  before_action :check_ticket, only: [:create, :create_many, :start_purchase]
   before_action :set_fan_ticket, only: [:show, :destroy]
   swagger_controller :fan_ticket, "FanTickets"
+
+  TOKEN_SALT = 'fssdjfi293j29 fsdjd f_ sjfsk jsdf9 sf9j s9'
 
   # GET /fan_tickets
   swagger_api :index do
@@ -63,6 +68,124 @@ class FanTicketsController < ApplicationController
     render json: @fan_ticket, status: :ok
   end
 
+  # POST /fan_tickets/start_purchase
+  swagger_api :start_purchase do
+    summary "Buy ticket"
+    param_list :form, :platform, :string, :required, "Platform", ["yandex", "paypal"]
+    param :form, :account_id, :integer, :required, "Fan account id"
+    param :form, :ticket_id, :integer, :required, "Ticket id"
+    param :form, :count, :integer, :required, "Count of tickets"
+    param :form, :redirect_url, :string, :required, "Redirect after success purchase"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+    response :unprocessable_entity
+    response :forbidden
+  end
+  def start_purchase
+    if not @ticket.event.is_active?
+      render status: :forbidden and return
+    end
+
+    token = Digest::SHA256.hexdigest(@ticket.id.to_s + TOKEN_SALT)
+    count = params[:count] != nil ? [100, params[:count].to_i].min : 1
+
+    if params[:platform] == "paypal"
+      url = params[:redirect_url] != nil ? params[:redirect_url] : "http://localhost:3000/fan_tickets/finish_paypal"
+
+      @payment = Payment.new({
+          intent:  "sale",
+          payer:  {
+            payment_method:  "paypal" },
+          redirect_urls: {
+            return_url: params[:redirect_url],
+            cancel_url: "http://localhost:3000/"
+          },
+          transactions:  [{
+            item_list: {
+              items: [{
+                name: "fan_ticket",
+                sku: "fan_ticket",
+                price: @ticket.price,
+                currency: "USD",
+                quantity: count }]},
+            amount: {
+              total: @ticket.price * count,
+              currency: "USD" },
+            description: "Buy ticket" }]
+      })
+        
+      if @payment.create
+        @transaction = @payment.id
+        @url = @payment.links.select{|l| l.rel == 'approval_url'}.first.href
+      else
+        render json: @payment.error and return
+      end   
+    else
+      rener status: :unprocessable_entity
+    end   
+    @attempt = PurchaseAttempt.new(account_id: @account.id, 
+      status: :pending, 
+      purchase_type: :fan_ticket, 
+      platform: params[:platform],
+      price: @ticket.price,
+      transaction_id: @transaction,
+      purchase_item_id: @ticket.id,
+      count: count,
+      token: token)
+    @attempt.save
+    render json: {transaction_id: @transaction, url: @url}
+
+  end
+
+  # GET /fan_tickets/finish_paypal
+  swagger_api :finish_paypal do
+    summary "Finish paypal payment, call it after success redirect"
+    param :query, :paymentId, :string, :required, "PaymentId"
+    response :unauthorized
+    response :unprocessable_entity
+    response :forbidden
+  end
+  def finish_paypal
+    @attempt = PurchaseAttempt.find_by(
+      status: :pending, 
+      purchase_type: :fan_ticket, 
+      transaction_id: params[:paymentId]
+    )
+    @payment = Payment.find(params[:paymentId])
+    if @payment.execute(payer_id: @payment.payer.payer_info.payer_id)
+    else 
+      render json: @payment.error and return
+    end
+    if @attempt
+      @ticket = Ticket.find(@attempt.purchase_item_id)
+
+      count = @attempt.count != nil ? @attempt.count : 1
+
+      cnt = 0
+      res = []
+      while cnt < count do
+        @fan_ticket = FanTicket.new(account_id: @attempt.account_id, ticket_id: @ticket.id)
+        @fan_ticket.price = @ticket.price
+
+        cnt += 1
+        if @fan_ticket.save
+          res << @fan_ticket
+        else
+          render json: @fan_ticket.errors, status: :unprocessable_entity
+          res.each do |ticket|
+            ticket.destroy
+          end
+          return
+        end
+      end
+      @attempt.status = :finished
+      @attempt.save
+      render json: res
+    else
+      render json: {PURCHASE_ATTEMPT: :NOT_FOUND}, status: :not_found
+    end
+  end
+
   # POST /fan_tickets
   swagger_api :create do
     summary "Buy ticket"
@@ -76,7 +199,7 @@ class FanTicketsController < ApplicationController
     response :forbidden
   end
   def create
-    if @ticket.event.is_active?
+    if @ticket.event.status == "active"
       @fan_ticket = FanTicket.new(fan_ticket_params)
       @fan_ticket.code = generate_auth_code
 
@@ -86,7 +209,7 @@ class FanTicketsController < ApplicationController
         render json: @fan_ticket.errors, status: :unprocessable_entity
       end
     else
-      render status: :forbidden
+      render status: :forbidden and return
     end
   end
 
@@ -111,7 +234,6 @@ class FanTicketsController < ApplicationController
       res = []
       while cnt < count do
         @fan_ticket = FanTicket.new(fan_ticket_params)
-        @fan_ticket.price = @ticket.price
         @fan_ticket.code = code
 
         cnt += 1

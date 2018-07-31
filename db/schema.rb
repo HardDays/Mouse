@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20180731095301) do
-=======
-ActiveRecord::Schema.define(version: 20180728152425) do
->>>>>>> currency
+ActiveRecord::Schema.define(version: 20180731095318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -419,6 +415,21 @@ ActiveRecord::Schema.define(version: 20180728152425) do
     t.string "other_genre_description"
     t.string "other_address", default: ""
     t.string "street"
+  end
+
+  create_table "purchase_attempts", force: :cascade do |t|
+    t.integer "status"
+    t.integer "account_id"
+    t.integer "purchase_type"
+    t.string "transaction_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "platform"
+    t.float "price"
+    t.string "currency"
+    t.string "token"
+    t.integer "count"
+    t.integer "purchase_item_id"
   end
 
   create_table "questions", force: :cascade do |t|
