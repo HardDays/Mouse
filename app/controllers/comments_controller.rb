@@ -42,6 +42,7 @@ class CommentsController < ApplicationController
 
     @comment = Comment.new(comment_params)
     @comment.feed_item = feed_item
+    @comment.account_id = @account.id
     if @comment.save
       render json: @comment, status: :created
     else
@@ -51,7 +52,7 @@ class CommentsController < ApplicationController
 
   private
     def comment_params
-      params.permit(:account_id, :text)
+      params.permit(:text)
     end
 
     def check_event
