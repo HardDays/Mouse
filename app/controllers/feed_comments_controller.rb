@@ -30,7 +30,7 @@ class FeedCommentsController < ApplicationController
   end
 
   def create
-    feed_item = FeedItem.find(prams[:feed_item_id])
+    feed_item = FeedItem.find(params[:feed_item_id])
 
     @comment = Comment.new(comment_params)
     @comment.feed_item = feed_item
