@@ -82,7 +82,7 @@ class FanTicketsController < ApplicationController
     response :forbidden
   end
   def start_purchase
-    if not @ticket.event.is_active?
+    if not @ticket.event.status == "active"
       render status: :forbidden and return
     end
 
@@ -230,7 +230,7 @@ class FanTicketsController < ApplicationController
   def create_many
     code = generate_auth_code
     count = params[:count] != nil ? [100, params[:count].to_i].min : 1
-    if @ticket.event.is_active?
+    if @ticket.event.status == "active"
       cnt = 0
       res = []
       while cnt < count do

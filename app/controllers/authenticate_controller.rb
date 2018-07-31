@@ -123,33 +123,16 @@ class AuthenticateController < ApplicationController
 	end
 	def login_vk
 		uid = ""
-		first_name = nil
-		last_name = nil
-		image_url = nil
 		begin
 			@vk = VkontakteApi::Client.new(params[:access_token])
 			uid = @vk.users.get[0].id
-			
-			user = @vk.users.get(user_ids: uid, fields: [:photo_max_orig, :has_photo])
-			
-			first_name = user[0].first_name
-			last_name = user[0].last_name
-			if user[0].has_photo == 1
-				image_url = user[0].photo_max_orig
-			end
 		rescue => ex
 			render json: {"error_code": ex.error_code}, status: :unauthorized and return
 		end
 
 		@user = User.find_by(vk_id: uid)
 		if not @user
-			# @user = User.new(vk_id: uid, first_name: first_name, last_name: last_name)
 			@user = User.new(vk_id: uid)
-
-			# image = ImagesHelper.download(image_url)
-			# if image
-			# 	@user.image_id = image.id
-			# end
 
 			if not @user.save(validate: false)
 				render status: :unauthorized and return
@@ -177,13 +160,6 @@ class AuthenticateController < ApplicationController
 		@user = User.find_by(google_id: data['id'])
 		if not @user
 			@user = User.new(google_id: data['id'])
-			# @user = User.new(google_id: data['id'], first_name: data['given_name'], last_name: data['family_name'])
-
-			#downlad image
-			# image = ImagesHelper.download(data['picture'])
-			# if image
-			# 	@user.image_id = image.id
-			# end
 
 			if not @user.save(validate: false)
 				render status: :unauthorized and return
@@ -212,15 +188,7 @@ class AuthenticateController < ApplicationController
 		@user = User.find_by(twitter_id: client.user.id)
 
 		if not @user
-			# @user = User.new(twitter_id: client.user.id, first_name: client.user.name)
 			@user = User.new(twitter_id: client.user.id)
-			#download photo
-			# if client.user.profile_image_uri?
-			# 	image = ImagesHelper.download(client.user.profile_image_uri(:original))
-			# 	if image
-			# 		@user.image_id = image.id
-			# 	end
-			# end
 
 			if not @user.save(validate: false)
 				render status: :unauthorized and return
