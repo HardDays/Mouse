@@ -22,6 +22,6 @@ class FanTicket < ApplicationRecord
       end
     end
 
+    return res
   end
-  return res
 end
