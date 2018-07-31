@@ -1,4 +1,5 @@
 class Ticket < ApplicationRecord
+  enum currency: CurrencyHelper.all
   belongs_to :event
 
   has_one :tickets_type, dependent: :destroy

@@ -40,6 +40,7 @@ class EventVenuesController < ApplicationController
     param :form, :time_frame_number, :integer, :required, "Time frame to answer"
     param :form, :is_personal, :boolean, :optional, "Is message personal"
     param :form, :estimated_price, :integer, :optional, "Estimated price to perform"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message, :string, :optional, "Additional text"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
@@ -166,6 +167,7 @@ class EventVenuesController < ApplicationController
     param :form, :preferred_date_to, :datetime, :required, "Preferred date to"
     param :form, :price, :integer, :required, "Price"
     param :form, :other_price, :integer, :optional, "Other price"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message_id, :integer, :required, "Inbox message id"
     param :header, 'Authorization', :string, :required, "Venue auth key"
   end
@@ -445,6 +447,7 @@ class EventVenuesController < ApplicationController
     agreement.datetime_from = params[:preferred_date_from]
     agreement.datetime_to = params[:preferred_date_to]
     agreement.price = params[:price]
+    agreement.currency = params[:currency]
     agreement.venue_event = @venue_event
     agreement.save!
   end
@@ -455,11 +458,11 @@ class EventVenuesController < ApplicationController
   end
 
   def request_message_params
-    params.permit(:time_frame_range, :time_frame_number, :is_personal, :estimated_price, :message)
+    params.permit(:time_frame_range, :time_frame_number, :is_personal, :estimated_price, :currency, :message)
   end
 
   def accept_message_params
-    params.permit(:preferred_date_from, :preferred_date_to, :price,
+    params.permit(:preferred_date_from, :preferred_date_to, :price, :currency,
                   :travel_price, :hotel_price, :transportation_price, :band_price, :other_price)
   end
 

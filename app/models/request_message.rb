@@ -1,4 +1,5 @@
 class RequestMessage < ApplicationRecord
+  enum currency: CurrencyHelper.all
   enum time_frame: TimeFrameHelper.all
 
   belongs_to :inbox_message

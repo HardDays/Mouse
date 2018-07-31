@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  num_code: 1
+  char_code: MyString
+  nominal: 1
+  name: MyString
+  value: 1.5
+
+two:
+  num_code: 1
+  char_code: MyString
+  nominal: 1
+  name: MyString
+  value: 1.5

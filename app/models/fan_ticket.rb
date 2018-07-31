@@ -1,4 +1,6 @@
 class FanTicket < ApplicationRecord
+  enum currency: CurrencyHelper.all
+
   belongs_to :account
   belongs_to :ticket
 

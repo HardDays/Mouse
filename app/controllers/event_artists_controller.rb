@@ -39,6 +39,7 @@ class EventArtistsController < ApplicationController
     param :form, :time_frame_number, :integer, :required, "Time frame to answer"
     param :form, :is_personal, :boolean, :optional, "Is message personal"
     param :form, :estimated_price, :integer, :optional, "Estimated price to perform"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message, :string, :optional, "Additional text"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
@@ -167,6 +168,7 @@ class EventArtistsController < ApplicationController
     param :form, :transportation_price, :integer, :optional, "Transportation price"
     param :form, :band_price, :integer, :optional, "Band price"
     param :form, :other_price, :integer, :optional, "Other price"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message_id, :integer, :required, "Inbox message id"
     param :header, 'Authorization', :string, :required, "Artist auth key"
     response :not_found
@@ -452,6 +454,7 @@ class EventArtistsController < ApplicationController
       agreement.datetime_from = params[:preferred_date_from]
       agreement.datetime_to = params[:preferred_date_to]
       agreement.price = params[:price]
+      agreement.currency = params[:currency]
       agreement.artist_event = @artist_event
       agreement.save!
     end
@@ -503,11 +506,11 @@ class EventArtistsController < ApplicationController
     end
 
     def request_message_params
-      params.permit(:time_frame_range, :time_frame_number, :is_personal, :estimated_price, :message)
+      params.permit(:time_frame_range, :time_frame_number, :is_personal, :estimated_price, :currency, :message)
     end
 
     def accept_message_params
-      params.permit(:preferred_date_from, :preferred_date_to, :price,
+      params.permit(:preferred_date_from, :preferred_date_to, :price, :currency,
                     :travel_price, :hotel_price, :transportation_price, :band_price, :other_price)
     end
 

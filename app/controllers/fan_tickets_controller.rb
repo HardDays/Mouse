@@ -68,6 +68,8 @@ class FanTicketsController < ApplicationController
     summary "Buy ticket"
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
+    param :form, :price, :integer, :required, "Ticket price"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -76,7 +78,6 @@ class FanTicketsController < ApplicationController
   def create
     if @ticket.event.is_active?
       @fan_ticket = FanTicket.new(fan_ticket_params)
-      @fan_ticket.price = @ticket.price
       @fan_ticket.code = generate_auth_code
 
       if @fan_ticket.save
@@ -95,6 +96,8 @@ class FanTicketsController < ApplicationController
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
     param :form, :count, :integer, :required, "Count of tickets"
+    param :form, :price, :integer, :required, "Ticket price"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -245,7 +248,7 @@ class FanTicketsController < ApplicationController
     end
 
     def fan_ticket_params
-      params.permit(:ticket_id, :account_id)
+      params.permit(:ticket_id, :account_id, :price, :currency)
     end
 
     def authorize_account

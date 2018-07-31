@@ -1,6 +1,9 @@
 class AcceptMessage < ApplicationRecord
-  belongs_to :inbox_message
+  enum currency: CurrencyHelper.all
+
+  belongs_to :inbox_message, dependent: :destroy
   belongs_to :event
+
 
   def as_json(options={})
     res = super

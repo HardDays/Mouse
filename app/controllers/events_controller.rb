@@ -62,6 +62,7 @@ class EventsController < ApplicationController
     param :form, :funding_from, :datetime, :optional, "Finding duration from"
     param :form, :funding_to, :datetime, :optional, "Finding duration to"
     param :form, :funding_goal, :integer, :optional, "Funding goal"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :updates_available, :boolean, :optional, "Is updates available"
     param :form, :comments_available, :boolean, :optional, "Is comments available"
     param :form, :date_from, :datetime, :optional, "Date from"
@@ -114,6 +115,7 @@ class EventsController < ApplicationController
     param :form, :funding_from, :datetime, :optional, "Finding duration from"
     param :form, :funding_to, :datetime, :optional, "Finding duration to"
     param :form, :funding_goal, :integer, :optional, "Funding goal"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :updates_available, :boolean, :optional, "Is updates available"
     param :form, :comments_available, :boolean, :optional, "Is comments available"
     param :form, :date_from, :datetime, :optional, "Date from"
@@ -469,7 +471,7 @@ class EventsController < ApplicationController
                     :funding_goal, :comments_available, :updates_available, :date_from, :date_to,
                     :event_season, :event_year, :event_length, :event_time, :is_crowdfunding_event,
                     :city_lat, :city_lng, :address, :artists_number, :video_link, :additional_cost,
-                    :family_and_friends_amount)
+                    :family_and_friends_amount, :currency)
     end
 
     def authorize

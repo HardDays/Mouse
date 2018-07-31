@@ -27,6 +27,7 @@ class TicketsController < ApplicationController
     param :form, :name, :string, :optional, "Ticket name"
     param :form, :description, :string, :optional, "Ticket description"
     param :form, :price, :integer, :required, "Ticket price"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :count, :integer, :required, "Ticket count"
     param_list :form, :type, :string, :required, "Ticket type", ["in_person", "vr"]
     param :form, :is_promotional, :boolean, :optional, "Promotional ticket"
@@ -64,6 +65,7 @@ class TicketsController < ApplicationController
     param :form, :name, :string, :optional, "Ticket name"
     param :form, :description, :string, :optional, "Ticket description"
     param :form, :price, :integer, :optional, "Ticket price"
+    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :count, :integer, :optional, "Ticket count"
     param_list :form, :type, :string, :optional, "Ticket type", ["in_person", "vr"]
     param :form, :is_promotional, :boolean, :optional, "Promotional ticket"
@@ -182,7 +184,7 @@ class TicketsController < ApplicationController
 
     def ticket_params
       params.permit(:name, :price, :description, :count, :is_promotional, :promotional_description,
-                    :promotional_date_from, :promotional_date_to, :is_for_personal_use, :event_id)
+                    :promotional_date_from, :promotional_date_to, :is_for_personal_use, :event_id, :currency)
     end
 
     def authorize_account
