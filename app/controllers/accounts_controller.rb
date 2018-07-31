@@ -49,7 +49,7 @@ class AccountsController < ApplicationController
     end
     def get_events
       if @to_find.account_type == 'venue'
-        @events = Event.where(venue_id: @to_find.id)
+        @events = Event.where(venue_id: @to_find.venue.id)
       elsif @to_find.account_type == 'artist'
         @events = Event.joins(:artist_events).where(artist_events: {artist_id: @to_find.id, status: "owner_accepted"})
       end

@@ -24,7 +24,7 @@ class VenueDatesController < ApplicationController
     else
       render json: {
         dates: @venue.dates,
-        event_dates: @venue.events.as_json(only: [:id, :date_from, :date_to])
+        event_dates: Event.where(venue_id: @venue.id).as_json(only: [:id, :date_from, :date_to])
       }, status: :ok
     end
 
