@@ -47,6 +47,21 @@
             },
             {
               "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
               "name": "count",
               "type": "integer",
               "description": "Ticket count",
@@ -230,6 +245,21 @@
               "type": "integer",
               "description": "Ticket price",
               "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
             },
             {
               "paramType": "form",

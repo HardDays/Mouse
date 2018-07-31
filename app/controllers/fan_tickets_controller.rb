@@ -193,7 +193,7 @@ class FanTicketsController < ApplicationController
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
     param :form, :price, :integer, :required, "Ticket price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -221,7 +221,7 @@ class FanTicketsController < ApplicationController
     param :form, :ticket_id, :integer, :required, "Ticket id"
     param :form, :count, :integer, :required, "Count of tickets"
     param :form, :price, :integer, :required, "Ticket price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity

@@ -70,6 +70,21 @@
             },
             {
               "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
               "name": "message",
               "type": "string",
               "description": "Additional text",
@@ -345,6 +360,21 @@
               "type": "integer",
               "description": "Other price",
               "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
             },
             {
               "paramType": "form",

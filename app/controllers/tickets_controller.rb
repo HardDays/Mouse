@@ -27,7 +27,7 @@ class TicketsController < ApplicationController
     param :form, :name, :string, :optional, "Ticket name"
     param :form, :description, :string, :optional, "Ticket description"
     param :form, :price, :integer, :required, "Ticket price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :count, :integer, :required, "Ticket count"
     param_list :form, :type, :string, :required, "Ticket type", ["in_person", "vr"]
     param :form, :is_promotional, :boolean, :optional, "Promotional ticket"
@@ -65,7 +65,7 @@ class TicketsController < ApplicationController
     param :form, :name, :string, :optional, "Ticket name"
     param :form, :description, :string, :optional, "Ticket description"
     param :form, :price, :integer, :optional, "Ticket price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :count, :integer, :optional, "Ticket count"
     param_list :form, :type, :string, :optional, "Ticket type", ["in_person", "vr"]
     param :form, :is_promotional, :boolean, :optional, "Promotional ticket"

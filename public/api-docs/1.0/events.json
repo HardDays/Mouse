@@ -293,6 +293,21 @@
             },
             {
               "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
               "name": "updates_available",
               "type": "boolean",
               "description": "Is updates available",
@@ -567,6 +582,21 @@
               "type": "integer",
               "description": "Funding goal",
               "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
             },
             {
               "paramType": "form",
