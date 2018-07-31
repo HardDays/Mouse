@@ -933,7 +933,7 @@ class AccountsController < ApplicationController
       if params[:preferred_venues]
         @artist.artist_preferred_venues.clear
         params[:preferred_venues].each do |venue_type|
-          obj = ArtistPreferredVenue.new(type_of_venue: venue_type)
+          obj = ArtistPreferredVenue.new(type_of_venue: ArtistPreferredVenue.type_of_venues[venue_type])
           obj.save
           @artist.artist_preferred_venues << obj
         end
