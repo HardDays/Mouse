@@ -143,12 +143,13 @@ class AuthenticateController < ApplicationController
 
 		@user = User.find_by(vk_id: uid)
 		if not @user
-			@user = User.new(vk_id: uid, first_name: first_name, last_name: last_name)
+			# @user = User.new(vk_id: uid, first_name: first_name, last_name: last_name)
+			@user = User.new(vk_id: uid)
 
-			image = ImagesHelper.download(image_url)
-			if image
-				@user.image_id = image.id
-			end
+			# image = ImagesHelper.download(image_url)
+			# if image
+			# 	@user.image_id = image.id
+			# end
 
 			if not @user.save(validate: false)
 				render status: :unauthorized and return
@@ -175,13 +176,14 @@ class AuthenticateController < ApplicationController
 
 		@user = User.find_by(google_id: data['id'])
 		if not @user
-			@user = User.new(google_id: data['id'], first_name: data['given_name'], last_name: data['family_name']) 
-			
+			@user = User.new(google_id: data['id'])
+			# @user = User.new(google_id: data['id'], first_name: data['given_name'], last_name: data['family_name'])
+
 			#downlad image
-			image = ImagesHelper.download(data['picture'])
-			if image
-				@user.image_id = image.id
-			end
+			# image = ImagesHelper.download(data['picture'])
+			# if image
+			# 	@user.image_id = image.id
+			# end
 
 			if not @user.save(validate: false)
 				render status: :unauthorized and return
@@ -210,14 +212,15 @@ class AuthenticateController < ApplicationController
 		@user = User.find_by(twitter_id: client.user.id)
 
 		if not @user
-			@user = User.new(twitter_id: client.user.id, first_name: client.user.name)
+			# @user = User.new(twitter_id: client.user.id, first_name: client.user.name)
+			@user = User.new(twitter_id: client.user.id)
 			#download photo
-			if client.user.profile_image_uri?
-				image = ImagesHelper.download(client.user.profile_image_uri(:original))
-				if image
-					@user.image_id = image.id
-				end
-			end
+			# if client.user.profile_image_uri?
+			# 	image = ImagesHelper.download(client.user.profile_image_uri(:original))
+			# 	if image
+			# 		@user.image_id = image.id
+			# 	end
+			# end
 
 			if not @user.save(validate: false)
 				render status: :unauthorized and return
