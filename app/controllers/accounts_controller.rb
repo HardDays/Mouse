@@ -513,26 +513,6 @@ class AccountsController < ApplicationController
       end
     end
 
-    # POST account/1/preferences
-    swagger_api :preferences do
-      summary "Set account preferences"
-      param :form, :preferred_username, :string, :optional, "preferred username language"
-      param :form, :preferred_date, :string, :optional, "Preferred date format"
-      param_list :form, :preferred_distance, :integer, :optional, "Preferred distance format", [:km, :mile]
-      param_list :form, :preferred_currency, :integer, :optional, "Preferred currency format", [:RUB, :USD, :EUR]
-      param :form, :preferred_time, :string, :optional, "Preferred time format"
-      param :header, 'Authorization', :string, :required, 'Authentication token'
-      response :unprocessable_entity
-      response :unauthorized
-    end
-    def preferences
-      if @account.update(account_update_params)
-        render json: @account, extended: true, my: true, except: :password, status: :ok
-      else
-        render json: @account.errors, status: :unprocessable_entity
-      end
-    end
-
     swagger_api :search do
       summary "Search account"
       param :query, :text, :string, :optional, "Search query"
@@ -700,7 +680,10 @@ class AccountsController < ApplicationController
                 @fan.update(fan_params)
             else
                 @fan = Fan.new(fan_params)
-                render json: @fan.errors and return false if not @fan.save
+                if not @fan.save
+                  @account.destroy
+                  render json: @fan.errors and return false 
+                end
                 @account.fan_id = @fan.id
                 @account.save
             end
@@ -1092,8 +1075,7 @@ class AccountsController < ApplicationController
     end
 
     def account_params
-        params.permit(:user_name, :display_name, :phone, :account_type, :preferred_username,
-                      :preferred_date, :preferred_distance, :preferred_currency, :preferred_time)
+        params.permit(:user_name, :display_name, :phone, :account_type)
     end
 
     def account_update_params 

@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20180731095318) do
+=======
+ActiveRecord::Schema.define(version: 20180731095301) do
+>>>>>>> 1152f91f843e54f72dca4e570a3787ddfd21990a
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,11 +57,6 @@ ActiveRecord::Schema.define(version: 20180731095318) do
     t.string "display_name"
     t.integer "status", default: 0
     t.integer "processed_by"
-    t.string "preferred_username"
-    t.string "preferred_date"
-    t.integer "preferred_distance", default: 1
-    t.integer "preferred_currency", default: 1
-    t.string "preferred_time"
   end
 
   create_table "admins", force: :cascade do |t|
@@ -523,6 +522,11 @@ ActiveRecord::Schema.define(version: 20180731095318) do
     t.string "vk_id"
     t.boolean "is_superuser", default: false
     t.boolean "is_admin", default: false
+    t.string "preferred_username"
+    t.string "preferred_date"
+    t.integer "preferred_distance", default: 0
+    t.integer "preferred_currency", default: 0
+    t.string "preferred_time"
   end
 
   create_table "venue_dates", force: :cascade do |t|

@@ -5,8 +5,6 @@ class Account < ApplicationRecord
 
 	enum account_type: [:venue, :artist, :fan]
 	enum status: StatusHelper.accounts
-	enum preferred_distance: [:km, :mile]
-	enum preferred_currency: [:RUB, :USD, :EUR]
 
 	has_many :images, dependent: :destroy
 
@@ -49,12 +47,6 @@ class Account < ApplicationRecord
 		attrs[:updated_at] = updated_at
 		attrs[:image_id] = image_id
 		attrs[:account_type] = account_type
-
-		attrs[:preferred_username] = preferred_username
-		attrs[:preferred_date] = preferred_date
-		attrs[:preferred_distance] = preferred_distance
-		attrs[:preferred_currency] = preferred_currency
-		attrs[:preferred_time] = preferred_time
 
 		attrs[:status] = status
 		attrs[:followers_count] = followers.count

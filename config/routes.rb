@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   post 'users/validate_phone', action: :validate_phone, controller: 'users'
   get 'users/me', action: :get_me, controller: 'users'
   patch 'users/me', action: :update_me, controller: 'users'
+  patch 'users/preferences', action: :set_preferences, controller: 'users'
+  get 'users/preferences', action: :get_preferences, controller: 'users'
   patch 'users/:id/email', action: :change_email, controller: 'users'
   delete 'users', action: :destroy, controller: 'users'
 
@@ -51,7 +53,6 @@ Rails.application.routes.draw do
   post 'accounts/:id/images', action: :upload_image, controller: 'accounts'
   post 'accounts/:id/follow', action: :follow, controller: 'accounts'
   post 'accounts/:id/verify', action: :verify, controller: 'accounts'
-  post 'accounts/:id/preferences', action: :preferences, controller: 'accounts'
   delete 'accounts/:id/unfollow', action: :unfollow, controller: 'accounts'
   delete 'accounts/:id', action: :delete, controller: 'accounts'
   #delete 'users/delete/:id', action: :delete, controller: 'users'

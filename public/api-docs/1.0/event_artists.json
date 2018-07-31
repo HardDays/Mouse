@@ -670,13 +670,6 @@
               "required": true
             },
             {
-              "paramType": "form",
-              "name": "price",
-              "type": "integer",
-              "description": "Estimated price to perform",
-              "required": false
-            },
-            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",

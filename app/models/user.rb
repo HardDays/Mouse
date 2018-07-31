@@ -4,6 +4,10 @@ class User < ApplicationRecord
 	validates :register_phone, uniqueness: true, allow_nil: true
 	validates :password, length: {:within => 6..100}, :allow_blank => true #, confirmation: true
 
+	enum preferred_language: [:ru, :en]
+	enum preferred_distance: [:km, :mi]
+	enum preferred_currency: [:RUB, :USD, :EUR]
+
 	before_save :encrypt, if: :password_changed?
 	validates_confirmation_of :password, message: 'NOT_MATCHED'
 	attr_accessor :password_confirmation
@@ -37,5 +41,19 @@ class User < ApplicationRecord
 	def has_access?(access_name)
 		@access = self.accesses.find{|a| a.name == access_name.to_s}
 		return @access != nil ? true : false
+	end
+
+	def as_json(options={})
+		if options[:preferences]
+			attrs = {}
+			attrs[:preferred_username] = preferred_username
+			attrs[:preferred_date] = preferred_date
+			attrs[:preferred_distance] = preferred_distance
+			attrs[:preferred_currency] = preferred_currency
+			attrs[:preferred_time] = preferred_time
+			return attrs
+		end
+
+		return super(options)
 	end
 end

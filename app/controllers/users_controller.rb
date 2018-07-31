@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authorize_me, only: [:update_me, :get_me, :destroy]
+  before_action :authorize_me, only: [:update_me, :get_me, :destroy, :set_preferences, :get_preferences]
   swagger_controller :users, "Users"
 
   # GET /users/me
@@ -89,6 +89,37 @@ class UsersController < ApplicationController
     end
   end
 
+  # PATCH users/1/preferences
+  swagger_api :set_preferences do
+    summary "Set account preferences"
+    param_list :form, :preferred_username, :string, :required, "preferred username language", [:ru, :en]
+    param :form, :preferred_date, :string, :required, "Preferred date format"
+    param_list :form, :preferred_distance, :integer, :required, "Preferred distance format", [:km, :mi]
+    param_list :form, :preferred_currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param :form, :preferred_time, :string, :required, "Preferred time format"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unprocessable_entity
+    response :unauthorized
+  end
+  def set_preferences
+    if @user.update(user_preferences_params)
+      render json: @user, preferences: true, status: :ok
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+  # GET users/1/preferences
+  swagger_api :get_preferences do
+    summary "Set account preferences"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unprocessable_entity
+    response :unauthorized
+  end
+  def get_preferences
+    render json: @user, preferences: true, status: :ok
+  end
+
   # DELETE /users
   swagger_api :destroy do
     summary "Delete user"
@@ -136,6 +167,11 @@ class UsersController < ApplicationController
   def user_update_params
     params.permit(:email, :password, :password_confirmation, :old_password,
                   :register_phone, :first_name, :last_name, :user_name)
+  end
+
+  def user_preferences_params
+    params.permit(:preferred_username,
+                  :preferred_date, :preferred_distance, :preferred_currency, :preferred_time)
   end
 
   def set_base64_image
