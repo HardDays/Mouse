@@ -52,7 +52,7 @@ class FanTicketsController < ApplicationController
     render json: {
       event: Event.find(params[:event_id]),
       tickets: FanTicket.joins(:ticket).where(account_id: params[:account_id], tickets: {event_id: params[:event_id]})
-    }, fan_ticket: true, account_id: params[:account_id], with_tickets: true, status: :ok
+    }, fan_ticket: true, account_id: params[:account_id], user: @user, with_tickets: true, status: :ok
   end
 
   # GET /fan_tickets/1

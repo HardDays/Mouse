@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
                                    :click, :view, :get_updates, :verify]
+  before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
   before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify]
   swagger_controller :events, "Events"
@@ -22,10 +23,11 @@ class EventsController < ApplicationController
   swagger_api :show do
     summary "Retrieve event by id"
     param :path, :id, :integer, :required, "Event id"
+    param :header, 'Authorization', :string, :optional, 'Authentication token'
     response :ok
   end
   def show
-    render json: @event, extended: true, status: :ok
+    render json: @event, extended: true, user: @user, status: :ok
   end
 
   # POST /events
@@ -473,6 +475,9 @@ class EventsController < ApplicationController
     end
 
     def authorize_user
-      render status: :forbidden if not authorize
+      if request.headers['Authorization']
+        @user = AuthorizeHelper.authorize(request)
+        return @user
+      end
     end
 end
