@@ -106,7 +106,7 @@ class FanTicketsController < ApplicationController
                 name: "fan_ticket",
                 sku: "fan_ticket",
                 price: @ticket.price,
-                currency: "USD",
+                currency: @ticket.currency,
                 quantity: count }]},
             amount: {
               total: @ticket.price * count,
@@ -166,6 +166,7 @@ class FanTicketsController < ApplicationController
       while cnt < count do
         @fan_ticket = FanTicket.new(account_id: @attempt.account_id, ticket_id: @ticket.id)
         @fan_ticket.price = @ticket.price
+        @fan_ticket.currency = @ticket.currency
 
         cnt += 1
         if @fan_ticket.save
