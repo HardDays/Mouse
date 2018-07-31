@@ -1,11 +1,11 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "http://localhost:3000",
+  "basePath": "https://protected-island-7029.herokuapp.com",
   "resourcePath": "likes",
   "apis": [
     {
-      "path": "/accounts/{account_id}/feed/{feed_item_id}/likes.json",
+      "path": "/feed_items/{feed_item_id}/likes.json",
       "operations": [
         {
           "summary": "Retrieve list of likes",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "path": "/accounts/{account_id}/feed/{feed_item_id}/likes.json",
+      "path": "/feed_items/{feed_item_id}/likes.json",
       "operations": [
         {
           "summary": "Like event",
@@ -85,7 +85,7 @@
       ]
     },
     {
-      "path": "/accounts/{account_id}/feed/{feed_item_id}/likes/{id}.json",
+      "path": "/feed_items/{feed_item_id}/likes.json",
       "operations": [
         {
           "summary": "Unlike event",
@@ -95,13 +95,6 @@
               "name": "feed_item_id",
               "type": "integer",
               "description": "Feed item id",
-              "required": true
-            },
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Like id",
               "required": true
             },
             {

@@ -36,13 +36,12 @@ class LikesController < ApplicationController
   swagger_api :destroy do
     summary "Unlike event"
     param :path, :feed_item_id, :integer, :required, "Feed item id"
-    param :path, :id, :integer, :required, "Like id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :not_found
   end
   def destroy
-    obj = Like.find_by(feed_item_id: @feed_item.id, user_id: @user)
+    obj = Like.find_by(feed_item_id: @feed_item.id, user_id: @user.id)
     if not obj
       render status: :not_found
     else

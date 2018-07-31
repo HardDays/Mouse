@@ -6,7 +6,7 @@ Swagger::Docs::Config.register_apis(
             # the output location where your .json files are written to
             :api_file_path => "public/api-docs/1.0",
             # the URL base path to your API
-            :base_path => "http://localhost:3000",
+            :base_path => "https://protected-island-7029.herokuapp.com/",
             # if you want to delete all .json files at each generation
             :clean_directory => true,
             # add custom attributes to api-docs

@@ -25,6 +25,8 @@ class FeedItemsController < ApplicationController
   swagger_api :index do
     summary "Account's feed"
     param :path, :account_id, :integer, :required, "Account id"
+    param :query, :limit, :integer, :optional, "Limit"
+    param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
   end
@@ -56,7 +58,7 @@ class FeedItemsController < ApplicationController
     # #
     # @feed = likes.concat(event_updates).sort_by{|u| u[:created_at]}.reverse
 
-    render json: feed, user: @user
+    render json: feed.limit(params[:limit]).offset(params[:offset]), user: @user
   end
 
 

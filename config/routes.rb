@@ -23,7 +23,6 @@ Rails.application.routes.draw do
   #Account routes
   resources :accounts, only: [:create, :update] do
     resources :feed_items, path: "feed", only: :index do
-      resources :likes, only: [:index, :create, :destroy]
       resources :feed_comments, path: "comments", only: [:index, :create]
     end
     resources :venue_dates, only: [:index, :create, :destroy] do
@@ -59,6 +58,11 @@ Rails.application.routes.draw do
   delete 'accounts/:id', action: :delete, controller: 'accounts'
   #delete 'users/delete/:id', action: :delete, controller: 'users'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  # likes routes
+  get 'feed_items/:feed_item_id/likes', action: :index, controller: 'likes'
+  post 'feed_items/:feed_item_id/likes', action: :create, controller: 'likes'
+  delete 'feed_items/:feed_item_id/likes', action: :destroy, controller: 'likes'
 
   # images routes
   get 'images/:id', action: :show, controller: 'images'
