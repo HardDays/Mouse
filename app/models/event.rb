@@ -33,8 +33,6 @@ class Event < ApplicationRecord
 
   has_many :genres, foreign_key: 'event_id', class_name: 'EventGenre', dependent: :destroy
   has_many :tickets, dependent: :destroy
-  has_many :comments, dependent: :destroy
-  has_many :likes, foreign_key: 'event_id', dependent: :destroy
   has_many :images, dependent: :destroy
   has_many :event_updates
 

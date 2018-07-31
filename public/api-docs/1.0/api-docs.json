@@ -20,7 +20,15 @@
       "description": "Users"
     },
     {
-      "path": "/api-docs/1.0/feed.{format}",
+      "path": "/api-docs/1.0/likes.{format}",
+      "description": "Likes"
+    },
+    {
+      "path": "/api-docs/1.0/feed_comments.{format}",
+      "description": "Comments"
+    },
+    {
+      "path": "/api-docs/1.0/feed_items.{format}",
       "description": "Feed"
     },
     {
@@ -58,10 +66,6 @@
     {
       "path": "/api-docs/1.0/comments.{format}",
       "description": "Comments"
-    },
-    {
-      "path": "/api-docs/1.0/likes.{format}",
-      "description": "Likes"
     },
     {
       "path": "/api-docs/1.0/event_venues.{format}",

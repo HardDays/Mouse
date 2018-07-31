@@ -21,16 +21,6 @@ class AccountsController < ApplicationController
         render json: @to_find, extended: @extended, my: authorized?, status: :ok
     end
 
-    # GET /account/1/updates
-    swagger_api :get_updates do
-        summary "Retrieve account updates by id"
-        param :path, :id, :integer, :required, "Account id"
-        response :ok
-    end
-    def get_updates  
-        render json: @to_find.account_updates
-    end
-
     # GET /accounts/
     swagger_api :get_all do
       summary "Retrieve list of accounts"
@@ -713,6 +703,8 @@ class AccountsController < ApplicationController
                     if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
                         action.save
+                        feed = FeedItem.new(account_update_id: action.id)
+                        feed.save
                     end
                 end
             else
@@ -829,6 +821,8 @@ class AccountsController < ApplicationController
                     if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
                         action.save
+                        feed = FeedItem.new(account_update_id: action.id)
+                        feed.save
                     end
                 end
             else

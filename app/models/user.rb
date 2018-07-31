@@ -18,6 +18,7 @@ class User < ApplicationRecord
 	has_many :tokens, dependent: :destroy
 	has_many :accounts, dependent: :destroy
 	has_many :likes, dependent: :nullify
+	has_many :event_likes, dependent: :nullify
 
 	belongs_to :image, optional: true
 	has_one :admin, dependent: :destroy

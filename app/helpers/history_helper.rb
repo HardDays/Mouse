@@ -1,5 +1,5 @@
 class HistoryHelper 
-    EVENT_ACTIONS = [:add_ticket, :add_video, :add_image, :update]
+    EVENT_ACTIONS = [:add_event, :add_ticket, :add_video, :add_image, :update]
     ACCOUNT_ACTIONS = [:update]
 
     # Only for check

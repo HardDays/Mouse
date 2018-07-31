@@ -28,26 +28,6 @@ class EventsController < ApplicationController
     render json: @event, extended: true, status: :ok
   end
 
-  # GET /events/1/updates
-  swagger_api :get_updates do
-    summary "Retrieve event updates by id"
-    param :path, :id, :integer, :required, "Event id"
-    response :ok
-  end
-  def get_updates
-    event_updates = @event.event_updates.select(:action, :field, :created_at).as_json.each {|e| e[:type] = "event"}
-    venue_updates = @event.venue.account_updates.select(
-      :action, :field, :created_at).as_json.each {|e| e[:type] = "venue"}
-
-    artists_ids = @event.artist_events.where(status: 'accepted').pluck(:artist_id)
-    artists_updates = AccountUpdate.where(account_id: artists_ids).select(
-      :action, :field, :created_at).as_json.each {|e| e[:type] = "artist"}
-
-    event_updates.concat(artists_updates).concat(venue_updates).sort_by{|u| u[:created_at]}
-
-    render json: event_updates
-  end
-
   # POST /events
   swagger_api :create do
     summary 'Create event'
@@ -93,6 +73,7 @@ class EventsController < ApplicationController
       set_base64_image
       set_genres
       set_collaborators
+      log_create
 
       render json: @event, status: :created
     else
@@ -433,11 +414,20 @@ class EventsController < ApplicationController
       end
     end
 
+    def log_create
+      action = EventUpdate.new(action: :add_event, updated_by: @account.id, event_id: @event.id)
+      action.save
+      feed = FeedItem.new(event_update_id: action.id)
+      feed.save
+    end
+
     def log_update
       params.each do |param|
         if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
           action = EventUpdate.new(action: :update, updated_by: @account.id, event_id: @event.id, field: param)
           action.save
+          feed = FeedItem.new(event_update_id: action.id)
+          feed.save
         end
       end
     end

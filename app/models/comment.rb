@@ -1,7 +1,7 @@
 class Comment < ApplicationRecord
   validates :text, presence: true
 
-  belongs_to :event
+  belongs_to :feed_item
   belongs_to :account
 
   def as_json(options={})

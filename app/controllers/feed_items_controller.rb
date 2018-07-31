@@ -1,4 +1,4 @@
-class FeedController < ApplicationController
+class FeedItemsController < ApplicationController
   before_action :authorize_account, except: :action_types
   swagger_controller :feed, "Feed"
 
@@ -30,24 +30,33 @@ class FeedController < ApplicationController
   end
   def index
     following = @account.following.pluck('id')
-    likes = Like.where(account_id: following).joins(:event).as_json(feed: true)
-    likes.each do |e|
-      e[:type] = 'like'
-      e[:action] = ''
-    end
+    feed = FeedItem.all
 
-    event_updates = EventUpdate.left_joins(:event => :comments).where(
-      :events => {creator_id: following, is_active: true}
-    ).as_json(feed: true, user: @user)
-    event_updates.each do |e|
-      e[:type] = "event update"
-      e[:action] = "#{e['action']} #{e['field']}"
-      e.delete('field')
-    end
+    feed = feed.left_joins(:account_update, :event_update => :event).where(
+      "account_updates.account_id IN (:query)", query: following
+    ).or(
+      FeedItem.left_joins(:account_update, :event_update => :event).where(
+        "events.creator_id IN (:query) and events.status=:status", query: following, status: Event.statuses["active"]
+      )).order(:created_at => :desc)
+
+    # likes = Like.where(account_id: following).joins(:event).as_json(feed: true)
+    # likes.each do |e|
+    #   e[:type] = 'like'
+    #   e[:action] = ''
+    # end
     #
-    @feed = likes.concat(event_updates).sort_by{|u| u[:created_at]}.reverse
+    # event_updates = EventUpdate.left_joins(:event => :comments).where(
+    #   :events => {creator_id: following, is_active: true}
+    # ).as_json(feed: true, user: @user)
+    # event_updates.each do |e|
+    #   e[:type] = "event update"
+    #   e[:action] = "#{e['action']} #{e['field']}"
+    #   e.delete('field')
+    # end
+    # #
+    # @feed = likes.concat(event_updates).sort_by{|u| u[:created_at]}.reverse
 
-    render json: @feed
+    render json: feed
   end
 
 

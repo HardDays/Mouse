@@ -22,7 +22,10 @@ Rails.application.routes.draw do
 
   #Account routes
   resources :accounts, only: [:create, :update] do
-    resources :feed, only: :index
+    resources :feed_items, path: "feed", only: :index do
+      resources :likes, only: [:index, :create, :destroy]
+      resources :feed_comments, path: "comments", only: [:index, :create]
+    end
     resources :venue_dates, only: [:index, :create, :destroy] do
       collection do
         post :create_from_array, path: "from_array"
@@ -48,10 +51,9 @@ Rails.application.routes.draw do
   get 'accounts/:id/following', action: :get_followed, controller: 'accounts'
   get 'accounts/:id/updates', action: :get_updates, controller: 'accounts'
   get 'accounts/:id/upcoming_shows', action: :upcoming_shows, controller: 'accounts'
-  post 'accounts/follow', action: :follow_multiple, controller: 'accounts'
-  post 'accounts/follow', action: :follow_multiple, controller: 'accounts'
-  post 'accounts/:id/images', action: :upload_image, controller: 'accounts'
+  post 'accounts/:id/follow_array', action: :follow_multiple, controller: 'accounts'
   post 'accounts/:id/follow', action: :follow, controller: 'accounts'
+  post 'accounts/:id/images', action: :upload_image, controller: 'accounts'
   post 'accounts/:id/verify', action: :verify, controller: 'accounts'
   delete 'accounts/:id/unfollow', action: :unfollow, controller: 'accounts'
   delete 'accounts/:id', action: :delete, controller: 'accounts'
@@ -80,8 +82,7 @@ Rails.application.routes.draw do
   get 'events/my', action: :my, controller: 'events'
   resources :events do
     resources :tickets, except: :index
-    resources :comments
-    resources :likes, only: [:index, :create, :destroy]
+    resources :comments, only: [:index, :create]
 
     resources :event_venues, path: "venue", only: [:create, :destroy] do
       member do
