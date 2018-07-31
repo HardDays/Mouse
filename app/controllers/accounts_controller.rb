@@ -382,10 +382,10 @@ class AccountsController < ApplicationController
             set_image
             set_base64_image
 
-            render status: :unprocessable_entity and return if not set_fan_params
-            render status: :unprocessable_entity and return if not set_venue_params
-            render status: :unprocessable_entity and return if not set_artist_params
-
+            return if not set_fan_params
+            return if not set_venue_params
+            return if not set_artist_params
+          
             #AccessHelper.grant_account_access(@account)
             render json: @account, extended: true, my: true, except: :password, status: :created
         else
