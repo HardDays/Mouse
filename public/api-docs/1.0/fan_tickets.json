@@ -156,6 +156,120 @@
       ]
     },
     {
+      "path": "/fan_tickets/finish_paypal.json",
+      "operations": [
+        {
+          "summary": "Finish paypal payment, call it after success redirect",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "paymentId",
+              "type": "string",
+              "description": "PaymentId",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#finish_paypal",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets/start_purchase.json",
+      "operations": [
+        {
+          "summary": "Buy ticket",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "platform",
+              "type": "string",
+              "description": "Platform",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "yandex",
+                  "paypal"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "ticket_id",
+              "type": "integer",
+              "description": "Ticket id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "count",
+              "type": "integer",
+              "description": "Count of tickets",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "redirect_url",
+              "type": "string",
+              "description": "Redirect after success purchase",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#start_purchase",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/fan_tickets/many.json",
       "operations": [
         {
