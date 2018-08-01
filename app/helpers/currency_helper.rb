@@ -4,7 +4,7 @@ class CurrencyHelper
     return [:RUB, :USD, :EUR]
   end
 
-  def ceil2(price, exp = 0)
+  def self.ceil2(price, exp = 0)
     multiplier = 10 ** exp
     ((price * multiplier).ceil).to_f/multiplier.to_f
   end
@@ -26,6 +26,6 @@ class CurrencyHelper
     end
 
     new_price = (price.to_i / new_currency_value) * old_currency_value
-    return ceil2(new_price, 2)
+    return self.ceil2(new_price, 2)
   end
 end
