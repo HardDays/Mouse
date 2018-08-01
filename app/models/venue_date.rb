@@ -1,4 +1,5 @@
 class VenueDate < ApplicationRecord
+  enum currency: CurrencyHelper.all
   belongs_to :venue
 
   validates_presence_of :date
