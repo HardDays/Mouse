@@ -22,7 +22,7 @@
               "name": "dates",
               "type": "string",
               "description": "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',\n                                                              'is_available': '', 'currency': ''}, {...}]",
-              "required": false
+              "required": true
             },
             {
               "paramType": "header",

@@ -61,7 +61,7 @@ class VenueDatesController < ApplicationController
   swagger_api :create_from_array do
     summary "Create venue date"
     param :path, :account_id, :integer, :required, "Venue id"
-    param :form, :dates, :string, :reqired, "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
+    param :form, :dates, :string, :required, "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
                                                               'is_available': '', 'currency': ''}, {...}]"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
@@ -82,6 +82,7 @@ class VenueDatesController < ApplicationController
           render json: venue_date.errors, status: :unprocessable_entity and return
         end
       end
+
       if venue_date.update(venue_date_update_params(date))
       else
         render json: venue_date.errors, status: :unprocessable_entity and return
