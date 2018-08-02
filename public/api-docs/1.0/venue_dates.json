@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "https://protected-island-7029.herokuapp.com",
+  "basePath": "ec2-18-222-193-71.us-east-2.compute.amazonaws.com",
   "resourcePath": "venue_dates",
   "apis": [
     {
