@@ -146,6 +146,7 @@ class EventArtistsController < ApplicationController
       end
 
       @artist_event.status = 'owner_declined'
+      @artist_event.is_active = false
       send_owner_decline(@artist_event.account)
       @artist_event.save
 
@@ -218,6 +219,7 @@ class EventArtistsController < ApplicationController
     if @artist_event and ["request_send"].include?(@artist_event.status)
       read_message
       @artist_event.status = 'declined'
+      @artist_event.is_active = false
       send_decline(@artist_acc)
       @artist_event.save
 
@@ -259,7 +261,7 @@ class EventArtistsController < ApplicationController
         new_message.request_message = message.request_message.dup
         new_message.request_message.time_frame_range = params[:time_frame_range]
         new_message.request_message.time_frame_number = params[:time_frame_number]
-        new_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
+        new_message.request_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
 
         if new_message.save!
           event_artist.status = 'request_send'
