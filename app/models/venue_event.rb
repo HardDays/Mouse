@@ -57,6 +57,11 @@ class VenueEvent < ApplicationRecord
         res['reason'] = message.decline_message.reason
         res['reason_text'] = message.decline_message.additional_text
       end
+    elsif status == 'request_send'
+      message = event.creator.sent_messages.joins(:request_message).where(request_messages: {event: event}).first
+      if message
+        res['price'] = message.request_message.estimated_price
+      end
     end
 
     return res
