@@ -10,10 +10,15 @@ class FanTicket < ApplicationRecord
     if options[:with_tickets]
       res.delete('ticket_id')
 
-      res[:ticket] = ticket
+      if options[:user]
+        res[:original_price] = price
+        res[:price] = CurrencyHelper.convert(price, currency, options[:user].preferred_currency)
+      end
+
+      res[:ticket] = ticket.as_json(for_fan: true, user: options[:user])
       res[:tickets_left] = nil
       if ticket
-        ticket.count - FanTicket.where(ticket_id: ticket.id).count
+        res[:tickets_left] = ticket.count - FanTicket.where(ticket_id: ticket.id).count
       end
     end
 

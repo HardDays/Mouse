@@ -9,7 +9,7 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def new_count
-    render json: Event.where(status: 'just_added').count, status: :ok
+    render json: Event.where(is_viewed: false).count, status: :ok
   end
 
   # GET /admin/events/new_status
@@ -214,6 +214,24 @@ class AdminEventsController < ApplicationController
     render json: Event.find(params[:id]), extended: true, status: :ok
   end
 
+  # POST admin/events/<id>/view
+  swagger_api :view do
+    summary "View event"
+    param :path, :id, :integer, :required, "Event id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+    response :not_found
+    response :method_not_allowed
+  end
+  def view
+    @event = Event.find(params[:id])
+
+    if @event and ['just_added'].include?(@event.status)
+      @event.update(is_viewed: true)
+    end
+    render status: :ok
+  end
+
   # POST admin/events/<id>/approve
   swagger_api :approve do
     summary "Approve event"
@@ -266,7 +284,9 @@ class AdminEventsController < ApplicationController
   end
   def destroy
     event = Event.find(params[:id])
-    event.destroy
+    event.is_deleted = true
+    event.status = 'inactive'
+    event.save
 
     render status: :ok
   end

@@ -22,7 +22,9 @@ Rails.application.routes.draw do
 
   #Account routes
   resources :accounts, only: [:create, :update] do
-    resources :feed, only: :index
+    resources :feed_items, path: "feed", only: :index do
+      resources :feed_comments, path: "comments", only: [:index, :create]
+    end
     resources :venue_dates, only: [:index, :create, :destroy] do
       collection do
         post :create_from_array, path: "from_array"
@@ -48,15 +50,19 @@ Rails.application.routes.draw do
   get 'accounts/:id/following', action: :get_followed, controller: 'accounts'
   get 'accounts/:id/updates', action: :get_updates, controller: 'accounts'
   get 'accounts/:id/upcoming_shows', action: :upcoming_shows, controller: 'accounts'
-  post 'accounts/follow', action: :follow_multiple, controller: 'accounts'
-  post 'accounts/follow', action: :follow_multiple, controller: 'accounts'
-  post 'accounts/:id/images', action: :upload_image, controller: 'accounts'
+  post 'accounts/:id/follow_array', action: :follow_multiple, controller: 'accounts'
   post 'accounts/:id/follow', action: :follow, controller: 'accounts'
+  post 'accounts/:id/images', action: :upload_image, controller: 'accounts'
   post 'accounts/:id/verify', action: :verify, controller: 'accounts'
   delete 'accounts/:id/unfollow', action: :unfollow, controller: 'accounts'
   delete 'accounts/:id', action: :delete, controller: 'accounts'
   #delete 'users/delete/:id', action: :delete, controller: 'users'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  # likes routes
+  get 'feed_items/:feed_item_id/likes', action: :index, controller: 'likes'
+  post 'feed_items/:feed_item_id/likes', action: :create, controller: 'likes'
+  delete 'feed_items/:feed_item_id/likes', action: :destroy, controller: 'likes'
 
   # images routes
   get 'images/:id', action: :show, controller: 'images'
@@ -80,8 +86,7 @@ Rails.application.routes.draw do
   get 'events/my', action: :my, controller: 'events'
   resources :events do
     resources :tickets, except: :index
-    resources :comments
-    resources :likes, only: [:index, :create, :destroy]
+    resources :comments, only: [:index, :create]
 
     resources :event_venues, path: "venue", only: [:create, :destroy] do
       member do
@@ -151,6 +156,7 @@ Rails.application.routes.draw do
   get 'admin/accounts/funding', action: :funding, controller: 'admin_accounts'
   get 'admin/accounts/graph', action: :graph, controller: 'admin_accounts'
   get 'admin/accounts/:id', action: :get_account, controller: 'admin_accounts'
+  post 'admin/accounts/:id/view', action: :view, controller: 'admin_accounts'
   post 'admin/accounts/:id/approve', action: :approve, controller: 'admin_accounts'
   post 'admin/accounts/:id/deny', action: :deny, controller: 'admin_accounts'
   delete 'admin/accounts/:id', action: :destroy, controller: 'admin_accounts'
@@ -162,6 +168,7 @@ Rails.application.routes.draw do
   get 'admin/events/individual', action: :individual, controller: 'admin_events'
   get 'admin/events/graph', action: :graph, controller: 'admin_events'
   get 'admin/events/:id', action: :get_event, controller: 'admin_events'
+  post 'admin/events/:id/view', action: :view, controller: 'admin_events'
   post 'admin/events/:id/approve', action: :approve, controller: 'admin_events'
   post 'admin/events/:id/deny', action: :deny, controller: 'admin_events'
   delete 'admin/events/:id', action: :destroy, controller: 'admin_events'

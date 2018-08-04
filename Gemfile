@@ -58,8 +58,4 @@ gem 'active_model_serializers', '~> 0.10.0', require: true
 
 gem 'time_diff'
 
-gem 'money'
-
-gem 'money-open-exchange-rates'
-
 gem 'paypal-sdk-rest'

@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  scope :available, -> {where(is_deleted: false)}
+  
   validates :name, presence: true
   validates :hashtag, presence: true
   validates :tagline, presence: true
@@ -33,8 +35,6 @@ class Event < ApplicationRecord
 
   has_many :genres, foreign_key: 'event_id', class_name: 'EventGenre', dependent: :destroy
   has_many :tickets, dependent: :destroy
-  has_many :comments, dependent: :destroy
-  has_many :likes, foreign_key: 'event_id', dependent: :destroy
   has_many :images, dependent: :destroy
   has_many :event_updates
 
@@ -81,7 +81,7 @@ class Event < ApplicationRecord
       res[:artist] = artist_events.order(updated_at: :DESC)
       res[:venue] = venue.as_json(extended: true)
       res[:venues] = venue_events.order(updated_at: :DESC)
-      res[:tickets] = tickets
+      res[:tickets] = tickets.as_json(user: options[:user])
       res[:in_person_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'in_person'}).sum('tickets.count')
       res[:vr_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'vr'}).sum('tickets.count')
     elsif options[:analytics]
@@ -122,8 +122,6 @@ class Event < ApplicationRecord
         Event.left_joins(:venue, :artist_events => :account).where("events.description ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
       ).or(
         Event.left_joins(:venue, :artist_events => :account).where("accounts.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
-      ).or(
-        Event.left_joins(:venue, :artist_events => :account).where("accounts_artist_events.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
       )
     end
 

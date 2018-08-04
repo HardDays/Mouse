@@ -1,5 +1,6 @@
 class Account < ApplicationRecord
-	 
+	scope :available, -> {where(is_deleted: false)}
+
 	validates :account_type, presence: true
 	validates :user_name, presence: true, uniqueness: true, length: {:within => 3..30}
 

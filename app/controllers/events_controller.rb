@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
                                    :click, :view, :get_updates, :verify]
+  before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
   before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify]
   swagger_controller :events, "Events"
@@ -13,7 +14,7 @@ class EventsController < ApplicationController
     response :ok
   end
   def index
-    @events = Event.where(is_active: true)
+    @events = Event.available.where(is_active: true)
 
     render json: @events.limit(params[:limit]).offset(params[:offset]).order(:date_from, :funding_from), status: :ok
   end
@@ -22,30 +23,11 @@ class EventsController < ApplicationController
   swagger_api :show do
     summary "Retrieve event by id"
     param :path, :id, :integer, :required, "Event id"
+    param :header, 'Authorization', :string, :optional, 'Authentication token'
     response :ok
   end
-  def show  
-    render json: @event, extended: true, status: :ok
-  end
-
-  # GET /events/1/updates
-  swagger_api :get_updates do
-    summary "Retrieve event updates by id"
-    param :path, :id, :integer, :required, "Event id"
-    response :ok
-  end
-  def get_updates
-    event_updates = @event.event_updates.select(:action, :field, :created_at).as_json.each {|e| e[:type] = "event"}
-    venue_updates = @event.venue.account_updates.select(
-      :action, :field, :created_at).as_json.each {|e| e[:type] = "venue"}
-
-    artists_ids = @event.artist_events.where(status: 'accepted').pluck(:artist_id)
-    artists_updates = AccountUpdate.where(account_id: artists_ids).select(
-      :action, :field, :created_at).as_json.each {|e| e[:type] = "artist"}
-
-    event_updates.concat(artists_updates).concat(venue_updates).sort_by{|u| u[:created_at]}
-
-    render json: event_updates
+  def show
+    render json: @event, extended: true, user: @user, status: :ok
   end
 
   # POST /events
@@ -62,7 +44,7 @@ class EventsController < ApplicationController
     param :form, :funding_from, :datetime, :optional, "Finding duration from"
     param :form, :funding_to, :datetime, :optional, "Finding duration to"
     param :form, :funding_goal, :integer, :optional, "Funding goal"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :updates_available, :boolean, :optional, "Is updates available"
     param :form, :comments_available, :boolean, :optional, "Is comments available"
     param :form, :date_from, :datetime, :optional, "Date from"
@@ -93,6 +75,7 @@ class EventsController < ApplicationController
       set_base64_image
       set_genres
       set_collaborators
+      log_create
 
       render json: @event, status: :created
     else
@@ -115,7 +98,7 @@ class EventsController < ApplicationController
     param :form, :funding_from, :datetime, :optional, "Finding duration from"
     param :form, :funding_to, :datetime, :optional, "Finding duration to"
     param :form, :funding_goal, :integer, :optional, "Funding goal"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :updates_available, :boolean, :optional, "Is updates available"
     param :form, :comments_available, :boolean, :optional, "Is comments available"
     param :form, :date_from, :datetime, :optional, "Date from"
@@ -254,7 +237,7 @@ class EventsController < ApplicationController
     response :unauthorized
   end
   def my
-    @events = Event.get_my(@account)
+    @events = Event.available.get_my(@account)
 
     render json: @events.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -280,7 +263,8 @@ class EventsController < ApplicationController
     param :query, :location, :string, :optional, "Address"
     param :query, :lat, :float, :optional, "Latitude (lng and distance must be present)"
     param :query, :lng, :float, :optional, "Longitude (lat and distance must be present)"
-    param :query, :distance, :float, :optional, "Radius in km (lat, lng must be present)"
+    param :query, :distance, :integer, :optional, "Artist/Venue address max distance"
+    param :query, :units, :string, :optional, "Artist/Venue distance units of search 'km' or 'mi'"
     param :query, :from_date, :datetime, :optional, "Left bound of date (to_date must be presenty)"
     param :query, :to_date, :datetime, :optional, "Right bound of date (from_date must be present)"
     param :query, :genres, :string, :optional, "Genres list ['pop', 'rock', ...]"
@@ -293,7 +277,7 @@ class EventsController < ApplicationController
     response :ok
   end
   def search
-    @events = Event.search(params[:text])
+    @events = Event.available.search(params[:text])
     search_active
     search_genre
     search_location
@@ -394,8 +378,10 @@ class EventsController < ApplicationController
     end
 
     def search_distance
-      if params[:distance] and params[:lng] and params[:lat]
-        @events = @events.near([params[:lat], params[:lng]], params[:distance])
+      if params[:distance] and params[:lng] and params[:lat] and params[:units]
+        @events = @events.near([params[:lat], params[:lng]], params[:distance], units: params[:units])
+      else
+        @vens = @events.near([params[:lat], params[:lng]], params[:distance])
       end
     end
 
@@ -433,11 +419,20 @@ class EventsController < ApplicationController
       end
     end
 
+    def log_create
+      action = EventUpdate.new(action: :add_event, updated_by: @account.id, event_id: @event.id)
+      action.save
+      feed = FeedItem.new(event_update_id: action.id)
+      feed.save
+    end
+
     def log_update
       params.each do |param|
         if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
           action = EventUpdate.new(action: :update, updated_by: @account.id, event_id: @event.id, field: param)
           action.save
+          feed = FeedItem.new(event_update_id: action.id)
+          feed.save
         end
       end
     end
@@ -480,6 +475,9 @@ class EventsController < ApplicationController
     end
 
     def authorize_user
-      render status: :forbidden if not authorize
+      if request.headers['Authorization']
+        @user = AuthorizeHelper.authorize(request)
+        return @user
+      end
     end
 end

@@ -1,9 +1,9 @@
 class Like < ApplicationRecord
   belongs_to :user
   belongs_to :account
-  belongs_to :event
+  belongs_to :feed_item
 
-  validates_uniqueness_of :user_id, :scope => [:event_id]
+  validates_uniqueness_of :user_id, :scope => [:feed_item_id]
 
   def as_json(options={})
     res = super
@@ -12,10 +12,6 @@ class Like < ApplicationRecord
     res.delete('account_id')
     res.delete('updated_at')
     res.delete('id')
-
-    if options[:feed]
-      res[:event] = event.as_json(only: [:id, :name])
-    end
 
     res[:account] = nil
     if account

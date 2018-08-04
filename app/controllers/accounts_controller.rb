@@ -21,16 +21,6 @@ class AccountsController < ApplicationController
         render json: @to_find, extended: @extended, my: authorized?, status: :ok
     end
 
-    # GET /account/1/updates
-    swagger_api :get_updates do
-        summary "Retrieve account updates by id"
-        param :path, :id, :integer, :required, "Account id"
-        response :ok
-    end
-    def get_updates  
-        render json: @to_find.account_updates
-    end
-
     # GET /accounts/
     swagger_api :get_all do
       summary "Retrieve list of accounts"
@@ -40,7 +30,7 @@ class AccountsController < ApplicationController
       response :ok
     end
     def get_all
-        @accounts = Account.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+        @accounts = Account.available.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
                                                      {:public => Venue.venue_types['public_venue']})
         @extended = false
         set_extended
@@ -59,7 +49,7 @@ class AccountsController < ApplicationController
     end
     def get_events
       if @to_find.account_type == 'venue'
-        @events = Event.where(venue_id: @to_find.id)
+        @events = Event.where(venue_id: @to_find.venue.id)
       elsif @to_find.account_type == 'artist'
         @events = Event.joins(:artist_events).where(artist_events: {artist_id: @to_find.id, status: "owner_accepted"})
       end
@@ -82,9 +72,10 @@ class AccountsController < ApplicationController
        @extended = false
        set_extended
 
-       accounts = @user.accounts.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
-                                                           {:public => Venue.venue_types['public_venue']})
-       render json: accounts.order('accounts.user_name'), extended: @extended, status: :ok
+       accounts = @user.accounts.available.left_joins(:venue).where(
+         "(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+         {:public => Venue.venue_types['public_venue']})
+       render json: accounts.order('accounts.account_type DESC, accounts.user_name ASC'), extended: @extended, status: :ok
     end
 
     # GET /accounts/images/<id>
@@ -120,19 +111,18 @@ class AccountsController < ApplicationController
       response :unprocessable_entity
     end
     def upcoming_shows
-      events = Event.all
+      events = Event.available
 
       if @to_find.account_type == 'artist'
         events = events.joins(:artist_events)
                    .where(artist_events: {artist_id: @to_find.id})
-                   .where(artist_events: {status: ArtistEvent.statuses['active']})
+                   .where(artist_events: {status: ArtistEvent.statuses['owner_accepted']})
                    .where("events.date_from >= :date", {:date => DateTime.now})
 
         render json: events.limit(params[:limit]).offset(params[:offset]), status: :ok
       elsif @to_find.account_type == 'venue'
-        events = events.joins(:venue_events)
-                   .where(venue_events: {venue_id: @to_find.id})
-                   .where(venue_events: {status: VenueEvent.statuses['active']})
+        events = events
+                   .where(venue_id: @to_find.venue.id)
                    .where("events.date_from >= :date", {:date => DateTime.now})
         render json: events.limit(params[:limit]).offset(params[:offset]), status: :ok
       else
@@ -536,7 +526,7 @@ class AccountsController < ApplicationController
       @extended = true
       set_extended
       
-      @accounts = Account.all
+      @accounts = Account.available
 
       if params[:type] != 'artist'
         if params[:exclude_event_id]
@@ -713,6 +703,8 @@ class AccountsController < ApplicationController
                     if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
                         action.save
+                        feed = FeedItem.new(account_update_id: action.id)
+                        feed.save
                     end
                 end
             else
@@ -829,6 +821,8 @@ class AccountsController < ApplicationController
                     if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
                         action.save
+                        feed = FeedItem.new(account_update_id: action.id)
+                        feed.save
                     end
                 end
             else
@@ -933,7 +927,7 @@ class AccountsController < ApplicationController
       if params[:preferred_venues]
         @artist.artist_preferred_venues.clear
         params[:preferred_venues].each do |venue_type|
-          obj = ArtistPreferredVenue.new(type_of_venue: venue_type)
+          obj = ArtistPreferredVenue.new(type_of_venue: ArtistPreferredVenue.type_of_venues[venue_type])
           obj.save
           @artist.artist_preferred_venues << obj
         end
@@ -1055,6 +1049,7 @@ class AccountsController < ApplicationController
 
     def exclude_event
       if params[:exclude_event_id]
+        @accounts = @accounts.where(status: 'approved')
         accounts_ids = ArtistEvent.where(event_id: params[:exclude_event_id]).pluck("artist_id") +
           VenueEvent.where(event_id: params[:exclude_event_id]).pluck("venue_id")
 

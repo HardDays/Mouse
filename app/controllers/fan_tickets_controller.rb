@@ -52,7 +52,7 @@ class FanTicketsController < ApplicationController
     render json: {
       event: Event.find(params[:event_id]),
       tickets: FanTicket.joins(:ticket).where(account_id: params[:account_id], tickets: {event_id: params[:event_id]})
-    }, fan_ticket: true, account_id: params[:account_id], with_tickets: true, status: :ok
+    }, fan_ticket: true, account_id: params[:account_id], user: @user, with_tickets: true, status: :ok
   end
 
   # GET /fan_tickets/1
@@ -82,7 +82,7 @@ class FanTicketsController < ApplicationController
     response :forbidden
   end
   def start_purchase
-    if not @ticket.event.is_active?
+    if not @ticket.event.status == "active"
       render status: :forbidden and return
     end
 
@@ -193,7 +193,7 @@ class FanTicketsController < ApplicationController
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
     param :form, :price, :integer, :required, "Ticket price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -221,7 +221,7 @@ class FanTicketsController < ApplicationController
     param :form, :ticket_id, :integer, :required, "Ticket id"
     param :form, :count, :integer, :required, "Count of tickets"
     param :form, :price, :integer, :required, "Ticket price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -230,7 +230,7 @@ class FanTicketsController < ApplicationController
   def create_many
     code = generate_auth_code
     count = params[:count] != nil ? [100, params[:count].to_i].min : 1
-    if @ticket.event.is_active?
+    if @ticket.event.status == "active"
       cnt = 0
       res = []
       while cnt < count do

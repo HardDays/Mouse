@@ -1,5 +1,5 @@
 class AdminEventSerializer < ActiveModel::Serializer
-  attributes :id, :name, :date_from, :address, :status, :is_crowdfunding_event, :received_date, :processed_by
+  attributes :id, :name, :date_from, :address, :status, :is_crowdfunding_event, :received_date, :processed_by, :is_viewed
 
   def received_date
     object.created_at

@@ -39,7 +39,7 @@ class EventArtistsController < ApplicationController
     param :form, :time_frame_number, :integer, :required, "Time frame to answer"
     param :form, :is_personal, :boolean, :optional, "Is message personal"
     param :form, :estimated_price, :integer, :optional, "Estimated price to perform"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message, :string, :optional, "Additional text"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
@@ -146,6 +146,7 @@ class EventArtistsController < ApplicationController
       end
 
       @artist_event.status = 'owner_declined'
+      @artist_event.is_active = false
       send_owner_decline(@artist_event.account)
       @artist_event.save
 
@@ -168,7 +169,7 @@ class EventArtistsController < ApplicationController
     param :form, :transportation_price, :integer, :optional, "Transportation price"
     param :form, :band_price, :integer, :optional, "Band price"
     param :form, :other_price, :integer, :optional, "Other price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message_id, :integer, :required, "Inbox message id"
     param :header, 'Authorization', :string, :required, "Artist auth key"
     response :not_found
@@ -218,6 +219,7 @@ class EventArtistsController < ApplicationController
     if @artist_event and ["request_send"].include?(@artist_event.status)
       read_message
       @artist_event.status = 'declined'
+      @artist_event.is_active = false
       send_decline(@artist_acc)
       @artist_event.save
 
@@ -259,7 +261,7 @@ class EventArtistsController < ApplicationController
         new_message.request_message = message.request_message.dup
         new_message.request_message.time_frame_range = params[:time_frame_range]
         new_message.request_message.time_frame_number = params[:time_frame_number]
-        new_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
+        new_message.request_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
 
         if new_message.save!
           event_artist.status = 'request_send'

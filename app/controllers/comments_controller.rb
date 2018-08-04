@@ -1,5 +1,4 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :update, :destroy]
   before_action :authorize_account, only: :create
   before_action :check_event, only: :create
   swagger_controller :comments, "Comments"
@@ -12,14 +11,9 @@ class CommentsController < ApplicationController
     param :query, :offset, :integer, :optional, "Offset"
   end
   def index
-    @comments = Comment.where(event_id: params[:event_id])
+    @comments = Comment.joins(:feed_item => :event_update).where(event_updates: {event_id: params[:event_id]})
 
     render json: @comments.limit(params[:limit]).offset(params[:offset]), status: :ok
-  end
-
-  # GET /comments/1
-  def show
-    render json: @comment
   end
 
   # POST events/1/comments
@@ -34,8 +28,21 @@ class CommentsController < ApplicationController
     response :forbidden
   end
   def create
-    @comment = Comment.new(comment_params)
+    feed_item = @event.event_updates.where(action: EventUpdate.actions["add_event"]).first
 
+    # TODO: delete this
+    if feed_item
+      feed_item = feed_item.feed_item
+    else
+      action = EventUpdate.new(action: :add_event, updated_by: @event.creator_id, event_id: @event.id)
+      action.save
+      feed_item = FeedItem.new(event_update_id: action.id)
+      feed_item.save
+    end
+
+    @comment = Comment.new(comment_params)
+    @comment.feed_item = feed_item
+    @comment.account_id = @account.id
     if @comment.save
       render json: @comment, status: :created
     else
@@ -43,30 +50,8 @@ class CommentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /comments/1
-  def update
-    if @comment.update(comment_params)
-      render json: @comment
-    else
-      render json: @comment.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /comments/1
-  def destroy
-    @comment.destroy
-  end
-
   private
-    def set_comment
-      @comment = Comment.find(params[:id])
-    end
-
     def comment_params
-      params.permit(:event_id, :account_id, :text)
-    end
-
-    def update_comment_params
       params.permit(:text)
     end
 

@@ -1,7 +1,7 @@
 class Comment < ApplicationRecord
   validates :text, presence: true
 
-  belongs_to :event
+  belongs_to :feed_item
   belongs_to :account
 
   def as_json(options={})
@@ -10,7 +10,7 @@ class Comment < ApplicationRecord
 
     res[:account] = nil
     if account
-      account.as_json(only: [:id, :user_name, :image_id, :display_name])
+      res[:account] = account.as_json(only: [:id, :user_name, :image_id, :display_name])
     end
 
     return res

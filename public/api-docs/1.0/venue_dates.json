@@ -21,8 +21,8 @@
               "paramType": "form",
               "name": "dates",
               "type": "string",
-              "description": "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',\n                                                              'is_available': ''}, {...}]",
-              "required": false
+              "description": "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',\n                                                              'is_available': '', 'currency': ''}, {...}]",
+              "required": true
             },
             {
               "paramType": "header",
@@ -130,6 +130,21 @@
               "type": "integer",
               "description": "Price for nighttime",
               "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
             },
             {
               "paramType": "form",

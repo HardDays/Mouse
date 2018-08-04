@@ -1,18 +1,18 @@
 class LikesController < ApplicationController
-  before_action :set_event, only: [:create, :destroy]
+  before_action :set_feed_item, only: [:index, :create, :destroy]
   before_action :authorize_user, only: [:create, :destroy]
   swagger_controller :likes, "Likes"
 
   # GET /events/1/likes
   swagger_api :index do
     summary "Retrieve list of likes"
-    param :path, :event_id, :integer, :required, "Event id"
+    param :path, :feed_item_id, :integer, :required, "Feed item id"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     response :ok
   end
   def index
-    @likes = Like.where(event_id: params[:event_id])
+    @likes = @feed_item.likes
 
     render json: @likes.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -20,13 +20,13 @@ class LikesController < ApplicationController
   # POST /events/1/likes
   swagger_api :create do
     summary "Like event"
-    param :path, :event_id, :integer, :required, "Event id"
+    param :path, :feed_item_id, :integer, :required, "Feed item id"
     param :form, :account_id, :integer, :required, "Account id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
   end
   def create
-    obj = Like.new(event_id: @event.id, user_id: @user.id, account_id: params[:account_id])
+    obj = Like.new(feed_item_id: @feed_item.id, user_id: @user.id, account_id: params[:account_id])
     obj.save!
 
     render status: :ok
@@ -35,14 +35,13 @@ class LikesController < ApplicationController
   # DELETE /events/1/likes
   swagger_api :destroy do
     summary "Unlike event"
-    param :path, :event_id, :integer, :required, "Event id"
-    param :path, :id, :integer, :required, "Like id"
+    param :path, :feed_item_id, :integer, :required, "Feed item id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :not_found
   end
   def destroy
-    obj = Like.find_by(event_id: @event, user_id: @user)
+    obj = Like.find_by(feed_item_id: @feed_item.id, user_id: @user.id)
     if not obj
       render status: :not_found
     else
@@ -52,8 +51,8 @@ class LikesController < ApplicationController
   end
 
   private
-  def set_event
-    @event = Event.find(params[:event_id])
+  def set_feed_item
+    @feed_item = FeedItem.find(params[:feed_item_id])
   end
 
   def authorize

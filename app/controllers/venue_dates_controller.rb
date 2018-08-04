@@ -24,7 +24,7 @@ class VenueDatesController < ApplicationController
     else
       render json: {
         dates: @venue.dates,
-        event_dates: @venue.events.as_json(only: [:id, :date_from, :date_to])
+        event_dates: Event.where(venue_id: @venue.id).as_json(only: [:id, :date_from, :date_to])
       }, status: :ok
     end
 
@@ -36,6 +36,7 @@ class VenueDatesController < ApplicationController
     param :form, :date, :datetime, :required, "Date"
     param :form, :price_for_daytime, :integer, :optional, "Price for daytime"
     param :form, :price_for_nighttime, :integer, :optional, "Price for nighttime"
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :is_available, :boolean, :optional, "Is available flag"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
@@ -60,8 +61,8 @@ class VenueDatesController < ApplicationController
   swagger_api :create_from_array do
     summary "Create venue date"
     param :path, :account_id, :integer, :required, "Venue id"
-    param :form, :dates, :string, :reqired, "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
-                                                              'is_available': ''}, {...}]"
+    param :form, :dates, :string, :required, "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
+                                                              'is_available': '', 'currency': ''}, {...}]"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
     response :unprocessable_entity
@@ -81,6 +82,7 @@ class VenueDatesController < ApplicationController
           render json: venue_date.errors, status: :unprocessable_entity and return
         end
       end
+
       if venue_date.update(venue_date_update_params(date))
       else
         render json: venue_date.errors, status: :unprocessable_entity and return
@@ -130,6 +132,6 @@ class VenueDatesController < ApplicationController
   end
 
   def venue_date_update_params(params)
-    params.permit(:price_for_daytime, :price_for_nighttime, :is_available)
+    params.permit(:price_for_daytime, :price_for_nighttime, :is_available, :currency)
   end
 end

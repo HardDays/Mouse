@@ -48,8 +48,15 @@
             {
               "paramType": "query",
               "name": "distance",
-              "type": "float",
-              "description": "Radius in km (lat, lng must be present)",
+              "type": "integer",
+              "description": "Artist/Venue address max distance",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "units",
+              "type": "string",
+              "description": "Artist/Venue distance units of search 'km' or 'mi'",
               "required": false
             },
             {
@@ -293,6 +300,21 @@
             },
             {
               "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
               "name": "updates_available",
               "type": "boolean",
               "description": "Is updates available",
@@ -464,6 +486,13 @@
               "type": "integer",
               "description": "Event id",
               "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
             }
           ],
           "responseMessages": [
@@ -567,6 +596,21 @@
               "type": "integer",
               "description": "Funding goal",
               "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
             },
             {
               "paramType": "form",
@@ -983,32 +1027,6 @@
             }
           ],
           "nickname": "Events#analytics",
-          "method": "get"
-        }
-      ]
-    },
-    {
-      "path": "/events/{id}/updates.json",
-      "operations": [
-        {
-          "summary": "Retrieve event updates by id",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Event id",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 200,
-              "responseModel": null,
-              "message": "Ok"
-            }
-          ],
-          "nickname": "Events#get_updates",
           "method": "get"
         }
       ]

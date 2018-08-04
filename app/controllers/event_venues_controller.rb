@@ -40,7 +40,7 @@ class EventVenuesController < ApplicationController
     param :form, :time_frame_number, :integer, :required, "Time frame to answer"
     param :form, :is_personal, :boolean, :optional, "Is message personal"
     param :form, :estimated_price, :integer, :optional, "Estimated price to perform"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message, :string, :optional, "Additional text"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
@@ -149,6 +149,7 @@ class EventVenuesController < ApplicationController
       end
 
       @venue_event.status = 'owner_declined'
+      @venue_event.is_active = false
       send_owner_decline(@venue_event.account)
       @venue_event.save
 
@@ -167,7 +168,7 @@ class EventVenuesController < ApplicationController
     param :form, :preferred_date_to, :datetime, :required, "Preferred date to"
     param :form, :price, :integer, :required, "Price"
     param :form, :other_price, :integer, :optional, "Other price"
-    param :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
+    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :form, :message_id, :integer, :required, "Inbox message id"
     param :header, 'Authorization', :string, :required, "Venue auth key"
   end
@@ -211,6 +212,7 @@ class EventVenuesController < ApplicationController
     if @venue_event and ["request_send"].include?(@venue_event.status)
       read_message
       @venue_event.status = 'declined'
+      @venue_event.is_active = false
       send_decline(@account)
       @venue_event.save
 
@@ -252,7 +254,7 @@ class EventVenuesController < ApplicationController
       new_message.request_message = message.request_message.dup
       new_message.request_message.time_frame_range = params[:time_frame_range]
       new_message.request_message.time_frame_number = params[:time_frame_number]
-      new_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
+      new_message.request_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
 
       if new_message.save!
         event_venue.status = 'request_send'

@@ -1913,32 +1913,6 @@
       ]
     },
     {
-      "path": "/accounts/{id}/updates.json",
-      "operations": [
-        {
-          "summary": "Retrieve account updates by id",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Account id",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 200,
-              "responseModel": null,
-              "message": "Ok"
-            }
-          ],
-          "nickname": "Accounts#get_updates",
-          "method": "get"
-        }
-      ]
-    },
-    {
       "path": "/accounts/{id}/upcoming_shows.json",
       "operations": [
         {
@@ -1991,11 +1965,18 @@
       ]
     },
     {
-      "path": "/accounts/follow.json",
+      "path": "/accounts/{id}/follow_array.json",
       "operations": [
         {
           "summary": "Subscribe for accounts",
           "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "My account id",
+              "required": true
+            },
             {
               "paramType": "header",
               "name": "Authorization",
@@ -2029,6 +2010,56 @@
             }
           ],
           "nickname": "Accounts#follow_multiple",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/follow.json",
+      "operations": [
+        {
+          "summary": "Subscribe for account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "My account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "follower_id",
+              "type": "integer",
+              "description": "Following account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#follow",
           "method": "post"
         }
       ]
@@ -2119,56 +2150,6 @@
             }
           ],
           "nickname": "Accounts#upload_image",
-          "method": "post"
-        }
-      ]
-    },
-    {
-      "path": "/accounts/{id}/follow.json",
-      "operations": [
-        {
-          "summary": "Subscribe for account",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "My account id",
-              "required": true
-            },
-            {
-              "paramType": "query",
-              "name": "follower_id",
-              "type": "integer",
-              "description": "Following account id",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            },
-            {
-              "code": 404,
-              "responseModel": null,
-              "message": "Not Found"
-            },
-            {
-              "code": 422,
-              "responseModel": null,
-              "message": "Unprocessable Entity"
-            }
-          ],
-          "nickname": "Accounts#follow",
           "method": "post"
         }
       ]
