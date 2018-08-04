@@ -94,6 +94,7 @@
               "allowableValues": {
                 "valueType": "LIST",
                 "values": [
+                  "just_added",
                   "pending",
                   "approved",
                   "denied",
@@ -320,6 +321,49 @@
           ],
           "nickname": "AdminAccounts#get_account",
           "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/accounts/{id}/view.json",
+      "operations": [
+        {
+          "summary": "View account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 405,
+              "responseModel": null,
+              "message": "Method Not Allowed"
+            }
+          ],
+          "nickname": "AdminAccounts#view",
+          "method": "post"
         }
       ]
     },

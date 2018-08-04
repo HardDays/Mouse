@@ -30,7 +30,7 @@ class AccountsController < ApplicationController
       response :ok
     end
     def get_all
-        @accounts = Account.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+        @accounts = Account.available.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
                                                      {:public => Venue.venue_types['public_venue']})
         @extended = false
         set_extended
@@ -72,8 +72,9 @@ class AccountsController < ApplicationController
        @extended = false
        set_extended
 
-       accounts = @user.accounts.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
-                                                           {:public => Venue.venue_types['public_venue']})
+       accounts = @user.accounts.available.left_joins(:venue).where(
+         "(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+         {:public => Venue.venue_types['public_venue']})
        render json: accounts.order('accounts.user_name'), extended: @extended, status: :ok
     end
 
@@ -110,7 +111,7 @@ class AccountsController < ApplicationController
       response :unprocessable_entity
     end
     def upcoming_shows
-      events = Event.all
+      events = Event.available
 
       if @to_find.account_type == 'artist'
         events = events.joins(:artist_events)
@@ -525,7 +526,7 @@ class AccountsController < ApplicationController
       @extended = true
       set_extended
       
-      @accounts = Account.all
+      @accounts = Account.available
 
       if params[:type] != 'artist'
         if params[:exclude_event_id]

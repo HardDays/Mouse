@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  scope :available, -> {where(is_deleted: false)}
+  
   validates :name, presence: true
   validates :hashtag, presence: true
   validates :tagline, presence: true

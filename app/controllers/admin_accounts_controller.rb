@@ -10,9 +10,9 @@ class AdminAccountsController < ApplicationController
   end
   def new_accounts_count
     render json: {
-      artist: Account.where(created_at: 1.month.ago..DateTime.now, account_type: 'artist').count,
-      fan: Account.where(created_at: 1.month.ago..DateTime.now, account_type: 'fan').count,
-      venue: Account.where(created_at: 1.month.ago..DateTime.now, account_type: 'venue').count
+      artist: Account.where(created_at: 1.month.ago..DateTime.now, account_type: 'artist', status: 'just_added').count,
+      fan: Account.where(created_at: 1.month.ago..DateTime.now, account_type: 'fan', status: 'just_added').count,
+      venue: Account.where(created_at: 1.month.ago..DateTime.now, account_type: 'venue', status: 'just_added').count
     }, status: :ok
   end
 
@@ -23,7 +23,7 @@ class AdminAccountsController < ApplicationController
     response :unauthorized
   end
   def new_count
-    render json: Account.where(status: 'pending').count, status: :ok
+    render json: Account.where(status: 'just_added').count, status: :ok
   end
 
   # GET /admin/accounts/user_usage
@@ -45,7 +45,7 @@ class AdminAccountsController < ApplicationController
     summary "Get all account requests"
     param :query, :text, :string, :optional, "Search text"
     param_list :query, :account_type, :string, :required, 'Type of accounts', ['all', 'artist', 'fan', 'venue']
-    param_list :query, :status, :string, :optional, "Account status", [:pending, :approved, :denied, :active, :inactive]
+    param_list :query, :status, :string, :optional, "Account status", [:just_added, :pending, :approved, :denied, :active, :inactive]
     param :query, :limit, :integer, :optional, 'Limit'
     param :query, :offset, :integer, :optional, 'Offset'
     param :header, 'Authorization', :string, :required, 'Authentication token'
@@ -163,6 +163,24 @@ class AdminAccountsController < ApplicationController
     render json: Account.find(params[:id]), extended: true, my: true, status: :ok
   end
 
+  # POST admin/accounts/<id>/view
+  swagger_api :view do
+    summary "View account"
+    param :path, :id, :integer, :required, "Account id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+    response :not_found
+    response :method_not_allowed
+  end
+  def view
+    @account = Account.find(params[:id])
+
+    if @account and ['just_added'].include?(@account.status)
+      @account.update(status: 'pending')
+    end
+    render status: :ok
+  end
+
   # POST admin/accounts/<id>/approve
   swagger_api :approve do
     summary "Approve account"
@@ -175,7 +193,7 @@ class AdminAccountsController < ApplicationController
   def approve
     @account = Account.find(params[:id])
 
-    if @account and ['pending'].include?(@account.status)
+    if @account and ['just_added', 'pending'].include?(@account.status)
       @account.update(status: 'approved')
       @account.update(processed_by: @admin.id)
       update_events
@@ -197,7 +215,7 @@ class AdminAccountsController < ApplicationController
   def deny
     account = Account.find(params[:id])
 
-    if account and ['pending', 'approved'].include?(account.status)
+    if account and ['just_added', 'pending', 'approved'].include?(account.status)
       account.update(status: 'denied')
       account.update(processed_by: @admin.id)
       render status: :ok
@@ -216,7 +234,9 @@ class AdminAccountsController < ApplicationController
   end
   def destroy
     account = Account.find(params[:id])
-    account.destroy
+    account.is_deleted = true
+    account.status = 'inactive'
+    account.save
 
     render status: :ok
   end

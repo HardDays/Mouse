@@ -14,7 +14,7 @@ class EventsController < ApplicationController
     response :ok
   end
   def index
-    @events = Event.where(is_active: true)
+    @events = Event.available.where(is_active: true)
 
     render json: @events.limit(params[:limit]).offset(params[:offset]).order(:date_from, :funding_from), status: :ok
   end
@@ -237,7 +237,7 @@ class EventsController < ApplicationController
     response :unauthorized
   end
   def my
-    @events = Event.get_my(@account)
+    @events = Event.available.get_my(@account)
 
     render json: @events.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -277,7 +277,7 @@ class EventsController < ApplicationController
     response :ok
   end
   def search
-    @events = Event.search(params[:text])
+    @events = Event.available.search(params[:text])
     search_active
     search_genre
     search_location

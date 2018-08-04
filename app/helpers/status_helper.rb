@@ -5,7 +5,7 @@ class StatusHelper
   end
 
   def self.accounts
-    return [:pending, :approved, :denied]
+    return [:just_added, :pending, :approved, :denied, :inactive]
   end
 
   def self.events

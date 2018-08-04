@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801112139) do
+ActiveRecord::Schema.define(version: 20180804051823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.string "display_name"
     t.integer "status", default: 0
     t.integer "processed_by"
+    t.boolean "is_deleted", default: false
   end
 
   create_table "admins", force: :cascade do |t|
@@ -275,6 +276,8 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.boolean "has_private_venue"
     t.integer "processed_by"
     t.integer "currency", default: 0
+    t.boolean "is_deleted", default: false
+    t.boolean "is_viewed", default: false
   end
 
   create_table "fan_genres", force: :cascade do |t|

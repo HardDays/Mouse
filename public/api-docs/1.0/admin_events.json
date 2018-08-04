@@ -324,6 +324,49 @@
       ]
     },
     {
+      "path": "/admin/events/{id}/view.json",
+      "operations": [
+        {
+          "summary": "View event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 405,
+              "responseModel": null,
+              "message": "Method Not Allowed"
+            }
+          ],
+          "nickname": "AdminEvents#view",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/admin/events/{id}/approve.json",
       "operations": [
         {
