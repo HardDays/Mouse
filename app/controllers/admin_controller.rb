@@ -129,7 +129,7 @@ class AdminController < ApplicationController
     params.permit(:email, :password, :password_confirmation, :register_phone)
   end
 
-  def admin_params
+  def   admin_params
     params.permit(:address, :address_other, :city, :state, :country, :first_name, :last_name, :user_name)
   end
 
