@@ -98,6 +98,13 @@ class AdminController < ApplicationController
   def update
     @admin = Admin.find(params[:id])
     if @admin.update(admin_params)
+      if params[:register_phone]
+        @admin.user.register_phone = params[:register_phone]
+        unless @admin.user.save!
+          render json: @admin.user.errors, status: :unprocessable_entity and return
+        end
+      end
+
       set_base64_image
       render json: @admin, serializer: AdminSerializer, status: :ok
     else
@@ -129,7 +136,7 @@ class AdminController < ApplicationController
     params.permit(:email, :password, :password_confirmation, :register_phone)
   end
 
-  def   admin_params
+  def admin_params
     params.permit(:address, :address_other, :city, :state, :country, :first_name, :last_name, :user_name)
   end
 

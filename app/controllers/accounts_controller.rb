@@ -71,7 +71,7 @@ class AccountsController < ApplicationController
     def get_my_accounts   
        @extended = false
        set_extended
-       
+
        accounts = @user.accounts.available.left_joins(:venue).where(
          "(accounts.venue_id IS NULL OR venues.venue_type=:public)",
          {:public => Venue.venue_types['public_venue']})
@@ -1049,6 +1049,7 @@ class AccountsController < ApplicationController
 
     def exclude_event
       if params[:exclude_event_id]
+        @accounts = @accounts.where(status: 'approved')
         accounts_ids = ArtistEvent.where(event_id: params[:exclude_event_id]).pluck("artist_id") +
           VenueEvent.where(event_id: params[:exclude_event_id]).pluck("venue_id")
 
