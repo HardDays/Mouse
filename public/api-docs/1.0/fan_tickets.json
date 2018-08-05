@@ -366,7 +366,7 @@
               "name": "time",
               "type": "string",
               "description": "Tickets time frame",
-              "required": true,
+              "required": false,
               "allowableValues": {
                 "valueType": "LIST",
                 "values": [
