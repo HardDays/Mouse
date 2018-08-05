@@ -32,8 +32,6 @@ class InboxMessage < ApplicationRecord
       res[:message_info] = accept_message
     elsif decline_message
       res[:message_info] = decline_message
-    elsif support_message
-      res[:message_info] = support_message
     elsif feedback_message
       res[:message_info] = feedback_message
     end
