@@ -42,7 +42,7 @@ class QuestionsController < ApplicationController
     @question.message_type = 'support'
 
     if @question.save
-      render json: @question, status: :created, location: @question
+      render json: @question, status: :created
     else
       render json: @question.errors, status: :unprocessable_entity
     end
