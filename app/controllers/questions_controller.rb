@@ -39,6 +39,7 @@ class QuestionsController < ApplicationController
   end
   def create
     @question = InboxMessage.new(question_params)
+    @question.sender_id = Account.find(params[:account_id]).id
     @question.message_type = 'support'
 
     if @question.save
@@ -59,6 +60,6 @@ class QuestionsController < ApplicationController
     end
 
     def question_params
-      params.permit(:account_id, :subject, :message)
+      params.permit(:subject, :message)
     end
 end
