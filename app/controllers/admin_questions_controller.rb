@@ -11,7 +11,7 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def index
-    questions = InboxMessage.joins(:support_message).order(:created_at => :desc)
+    questions = InboxMessage.where(message_type: 'support').order(:created_at => :desc)
 
     render json: questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -25,7 +25,7 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def show
-    question = InboxMessage.joins(:support_message).find(params[:id])
+    question = InboxMessage.where(message_type: 'support').find(params[:id])
     render json: question, status: :ok
   end
 
@@ -40,7 +40,7 @@ class AdminQuestionsController < ApplicationController
     response :created
   end
   def reply
-    question = InboxMessage.joins(:support_message).find(params[:id])
+    question = InboxMessage.where(message_type: 'support').find(params[:id])
 
     question_reply = InboxMessage.new(
       subject: params[:subject],
@@ -68,7 +68,7 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def destroy
-    question = InboxMessage.joins(:support_message).find(params[:id])
+    question = InboxMessage.where(message_type: 'support').find(params[:id])
     question.destroy
 
     render status: :ok
