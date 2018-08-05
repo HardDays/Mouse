@@ -22,10 +22,14 @@ class FanTicketsController < ApplicationController
     response :not_found
   end
   def index
-    @events = Event.available
+    @events = Event.available.joins(:tickets => :fan_tickets).where(
+      fan_tickets: {account_id: params[:account_id]}
+    )
     if params[:time]
       filter_by_time
     end
+    @events = @events.group("events.id")
+
 
     render json: @events.limit(params[:limit]).offset(params[:offset]), fan_ticket: true, account_id: params[:account_id], status: :ok
   end
@@ -302,17 +306,13 @@ class FanTicketsController < ApplicationController
 
     def filter_by_time
       if params[:time] == 'current'
-        @events = Event.joins(:tickets => :fan_tickets).where(
-          fan_tickets: {account_id: params[:account_id]}
-        ).where(
+        @events = @events.where(
           "(events.date_to >= :date OR events.date_to IS NULL)", {:date => DateTime.now}
-        ).group("events.id")
+        )
       else
-        @events = Event.joins(:tickets => :fan_tickets).where(
-          fan_tickets: {account_id: params[:account_id]}
-        ).where(
+        @events = @events.where(
           "events.date_to < :date", {:date => DateTime.now}
-        ).group("events.id")
+        )
       end
     end
 
