@@ -11,7 +11,7 @@ class QuestionsController < ApplicationController
     response :ok
   end
   def index
-    @questions = Question.all
+    @questions = InboxMessage.where(message_type: 'support')
 
     render json: @questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -38,13 +38,8 @@ class QuestionsController < ApplicationController
     response :created
   end
   def create
-    @question = Question.new(question_params)
-
-    if params[:account_id]
-      @question.account = Account.find(params[:account_id])
-    else
-      @question.account = @user.accounts.first
-    end
+    @question = InboxMessage.new(question_params)
+    @question.message_type = 'support'
 
     if @question.save
       render json: @question, status: :created, location: @question
@@ -55,7 +50,7 @@ class QuestionsController < ApplicationController
 
   private
     def set_question
-      @question = Question.find(params[:id])
+      @question = InboxMessage.find(params[:id])
     end
 
     def authorize_user
@@ -64,6 +59,6 @@ class QuestionsController < ApplicationController
     end
 
     def question_params
-      params.permit(:user_id, :subject, :message)
+      params.permit(:account_id, :subject, :message)
     end
 end

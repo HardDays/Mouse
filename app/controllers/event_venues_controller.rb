@@ -388,7 +388,7 @@ class EventVenuesController < ApplicationController
     request_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
     request_message.save
 
-    inbox_message = InboxMessage.new(name: "#{@event.name} request", message_type: "request")
+    inbox_message = InboxMessage.new(subject: "#{@event.name} request", message_type: "request")
     inbox_message.request_message = request_message
 
     @event.request_messages << request_message
@@ -401,7 +401,7 @@ class EventVenuesController < ApplicationController
     @accept_message = AcceptMessage.new(accept_message_params)
     @accept_message.save
 
-    inbox_message = InboxMessage.new(name: "#{account.user_name} accepted #{@event.name} invitation", message_type: "accept")
+    inbox_message = InboxMessage.new(subject: "#{account.user_name} accepted #{@event.name} invitation", message_type: "accept")
     inbox_message.accept_message = @accept_message
 
     @event.accept_messages << @accept_message
@@ -413,7 +413,7 @@ class EventVenuesController < ApplicationController
     decline_message = DeclineMessage.new(decline_message_params)
     decline_message.save
 
-    inbox_message = InboxMessage.new(name: "#{account.user_name} declined #{@event.name} invitation", message_type: "decline")
+    inbox_message = InboxMessage.new(subject: "#{account.user_name} declined #{@event.name} invitation", message_type: "decline")
     inbox_message.decline_message = decline_message
 
     @event.decline_messages << decline_message
@@ -425,7 +425,7 @@ class EventVenuesController < ApplicationController
     decline_message = DeclineMessage.new(decline_message_params)
     decline_message.save
 
-    inbox_message = InboxMessage.new(name: "#{@event.name} owner reply", message_type: "decline")
+    inbox_message = InboxMessage.new(subject: "#{@event.name} owner reply", message_type: "decline")
     inbox_message.decline_message = decline_message
 
     @event.decline_messages << decline_message
@@ -435,9 +435,9 @@ class EventVenuesController < ApplicationController
 
   def send_accept_message(account)
     inbox_message = InboxMessage.new(
-      name: "#{@event.name} owner reply",
+      subject: "#{@event.name} owner reply",
       message_type: "blank",
-      simple_message: "#{@event.name} owner accepted your conteroffer"
+      message: "#{@event.name} owner accepted your conteroffer"
     )
 
     @event.creator.sent_messages << inbox_message

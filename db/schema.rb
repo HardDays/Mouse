@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180804051823) do
+ActiveRecord::Schema.define(version: 20180805181837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -317,12 +317,11 @@ ActiveRecord::Schema.define(version: 20180804051823) do
 
   create_table "feedbacks", force: :cascade do |t|
     t.integer "feedback_type"
-    t.string "detail", default: ""
     t.integer "rate_score"
-    t.integer "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "message_id"
+    t.integer "inbox_message_id"
   end
 
   create_table "followers", force: :cascade do |t|
@@ -361,11 +360,12 @@ ActiveRecord::Schema.define(version: 20180804051823) do
     t.integer "message_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "name"
+    t.string "subject"
     t.integer "sender_id"
     t.boolean "is_read", default: false
-    t.string "simple_message"
+    t.string "message"
     t.integer "admin_id"
+    t.integer "message_id"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -430,15 +430,6 @@ ActiveRecord::Schema.define(version: 20180804051823) do
     t.string "token"
     t.integer "count"
     t.integer "purchase_item_id"
-  end
-
-  create_table "questions", force: :cascade do |t|
-    t.integer "account_id"
-    t.string "subject"
-    t.string "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "message_id"
   end
 
   create_table "reply_templates", force: :cascade do |t|

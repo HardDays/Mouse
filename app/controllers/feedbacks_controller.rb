@@ -11,7 +11,7 @@ class FeedbacksController < ApplicationController
     response :ok
   end
   def index
-    @feedbacks = Feedback.all
+    @feedbacks = InboxMessage.where(message_type: 'feedback')
 
     render json: @feedbacks.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -32,32 +32,28 @@ class FeedbacksController < ApplicationController
     summary "Send feedback"
     param :form, :account_id, :integer, :optional, "Account id"
     param_list :form, :feedback_type, :string, :required, "Type of feedback", ["bug", "enhancement", "compliment"]
-    param :form, :detail, :string, :optional, "Message text"
+    param :form, :message, :string, :optional, "Message text"
     param :form, :rate_score, :string, :required, "Rate score"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unprocessable_entity
     response :created
   end
   def create
-    @feedback = Feedback.new(feedback_params)
+    @inbox = InboxMessage.new(message_params)
+    @inbox.message_type = 'feedback'
+    @inbox.feedback_message.build(feedback_params)
 
-    if params[:account_id]
-      @feedback.account = Account.find(params[:account_id])
+    if @inbox.save
+      render json: @inbox, status: :created
     else
-      @feedback.account = @user.accounts.first
-    end
-
-    if @feedback.save
-      render json: @feedback, status: :created
-    else
-      render json: @feedback.errors, status: :unprocessable_entity
+      render json: @inbox.errors, status: :unprocessable_entity
     end
   end
 
 
   private
     def set_feedback
-      @feedback = Feedback.find(params[:id])
+      @feedback = InboxMessage.find(params[:id])
     end
 
     def authorize_user
@@ -65,7 +61,11 @@ class FeedbacksController < ApplicationController
       render status: :unauthorized if @user == nil
     end
 
+    def message_params
+      params.permit(:account_id, :message)
+    end
+
     def feedback_params
-      params.permit(:feedback_type, :detail, :rate_score)
+      params.permit(:feedback_type, :rate_score)
     end
 end

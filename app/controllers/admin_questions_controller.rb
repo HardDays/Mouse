@@ -11,10 +11,9 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def index
-    questions = Question.all.order(:created_at => :desc)
+    questions = InboxMessage.joins(:support_message).order(:created_at => :desc)
 
-    render json: questions.limit(params[:limit]).offset(params[:offset]),
-                each_serializer: SimpleQuestionSerializer, status: :ok
+    render json: questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
 
   # GET /admin/questions/1
@@ -26,8 +25,8 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def show
-    question = Question.find(params[:id])
-    render json: question, serializer: QuestionSerializer, status: :ok
+    question = InboxMessage.joins(:support_message).find(params[:id])
+    render json: question, status: :ok
   end
 
   # POST /admin/questions/1/reply
@@ -41,17 +40,17 @@ class AdminQuestionsController < ApplicationController
     response :created
   end
   def reply
-    question = Question.find(params[:id])
+    question = InboxMessage.joins(:support_message).find(params[:id])
 
     question_reply = InboxMessage.new(
-      name: params[:subject],
+      subject: params[:subject],
       message_type: "blank",
-      simple_message: params[:message]
+      message: params[:message]
     )
     question_reply.admin = @admin
     question_reply.receiver = question.account
     if question_reply.save!
-      question.question_reply = question_reply
+      question.reply = question_reply
       question.save
 
       render json: question_reply, status: :created
@@ -69,7 +68,7 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def destroy
-    question = Question.find(params[:id])
+    question = InboxMessage.joins(:support_message).find(params[:id])
     question.destroy
 
     render status: :ok
