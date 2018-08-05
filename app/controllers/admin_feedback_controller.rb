@@ -58,17 +58,22 @@ class AdminFeedbackController < ApplicationController
   end
   def graph
     if params[:by] == 'all'
-      dates = InboxMessage.joins(:feedback_message).pluck("min(created_at), max(created_at)").first
-      diff = Time.diff(dates[0], dates[1])
-      if diff[:month] > 0
-        new_step = 'year'
-      elsif diff[:week] > 0
-        new_step = 'month'
-      elsif diff[:day] > 0
-        new_step = 'week'
+      dates = InboxMessage.joins(:feedback_message).pluck("min(inbox_messages.created_at), max(inbox_messages.created_at)").first
+      if dates
+        diff = Time.diff(dates[0], dates[1])
+        if diff[:month] > 0
+          new_step = 'year'
+        elsif diff[:week] > 0
+          new_step = 'month'
+        elsif diff[:day] > 0
+          new_step = 'week'
+        else
+          new_step = 'day'
+        end
       else
         new_step = 'day'
       end
+
 
       axis = GraphHelper.custom_axis(new_step, dates)
       dates_range = dates[0]..dates[1]
