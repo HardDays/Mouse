@@ -17,7 +17,7 @@ class FeedItem < ApplicationRecord
     if event_update
       res[:type] = "event update"
       res[:action] = "#{event_update.action} #{event_update.field}"
-      res[:event] = event_update.event.as_json(only: [:id, :name])
+      res[:event] = event_update.event.as_json(only: [:id, :name, :comments_available])
       res[:account] = event_update.event.creator.as_json(:only => [:id, :user_name, :image_id])
     elsif account_update
       res[:type] = "account update"
