@@ -42,7 +42,7 @@ class FeedbacksController < ApplicationController
     @inbox = InboxMessage.new(message_params)
     @inbox.message_type = 'feedback'
     @inbox.sender_id = Account.find(params[:account_id]).id
-    @inbox.feedback_message.build(feedback_params)
+    @inbox.build_feedback_message(feedback_params)
 
     if @inbox.save
       render json: @inbox, status: :created
