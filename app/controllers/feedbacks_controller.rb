@@ -44,7 +44,7 @@ class FeedbacksController < ApplicationController
     @inbox.sender_id = Account.find(params[:account_id]).id
     @inbox.build_feedback_message(feedback_params)
 
-    if @inbox.save
+    if @inbox.save!
       render json: @inbox, status: :created
     else
       render json: @inbox.errors, status: :unprocessable_entity

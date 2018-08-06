@@ -15,7 +15,6 @@ class InboxMessage < ApplicationRecord
     res = super
     res.delete('admin_id')
     res.delete('updated_at')
-    res.delete('message')
     res.delete('message_id')
     res[:reply] = reply
 
