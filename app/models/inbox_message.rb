@@ -10,13 +10,25 @@ class InboxMessage < ApplicationRecord
   has_one :accept_message, dependent: :destroy
   has_one :request_message, dependent: :destroy
   has_one :feedback_message, foreign_key: 'inbox_message_id', class_name: 'Feedback', dependent: :destroy
+  has_one :reply_message, foreign_key: 'message_id', class_name: 'InboxMessage', dependent: :destroy
+
+  def get_ancestor
+    if self.reply_message
+      return [self.reply_message] + self.reply_message.get_ancestor
+    else
+      return [self]
+    end
+  end
 
   def as_json(options = {})
     res = super
     res.delete('admin_id')
     res.delete('updated_at')
     res.delete('message_id')
-    res[:reply] = reply
+
+    if options[:extended]
+      res[:reply] = get_ancestor
+    end
 
     if admin
       res[:sender] = admin.as_json(for_message: true)

@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :questions, only: [:index, :create, :show]
+  resources :questions, only: [:index, :create, :show] do
+    member do
+      post :reply
+    end
+  end
   resources :feedbacks, only: [:index, :create, :show]
 
   #Auth routes

@@ -11,7 +11,7 @@ class FeedbacksController < ApplicationController
     response :ok
   end
   def index
-    @feedbacks = InboxMessage.where(message_type: 'feedback')
+    @feedbacks = InboxMessage.where(message_type: 'feedback', reply: nil)
 
     render json: @feedbacks.limit(params[:limit]).offset(params[:offset]), status: :ok
   end

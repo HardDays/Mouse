@@ -1,6 +1,6 @@
 class QuestionsController < ApplicationController
-  before_action :set_question, only: [:show]
-  before_action :authorize_user, only: [:create]
+  before_action :set_question, only: [:show, :reply]
+  before_action :authorize_user_and_set_account, only: [:create, :reply]
   swagger_controller :questions, "Questions"
 
   # GET /questions
@@ -11,7 +11,7 @@ class QuestionsController < ApplicationController
     response :ok
   end
   def index
-    @questions = InboxMessage.where(message_type: 'support')
+    @questions = InboxMessage.where(message_type: 'support', reply: nil)
 
     render json: @questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -24,7 +24,7 @@ class QuestionsController < ApplicationController
     response :ok
   end
   def show
-    render json: @question, status: :ok
+    render json: @question, extended: true, status: :ok
   end
 
   # POST /questions
@@ -39,7 +39,7 @@ class QuestionsController < ApplicationController
   end
   def create
     @question = InboxMessage.new(question_params)
-    @question.sender_id = Account.find(params[:account_id]).id
+    @question.sender_id = @account.id
     @question.message_type = 'support'
 
     if @question.save
@@ -49,14 +49,40 @@ class QuestionsController < ApplicationController
     end
   end
 
+  # POST /questions/:id/reply
+  swagger_api :reply do
+    summary "Reply to question"
+    param :form, :id, :integer, :optional, "Message id"
+    param :form, :account_id, :integer, :optional, "Account id"
+    param :form, :subject, :string, :required, "Subject of question"
+    param :form, :message, :string, :required, "Message"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unprocessable_entity
+    response :created
+  end
+  def reply
+    @reply = InboxMessage.new(question_params)
+    @reply.sender_id = @account.id
+    @reply.reply = @question
+    @reply.message_type = 'support'
+
+    if @reply.save
+      render json: @reply, status: :created
+    else
+      render json: @reply.errors, status: :unprocessable_entity
+    end
+  end
+
   private
     def set_question
       @question = InboxMessage.find(params[:id])
     end
 
-    def authorize_user
-      @user = AuthorizeHelper.authorize(request)
-      render status: :unauthorized if @user == nil
+    def authorize_user_and_set_account
+      user = AuthorizeHelper.authorize(request)
+      render status: :unauthorized and return if user == nil
+
+      @account = user.accounts.find(params[:account_id])
     end
 
     def question_params

@@ -11,7 +11,7 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def index
-    questions = InboxMessage.where(message_type: 'support').order(:created_at => :desc)
+    questions = InboxMessage.where(message_type: 'support', reply: nil).order(:created_at => :desc)
 
     render json: questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -26,7 +26,7 @@ class AdminQuestionsController < ApplicationController
   end
   def show
     question = InboxMessage.where(message_type: 'support').find(params[:id])
-    render json: question, status: :ok
+    render json: question, extended: true, status: :ok
   end
 
   # POST /admin/questions/1/reply

@@ -5,6 +5,65 @@
   "resourcePath": "questions",
   "apis": [
     {
+      "path": "/questions/{id}/reply.json",
+      "operations": [
+        {
+          "summary": "Reply to question",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "id",
+              "type": "integer",
+              "description": "Message id",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "subject",
+              "type": "string",
+              "description": "Subject of question",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "message",
+              "type": "string",
+              "description": "Message",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Questions#reply",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/questions.json",
       "operations": [
         {
