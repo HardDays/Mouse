@@ -53,7 +53,7 @@ class AdminQuestionsController < ApplicationController
       question.reply = question_reply
       question.save
 
-      render json: question_reply, status: :created
+      render json: question, extended: true, status: :created
     else
       render json: question_reply.errors, status: :unprocessable_entity
     end
