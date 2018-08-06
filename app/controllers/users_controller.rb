@@ -160,12 +160,11 @@ class UsersController < ApplicationController
   end
 
   def user_create_params
-    params.permit(:email, :password, :password_confirmation, :register_phone, :first_name, :last_name, :user_name)
+    params.permit(:email, :password, :password_confirmation, :register_phone)
   end
 
   def user_update_params
-    params.permit(:email, :password, :password_confirmation, :old_password,
-                  :register_phone, :first_name, :last_name, :user_name)
+    params.permit(:email, :password, :password_confirmation, :old_password, :register_phone)
   end
 
   def user_preferences_params

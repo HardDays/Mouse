@@ -81,10 +81,6 @@ class AdminController < ApplicationController
   swagger_api :update do
     summary "Updates admin credential for login"
     param :path, :id, :integer, :required, "Admin id"
-    param :form, :email, :string, :optional, "Email"
-    param :form, :password, :password, :optional, "Your password"
-    param :form, :password_confirmation, :password, :optional, "Confirm your password"
-    param :form, :old_password, :password, :optional, "Old password"
     param :form, :image_base64, :string, :optional, "Image base64 string"
     param :form, :first_name, :string, :optional, "First name"
     param :form, :last_name, :string, :optional, "Last name"
@@ -103,16 +99,6 @@ class AdminController < ApplicationController
     @admin = Admin.find(params[:id])
     if @admin.update(admin_params)
 
-      if params[:register_phone]
-        @admin.user.register_phone = params[:register_phone]
-      end
-      if params[:email]
-        @admin.user.email = params[:email]
-      end
-      if params[:password] and params[:password] == params[:password_confirmation]
-        @admin.user.password = params[:password]
-      end
-      
       unless @admin.user.save(validate: false)
         render json: @admin.user.errors, status: :unprocessable_entity and return
       end
