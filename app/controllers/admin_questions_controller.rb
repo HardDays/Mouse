@@ -48,7 +48,7 @@ class AdminQuestionsController < ApplicationController
       message: params[:message]
     )
     question_reply.admin = @admin
-    question_reply.receiver = question.account
+    question_reply.receiver_id = question.sender_id
     if question_reply.save!
       question.reply = question_reply
       question.save

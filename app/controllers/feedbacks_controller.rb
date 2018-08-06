@@ -41,7 +41,7 @@ class FeedbacksController < ApplicationController
   def create
     @inbox = InboxMessage.new(message_params)
     @inbox.message_type = 'feedback'
-    @question.sender_id = Account.find(params[:account_id]).id
+    @inbox.sender_id = Account.find(params[:account_id]).id
     @inbox.feedback_message.build(feedback_params)
 
     if @inbox.save
