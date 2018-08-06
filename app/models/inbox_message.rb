@@ -13,12 +13,11 @@ class InboxMessage < ApplicationRecord
 
   def as_json(options = {})
     res = super
-    res.delete('event_id')
     res.delete('admin_id')
     res.delete('updated_at')
-    res.delete('request_msg_id')
-    res.delete('accept_msg_id')
-    res.delete('decline_msg_id')
+    res.delete('message')
+    res.delete('message_id')
+    res[:reply] = reply
 
     if admin
       res[:sender] = admin.as_json(for_message: true)
