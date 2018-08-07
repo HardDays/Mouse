@@ -113,7 +113,7 @@ class AdminFeedbackController < ApplicationController
   end
   def show
     feedback = InboxMessage.joins(:feedback_message).find(params[:id])
-    render json: feedback, status: :ok
+    render json: feedback, extended: true, status: :ok
   end
 
   # POST /admin/feedbacks/1/thank_you
