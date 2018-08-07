@@ -41,6 +41,7 @@ class PublicVenue < ApplicationRecord
     attrs[:is_flexible] = is_flexible
     attrs[:price_for_daytime] = price_for_daytime
     attrs[:price_for_nighttime] = price_for_nighttime
+    attrs[:currency] = venue.account.user.preferred_currency
     attrs[:performance_time_from] = performance_time_from
     attrs[:performance_time_to] = performance_time_to
     attrs[:other_genre_description] = other_genre_description
