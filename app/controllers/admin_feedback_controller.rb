@@ -134,7 +134,7 @@ class AdminFeedbackController < ApplicationController
       message: params[:message]
     )
     feedback_reply.admin = @admin
-    feedback_reply.receiver = feedback.account
+    feedback_reply.receiver = feedback.sender
     if feedback_reply.save!
       feedback.reply = feedback_reply
       feedback.save
