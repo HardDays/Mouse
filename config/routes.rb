@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   post 'users/validate_phone', action: :validate_phone, controller: 'users'
   get 'users/me', action: :get_me, controller: 'users'
   patch 'users/me', action: :update_me, controller: 'users'
+  patch 'users/reset_password', action: :reset_password, controller: 'users'
   patch 'users/preferences', action: :set_preferences, controller: 'users'
   get 'users/preferences', action: :get_preferences, controller: 'users'
   patch 'users/:id/email', action: :change_email, controller: 'users'
