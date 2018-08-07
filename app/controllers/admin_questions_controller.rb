@@ -11,7 +11,8 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def index
-    questions = InboxMessage.where(message_type: 'support', reply: nil).order(:created_at => :desc)
+    replies = InboxMessage.where(message_type: 'support').pluck('message_id')
+    questions = InboxMessage.where(message_type: 'support').not(message_id: replies).order(:created_at => :desc)
 
     render json: questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
