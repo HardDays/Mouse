@@ -4,9 +4,9 @@ class User < ApplicationRecord
 	validates :register_phone, uniqueness: true, allow_nil: true
 	validates :password, length: {:within => 6..100}, :allow_blank => true #, confirmation: true
 
-	enum preferred_language: [:ru, :en]
-	enum preferred_distance: [:km, :mi]
-	enum preferred_currency: [:RUB, :USD, :EUR]
+	enum preferred_language: [:en, :ru]
+	enum preferred_distance: [:mi, :km]
+	enum preferred_currency: [:USD, :RUB, :EUR]
 
 	before_save :encrypt, if: :password_changed?
 	validates_confirmation_of :password, message: 'NOT_MATCHED'
