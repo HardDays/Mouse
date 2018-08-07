@@ -10,13 +10,12 @@ class InboxMessage < ApplicationRecord
   has_one :accept_message, dependent: :destroy
   has_one :request_message, dependent: :destroy
   has_one :feedback_message, foreign_key: 'inbox_message_id', class_name: 'Feedback', dependent: :destroy
-  has_one :reply_message, foreign_key: 'message_id', class_name: 'InboxMessage', dependent: :destroy
 
   def get_ancestor
-    if self.reply_message
-      return [self.reply_message] + self.reply_message.get_ancestor
+    if self.reply
+      return [self.reply] + self.reply.get_ancestor
     else
-      return [self]
+      return []
     end
   end
 

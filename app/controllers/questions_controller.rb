@@ -63,10 +63,10 @@ class QuestionsController < ApplicationController
   def reply
     @reply = InboxMessage.new(question_params)
     @reply.sender_id = @account.id
-    @reply.reply = @question
     @reply.message_type = 'support'
 
     if @reply.save
+      @question.reply = @reply
       render json: @question, extended: true, status: :created
     else
       render json: @reply.errors, status: :unprocessable_entity
