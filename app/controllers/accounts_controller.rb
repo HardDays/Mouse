@@ -30,7 +30,7 @@ class AccountsController < ApplicationController
       response :ok
     end
     def get_all
-        @accounts = Account.available.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+        @accounts = Account.approved.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
                                                      {:public => Venue.venue_types['public_venue']})
         @extended = false
         set_extended
@@ -526,7 +526,7 @@ class AccountsController < ApplicationController
       @extended = true
       set_extended
       
-      @accounts = Account.available
+      @accounts = Account.approved
 
       if params[:type] != 'artist'
         if params[:exclude_event_id]
