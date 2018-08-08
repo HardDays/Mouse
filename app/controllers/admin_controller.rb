@@ -64,15 +64,20 @@ class AdminController < ApplicationController
     Admin.transaction do
       user = User.new(user_params)
       user.is_admin = true
-      user.save!
+      unless user.save
+        render json: user.errors, status: :unprocessable_entity and return
+      end
 
       @admin = Admin.new(admin_params)
       @admin.user_id = user.id
-      if @admin.save!
+      if @admin.save
         set_base64_image
         set_phone_validation
 
         render json: @admin, serializer: AdminSerializer, status: :created
+      else
+        @user.destroy
+        render json: @admin.errors, status: :unprocessable_entity
       end
     end
   end
@@ -98,11 +103,9 @@ class AdminController < ApplicationController
   def update
     @admin = Admin.find(params[:id])
     if @admin.update(admin_params)
-      if params[:register_phone]
-        @admin.user.register_phone = params[:register_phone]
-        unless @admin.user.save!
-          render json: @admin.user.errors, status: :unprocessable_entity and return
-        end
+
+      unless @admin.user.save(validate: false)
+        render json: @admin.user.errors, status: :unprocessable_entity and return
       end
 
       set_base64_image

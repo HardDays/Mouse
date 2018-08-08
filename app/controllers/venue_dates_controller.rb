@@ -124,9 +124,11 @@ class VenueDatesController < ApplicationController
   end
 
   def authorize_and_set_venue
-    user = AuthorizeHelper.authorize(request)
-    account = Account.find(params[:account_id])
-    render status: :unauthorized and return if user == nil or account.user != user or account.account_type != 'venue'
+    account = AuthorizeHelper.auth_and_set_account(request)
+
+    if account == nil or account.account_type != 'venue'
+      render json: {error: "Access forbidden"}, status: :forbidden and return
+    end
 
     @venue = account.venue
   end

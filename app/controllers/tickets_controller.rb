@@ -47,7 +47,12 @@ class TicketsController < ApplicationController
     if @ticket.save
       change_event_tickets
 
-      action = EventUpdate.new(action: :add_ticket, updated_by: @account.id, event_id: @event.id)
+      action = EventUpdate.new(
+        action: :add_ticket,
+        updated_by: @account.id,
+        event_id: @event.id,
+        value: @ticket.id
+      )
       action.save
       
       render json: @ticket, status: :created
@@ -188,15 +193,17 @@ class TicketsController < ApplicationController
     end
 
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
     end
 
     def auth_creator_and_set_event
       authorize_account
       @event = Event.find(params[:event_id])
       @creator = @event.creator
-      render status: :unauthorized if @creator != @account or @creator.user != @user
+      render status: :unauthorized if @creator != @account
     end
 end

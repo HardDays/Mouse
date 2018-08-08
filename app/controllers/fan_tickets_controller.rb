@@ -14,7 +14,7 @@ class FanTicketsController < ApplicationController
   swagger_api :index do
     summary "Retrieve list of fan tickets"
     param :query, :account_id, :integer, :required, "Fan account id"
-    param_list :query, :time, :string, :required, "Tickets time frame", ['current', 'past']
+    param_list :query, :time, :string, :optional, "Tickets time frame", ['current', 'past']
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
@@ -22,20 +22,15 @@ class FanTicketsController < ApplicationController
     response :not_found
   end
   def index
-    if params[:time] == 'current'
-      @events = Event.joins(:tickets => :fan_tickets).where(
-        fan_tickets: {account_id: params[:account_id]}
-      ).where(
-        "(events.date_to >= :date OR events.date_to IS NULL)", {:date => DateTime.now}
-      ).group("events.id")
-    else
-      @events = Event.joins(:tickets => :fan_tickets).where(
-        fan_tickets: {account_id: params[:account_id]}
-      ).where(
-        "events.date_to < :date", {:date => DateTime.now}
-      ).group("events.id")
-
+    @events = Event.available.joins(:tickets => :fan_tickets).where(
+      fan_tickets: {account_id: params[:account_id]}
+    )
+    if params[:time]
+      filter_by_time
     end
+    @events = @events.group("events.id")
+
+
     render json: @events.limit(params[:limit]).offset(params[:offset]), fan_ticket: true, account_id: params[:account_id], status: :ok
   end
 
@@ -309,6 +304,18 @@ class FanTicketsController < ApplicationController
       @ticket = Ticket.find(params[:ticket_id])
     end
 
+    def filter_by_time
+      if params[:time] == 'current'
+        @events = @events.where(
+          "(events.date_to >= :date OR events.date_to IS NULL)", {:date => DateTime.now}
+        )
+      else
+        @events = @events.where(
+          "events.date_to < :date", {:date => DateTime.now}
+        )
+      end
+    end
+
     def check_ticket
       sold_tickets = FanTicket.where(ticket_id: @ticket.id)
 
@@ -375,8 +382,12 @@ class FanTicketsController < ApplicationController
     end
 
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user or @account.account_type != 'fan'
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil or @account.account_type != 'fan'
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
+
+      @user = @account.user
     end
 end

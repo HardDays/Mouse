@@ -11,10 +11,10 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def index
-    questions = Question.all.order(:created_at => :desc)
+    replies = InboxMessage.where(message_type: 'support').where.not(message_id: nil).pluck('message_id')
+    questions = InboxMessage.where(message_type: 'support').where.not(id: replies).order(:created_at => :desc)
 
-    render json: questions.limit(params[:limit]).offset(params[:offset]),
-                each_serializer: SimpleQuestionSerializer, status: :ok
+    render json: questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
 
   # GET /admin/questions/1
@@ -26,8 +26,8 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def show
-    question = Question.find(params[:id])
-    render json: question, serializer: QuestionSerializer, status: :ok
+    question = InboxMessage.where(message_type: 'support').find(params[:id])
+    render json: question, extended: true, status: :ok
   end
 
   # POST /admin/questions/1/reply
@@ -41,20 +41,20 @@ class AdminQuestionsController < ApplicationController
     response :created
   end
   def reply
-    question = Question.find(params[:id])
+    question = InboxMessage.where(message_type: 'support').find(params[:id])
 
     question_reply = InboxMessage.new(
-      name: params[:subject],
-      message_type: "blank",
-      simple_message: params[:message]
+      subject: params[:subject],
+      message_type: "support",
+      message: params[:message]
     )
     question_reply.admin = @admin
-    question_reply.receiver = question.account
+    question_reply.receiver_id = question.sender_id
     if question_reply.save!
-      question.question_reply = question_reply
+      question.reply = question_reply
       question.save
 
-      render json: question_reply, status: :created
+      render json: question, extended: true, status: :created
     else
       render json: question_reply.errors, status: :unprocessable_entity
     end
@@ -69,7 +69,7 @@ class AdminQuestionsController < ApplicationController
     response :ok
   end
   def destroy
-    question = Question.find(params[:id])
+    question = InboxMessage.where(message_type: 'support').find(params[:id])
     question.destroy
 
     render status: :ok

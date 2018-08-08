@@ -139,6 +139,53 @@
       ]
     },
     {
+      "path": "/users/reset_password.json",
+      "operations": [
+        {
+          "summary": "Reset user's password",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "password",
+              "type": "password",
+              "description": "Your password",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "password_confirmation",
+              "type": "password",
+              "description": "Confirm your password",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "old_password",
+              "type": "password",
+              "description": "Old password",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Users#reset_password",
+          "method": "patch"
+        }
+      ]
+    },
+    {
       "path": "/users/preferences.json",
       "operations": [
         {

@@ -4,9 +4,9 @@ class User < ApplicationRecord
 	validates :register_phone, uniqueness: true, allow_nil: true
 	validates :password, length: {:within => 6..100}, :allow_blank => true #, confirmation: true
 
-	enum preferred_language: [:ru, :en]
-	enum preferred_distance: [:km, :mi]
-	enum preferred_currency: [:RUB, :USD, :EUR]
+	enum preferred_language: [:en, :ru]
+	enum preferred_distance: [:mi, :km]
+	enum preferred_currency: [:USD, :RUB, :EUR]
 
 	before_save :encrypt, if: :password_changed?
 	validates_confirmation_of :password, message: 'NOT_MATCHED'
@@ -35,6 +35,9 @@ class User < ApplicationRecord
 	def check_old
 		if self.old_password != nil
 			errors.add(:old_password, 'NOT_MACHED') if User.find(id).password != User.encrypt_password(self.old_password)
+			#  TODO: check needeness
+			# else
+		# 	errors.add(:old_password, 'MUST_EXIST')
 		end
 	end
 

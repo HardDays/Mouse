@@ -8,7 +8,6 @@ class UsersController < ApplicationController
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
   end
-
   def get_me
     render json: @user, except: :password
   end
@@ -22,7 +21,6 @@ class UsersController < ApplicationController
     param :form, :register_phone, :string, :optional, "Phone number"
     response :unprocessable_entity
   end
-
   def create
     if params[:register_phone]
       @phone_validation = PhoneValidation.find_by(phone: params[:register_phone])
@@ -52,15 +50,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # PUT /users/update/<id>
-  def update
-    if @user.update(user_update_params)
-      render json: @user, except: :password, status: :ok
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
-
   # PUT /users/update_me
   swagger_api :update_me do
     summary "Update my user info"
@@ -72,7 +61,6 @@ class UsersController < ApplicationController
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unprocessable_entity
   end
-
   def update_me
     if params[:register_phone]
       @phone_validation = PhoneValidation.find_by(phone: params[:register_phone])
@@ -83,6 +71,26 @@ class UsersController < ApplicationController
       render json: @user, except: :password, status: :ok
     else
       render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+  # PATCH /users/reset_password
+  swagger_api :reset_password do
+    summary "Reset user's password"
+    param :form, :email, :string, :optional, "Email"
+    param :form, :password, :password, :optional, "Your password"
+    param :form, :password_confirmation, :password, :optional, "Confirm your password"
+    param :form, :old_password, :password, :optional, "Old password"
+    response :unprocessable_entity
+  end
+
+  def reset_password
+    user = User.find_by!(email: params[:email])
+
+    if user.update(user_update_params)
+      render json: user, except: :password, status: :ok
+    else
+      render json: user.errors, status: :unprocessable_entity
     end
   end
 
@@ -160,12 +168,11 @@ class UsersController < ApplicationController
   end
 
   def user_create_params
-    params.permit(:email, :password, :password_confirmation, :register_phone, :first_name, :last_name, :user_name)
+    params.permit(:email, :password, :password_confirmation, :register_phone)
   end
 
   def user_update_params
-    params.permit(:email, :password, :password_confirmation, :old_password,
-                  :register_phone, :first_name, :last_name, :user_name)
+    params.permit(:email, :password, :password_confirmation, :old_password, :register_phone)
   end
 
   def user_preferences_params

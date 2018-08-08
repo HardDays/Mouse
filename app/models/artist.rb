@@ -43,6 +43,7 @@ class Artist < ApplicationRecord
                 res.delete('price_to')
                 res.delete('additional_hours_price')
             end
+            res[:currency] = account.user.preferred_currency
 
             if options[:my]
                 res[:disable_dates] = disable_dates

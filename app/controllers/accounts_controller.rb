@@ -1,8 +1,8 @@
 class AccountsController < ApplicationController
     before_action :authorize_user, only: [:create, :get_my_accounts]
     before_action :authorize_account, only: [:update,  :upload_image, :follow, :unfollow, :is_followed,
-                                             :follow_multiple, :delete, :preferences]
-    before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed, :get_updates, :verify]
+                                             :follow_multiple, :delete]
+    before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed]
     before_action :find_follower_account, only: [:follow, :unfollow, :is_followed]
     swagger_controller :accounts, "Accounts"
 
@@ -30,7 +30,7 @@ class AccountsController < ApplicationController
       response :ok
     end
     def get_all
-        @accounts = Account.available.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+        @accounts = Account.approved.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
                                                      {:public => Venue.venue_types['public_venue']})
         @extended = false
         set_extended
@@ -526,7 +526,7 @@ class AccountsController < ApplicationController
       @extended = true
       set_extended
       
-      @accounts = Account.available
+      @accounts = Account.approved
 
       if params[:type] != 'artist'
         if params[:exclude_event_id]
@@ -588,7 +588,7 @@ class AccountsController < ApplicationController
     def authorized?
       if request.headers['Authorization']
         user = AuthorizeHelper.authorize(request)
-        return (user != nil and user == @to_find.user)
+        return (user != nil and user == @to_find.user and @to_find.is_deleted == false)
       end
     end
 
@@ -598,9 +598,11 @@ class AccountsController < ApplicationController
     end
 
     def authorize_account
-        @user = AuthorizeHelper.authorize(request)
-        @account = Account.find(params[:id])
-        render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
     end
 
     def set_image
@@ -701,7 +703,13 @@ class AccountsController < ApplicationController
                 @venue.update(venue_params)
                 params.each do |param|
                     if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
+                        action = AccountUpdate.new(
+                          action: :update,
+                          updated_by: @account.id,
+                          account_id: @account.id,
+                          field: param,
+                          value: params[param]
+                        )
                         action.save
                         feed = FeedItem.new(account_update_id: action.id)
                         feed.save
@@ -819,7 +827,13 @@ class AccountsController < ApplicationController
                 @artist.update(artist_params)
                 params.each do |param|
                     if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
+                        action = AccountUpdate.new(
+                          action: :update,
+                          updated_by: @account.id,
+                          account_id: @account.id,
+                          field: param,
+                          value: params[param]
+                        )
                         action.save
                         feed = FeedItem.new(account_update_id: action.id)
                         feed.save

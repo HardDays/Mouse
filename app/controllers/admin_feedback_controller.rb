@@ -12,10 +12,10 @@ class AdminFeedbackController < ApplicationController
     response :ok
   end
   def index
-    feedback = Feedback.all.order(:created_at => :desc)
+    feedback = InboxMessage.joins(:feedback_message).order(:created_at => :desc)
 
     if params[:feedback_type] and params[:feedback_type] != 'all'
-      feedback = feedback.where(feedback_type: params[:feedback_type])
+      feedback = feedback.where(feedbacks: {feedback_type: params[:feedback_type]})
     end
 
     render json: feedback.limit(params[:limit]).offset(params[:offset]),
@@ -29,7 +29,7 @@ class AdminFeedbackController < ApplicationController
     response :ok
   end
   def overall
-    feedback = Feedback.pluck('sum(feedbacks.rate_score), count(feedbacks.id)').first
+    feedback = InboxMessage.joins(:feedback_message).pluck('sum(feedbacks.rate_score), count(feedbacks.id)').first
 
     render json: feedback[0] / feedback[1], status: :ok
   end
@@ -42,9 +42,9 @@ class AdminFeedbackController < ApplicationController
   end
   def counts
     render json: {
-      bug: Feedback.where(feedback_type: 'bug').count,
-      enhancement: Feedback.where(feedback_type: 'enhancement').count,
-      compliment: Feedback.where(feedback_type: 'compliment').count
+      bug: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: Feedback.feedback_types['bug']}).count,
+      enhancement: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: Feedback.feedback_types['enhancement']}).count,
+      compliment: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: Feedback.feedback_types['compliment']}).count
     }, status: :ok
   end
 
@@ -52,23 +52,28 @@ class AdminFeedbackController < ApplicationController
   # GET /admin/feedbacks/graph
   swagger_api :graph do
     summary "Get feedback info for graph"
-    param_list :query, :by, :string, :optional, "Data by", [:day, :week, :month, :year, :all]
+    param_list :query, :by, :string, :required, "Data by", [:day, :week, :month, :year, :all]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
   end
   def graph
     if params[:by] == 'all'
-      dates = Feedback.pluck("min(created_at), max(created_at)").first
-      diff = Time.diff(dates[0], dates[1])
-      if diff[:month] > 0
-        new_step = 'year'
-      elsif diff[:week] > 0
-        new_step = 'month'
-      elsif diff[:day] > 0
-        new_step = 'week'
+      dates = InboxMessage.joins(:feedback_message).pluck("min(inbox_messages.created_at), max(inbox_messages.created_at)").first
+      if dates
+        diff = Time.diff(dates[0], dates[1])
+        if diff[:month] > 0
+          new_step = 'year'
+        elsif diff[:week] > 0
+          new_step = 'month'
+        elsif diff[:day] > 0
+          new_step = 'week'
+        else
+          new_step = 'day'
+        end
       else
         new_step = 'day'
       end
+
 
       axis = GraphHelper.custom_axis(new_step, dates)
       dates_range = dates[0]..dates[1]
@@ -78,11 +83,11 @@ class AdminFeedbackController < ApplicationController
       dates_range = GraphHelper.sql_date_range(params[:by])
     end
 
-    feed = Feedback.where(
+    feed = InboxMessage.joins(:feedback_message).where(
       created_at: dates_range
-    ).order(:feedback_type, :created_at).to_a.group_by(
-      &:feedback_type
-    ).each_with_object({}) {
+    ).order("feedbacks.feedback_type, inbox_messages.created_at").to_a.group_by{ |e|
+      e.feedback_message.feedback_type
+    }.each_with_object({}) {
       |(k, v), h| h[k] = v.group_by{ |e| e.created_at.strftime(GraphHelper.type_str(params[:by])) }
     }.each { |(k, h)|
       h.each { |m, v|
@@ -107,8 +112,8 @@ class AdminFeedbackController < ApplicationController
     response :ok
   end
   def show
-    feedback = Feedback.find(params[:id])
-    render json: feedback, serializer: FeedbackSerializer, status: :ok
+    feedback = InboxMessage.joins(:feedback_message).find(params[:id])
+    render json: feedback, extended: true, status: :ok
   end
 
   # POST /admin/feedbacks/1/thank_you
@@ -121,15 +126,15 @@ class AdminFeedbackController < ApplicationController
     response :created
   end
   def thank_you
-    feedback = Feedback.find(params[:id])
+    feedback = InboxMessage.joins(:feedback_message).find(params[:id])
 
     feedback_reply = InboxMessage.new(
-      name: "Admin's reply to your feedback",
-      message_type: "blank",
-      simple_message: params[:message]
+      subject: "Admin's reply to your feedback",
+      message_type: "feedback",
+      message: params[:message]
     )
     feedback_reply.admin = @admin
-    feedback_reply.receiver = feedback.account
+    feedback_reply.receiver = feedback.sender
     if feedback_reply.save!
       feedback.reply = feedback_reply
       feedback.save
@@ -149,7 +154,7 @@ class AdminFeedbackController < ApplicationController
     response :ok
   end
   def destroy
-    feedback = Feedback.find(params[:id])
+    feedback = InboxMessage.joins(:feedback_message).find(params[:id])
     feedback.destroy
 
     render status: :ok

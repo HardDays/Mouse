@@ -2,7 +2,7 @@ class Image < ApplicationRecord
     belongs_to :account, optional: true
     belongs_to :event, optional: true
 
-    has_one :owner_account, foreign_key: 'image_id', class_name: 'Account', dependent: :destroy
+    has_one :owner_account, foreign_key: 'image_id', class_name: 'Account', dependent: :nullify
     has_one :image_type, dependent: :destroy
 
     def as_json(options={})
