@@ -61,8 +61,10 @@ class CommentsController < ApplicationController
     end
 
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
     end
 end

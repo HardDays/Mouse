@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
-                                   :click, :view, :get_updates, :verify]
+                                   :click, :view, :verify]
   before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
   before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify]
@@ -297,15 +297,19 @@ class EventsController < ApplicationController
 
     #TODO: отрефакторить как-нибудь
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
     end
 
     def authorize_creator
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized and return if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
 
       @creator = Event.find(params[:id]).creator
       render status: :unauthorized if @creator != @account or @creator.user != @user

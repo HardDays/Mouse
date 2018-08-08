@@ -79,10 +79,11 @@ class QuestionsController < ApplicationController
     end
 
     def authorize_user_and_set_account
-      user = AuthorizeHelper.authorize(request)
-      render status: :unauthorized and return if user == nil
+      @account = AuthorizeHelper.auth_and_set_account(request)
 
-      @account = user.accounts.find(params[:account_id])
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
     end
 
     def question_params

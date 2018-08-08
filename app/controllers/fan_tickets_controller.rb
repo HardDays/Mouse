@@ -382,8 +382,12 @@ class FanTicketsController < ApplicationController
     end
 
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user or @account.account_type != 'fan'
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil or @account.account_type != 'fan'
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
+
+      @user = @account.user
     end
 end

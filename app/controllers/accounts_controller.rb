@@ -1,8 +1,8 @@
 class AccountsController < ApplicationController
     before_action :authorize_user, only: [:create, :get_my_accounts]
     before_action :authorize_account, only: [:update,  :upload_image, :follow, :unfollow, :is_followed,
-                                             :follow_multiple, :delete, :preferences]
-    before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed, :get_updates, :verify]
+                                             :follow_multiple, :delete]
+    before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed]
     before_action :find_follower_account, only: [:follow, :unfollow, :is_followed]
     swagger_controller :accounts, "Accounts"
 
@@ -588,7 +588,7 @@ class AccountsController < ApplicationController
     def authorized?
       if request.headers['Authorization']
         user = AuthorizeHelper.authorize(request)
-        return (user != nil and user == @to_find.user)
+        return (user != nil and user == @to_find.user and @to_find.is_deleted == false)
       end
     end
 
@@ -598,9 +598,11 @@ class AccountsController < ApplicationController
     end
 
     def authorize_account
-        @user = AuthorizeHelper.authorize(request)
-        @account = Account.find(params[:id])
-        render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request)
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
     end
 
     def set_image
