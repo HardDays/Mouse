@@ -1,5 +1,5 @@
 class AdminAccountBankingSerializer < ActiveModel::Serializer
-  attributes :id, :account_type, :user_name, :status, :address, :first_name, :last_name, :banking
+  attributes :id, :account_type, :user_name, :status, :address, :full_name, :banking
 
   def address
     if object.account_type == 'artist'
@@ -11,12 +11,12 @@ class AdminAccountBankingSerializer < ActiveModel::Serializer
     end
   end
 
-  def first_name
-    object.user.first_name
-  end
-
-  def last_name
-    object.user.last_name
+  def full_name
+    if object.account_type == 'fan'
+      return "#{object.fan.first_name} #{object.fan.last_name}"
+    else
+      return object.display_name
+    end
   end
 
   def banking
