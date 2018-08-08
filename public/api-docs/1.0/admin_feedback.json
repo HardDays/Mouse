@@ -123,7 +123,7 @@
               "name": "by",
               "type": "string",
               "description": "Data by",
-              "required": false,
+              "required": true,
               "allowableValues": {
                 "valueType": "LIST",
                 "values": [

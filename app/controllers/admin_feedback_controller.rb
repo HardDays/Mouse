@@ -42,9 +42,9 @@ class AdminFeedbackController < ApplicationController
   end
   def counts
     render json: {
-      bug: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: 'bug'}).count,
-      enhancement: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: 'enhancement'}).count,
-      compliment: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: 'compliment'}).count
+      bug: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: Feedback.feedback_types['bug']}).count,
+      enhancement: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: Feedback.feedback_types['enhancement']}).count,
+      compliment: InboxMessage.joins(:feedback_message).where(feedbacks: {feedback_type: Feedback.feedback_types['compliment']}).count
     }, status: :ok
   end
 
@@ -52,7 +52,7 @@ class AdminFeedbackController < ApplicationController
   # GET /admin/feedbacks/graph
   swagger_api :graph do
     summary "Get feedback info for graph"
-    param_list :query, :by, :string, :optional, "Data by", [:day, :week, :month, :year, :all]
+    param_list :query, :by, :string, :required, "Data by", [:day, :week, :month, :year, :all]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
   end
@@ -85,9 +85,9 @@ class AdminFeedbackController < ApplicationController
 
     feed = InboxMessage.joins(:feedback_message).where(
       created_at: dates_range
-    ).order("feedbacks.feedback_type, inbox_messages.created_at").to_a.group_by(
-      &:feedback_type
-    ).each_with_object({}) {
+    ).order("feedbacks.feedback_type, inbox_messages.created_at").to_a.group_by{ |e|
+      e.feedback_message.feedback_type
+    }.each_with_object({}) {
       |(k, v), h| h[k] = v.group_by{ |e| e.created_at.strftime(GraphHelper.type_str(params[:by])) }
     }.each { |(k, h)|
       h.each { |m, v|
