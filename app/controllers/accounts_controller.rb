@@ -701,7 +701,13 @@ class AccountsController < ApplicationController
                 @venue.update(venue_params)
                 params.each do |param|
                     if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
+                        action = AccountUpdate.new(
+                          action: :update,
+                          updated_by: @account.id,
+                          account_id: @account.id,
+                          field: param,
+                          value: params[param]
+                        )
                         action.save
                         feed = FeedItem.new(account_update_id: action.id)
                         feed.save
@@ -819,7 +825,13 @@ class AccountsController < ApplicationController
                 @artist.update(artist_params)
                 params.each do |param|
                     if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
+                        action = AccountUpdate.new(
+                          action: :update,
+                          updated_by: @account.id,
+                          account_id: @account.id,
+                          field: param,
+                          value: params[param]
+                        )
                         action.save
                         feed = FeedItem.new(account_update_id: action.id)
                         feed.save

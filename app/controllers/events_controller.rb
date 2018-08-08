@@ -429,7 +429,13 @@ class EventsController < ApplicationController
     def log_update
       params.each do |param|
         if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
-          action = EventUpdate.new(action: :update, updated_by: @account.id, event_id: @event.id, field: param)
+          action = EventUpdate.new(
+            action: :update,
+            updated_by: @account.id,
+            event_id: @event.id,
+            field: param,
+            value: params[param]
+          )
           action.save
           feed = FeedItem.new(event_update_id: action.id)
           feed.save
