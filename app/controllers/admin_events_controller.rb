@@ -227,9 +227,12 @@ class AdminEventsController < ApplicationController
     @event = Event.find(params[:id])
 
     if @event and ['just_added'].include?(@event.status)
-      @event.update(is_viewed: true)
+      if @event.update(is_viewed: true)
+        render status: :ok
+      else
+        render json: @event.errors, status: :unprocessable_entity
+      end
     end
-    render status: :ok
   end
 
   # POST admin/events/<id>/approve
