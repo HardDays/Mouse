@@ -65,7 +65,7 @@ class AdminController < ApplicationController
       user = User.new(user_params)
       user.is_admin = true
       unless user.save
-        render json: @user.errors, status: :unprocessable_entity and return
+        render json: user.errors, status: :unprocessable_entity and return
       end
 
       @admin = Admin.new(admin_params)
