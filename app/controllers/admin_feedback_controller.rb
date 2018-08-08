@@ -130,7 +130,7 @@ class AdminFeedbackController < ApplicationController
 
     feedback_reply = InboxMessage.new(
       subject: "Admin's reply to your feedback",
-      message_type: "blank",
+      message_type: "feedback",
       message: params[:message]
     )
     feedback_reply.admin = @admin

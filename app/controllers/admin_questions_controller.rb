@@ -45,7 +45,7 @@ class AdminQuestionsController < ApplicationController
 
     question_reply = InboxMessage.new(
       subject: params[:subject],
-      message_type: "blank",
+      message_type: "support",
       message: params[:message]
     )
     question_reply.admin = @admin
