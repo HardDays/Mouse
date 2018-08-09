@@ -65,10 +65,13 @@ class Account < ApplicationRecord
 
 				if fan
 					attrs[:full_name] = "#{fan.first_name} #{fan.last_name}"
+					attrs[:address] = fan.address
 				elsif artist
 					attrs[:full_name] = "#{artist.first_name} #{artist.last_name}"
+					attrs[:address] = artist.preferred_address
 				elsif venue
 					attrs[:full_name] = display_name
+					attrs[:address] = venue.address
 				end
 
 				return attrs

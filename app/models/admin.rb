@@ -14,10 +14,14 @@ class Admin < ApplicationRecord
     res = super
 
     if options[:for_message]
-      res[:image_id] = image_id
-      res[:user_name] = user_name
-      res[:account_type] = 'admin'
-      res[:full_name] = "#{first_name} #{last_name}"
+      attrs = {}
+      attrs[:image_id] = image_id
+      attrs[:user_name] = user_name
+      attrs[:account_type] = 'admin'
+      attrs[:full_name] = "#{first_name} #{last_name}"
+      attrs[:address] = address
+
+      return attrs
     end
 
     return res
