@@ -55,7 +55,7 @@ class AdminAccountsController < ApplicationController
     accounts = Account.all.order(:status => :asc, :created_at => :desc)
 
     if params[:text]
-      accounts = accounts.where("events.name ILIKE :query", query: "%#{params[:text]}%")
+      accounts = accounts.where("accounts.name ILIKE :query", query: "%#{params[:text]}%")
     end
 
     if params[:account_type] != 'all'
@@ -86,7 +86,7 @@ class AdminAccountsController < ApplicationController
     accounts = Account.all.order(:created_at => :desc)
 
     if params[:text]
-      accounts = accounts.where("events.name ILIKE :query", query: "%#{params[:text]}%")
+      accounts = accounts.where("accounts.name ILIKE :query", query: "%#{params[:text]}%")
     end
 
     if params[:account_type] != 'all'
