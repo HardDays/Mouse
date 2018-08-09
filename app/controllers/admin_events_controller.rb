@@ -227,7 +227,7 @@ class AdminEventsController < ApplicationController
   def view
     @event = Event.find(params[:id])
 
-    if @event and ['just_added'].include?(@event.status)
+    if @event
       if @event.update(is_viewed: true)
         render status: :ok
       else
