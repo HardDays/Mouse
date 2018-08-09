@@ -191,13 +191,13 @@ class AdminRevenueController < ApplicationController
   def filter_and_count(entity, type, by, sum)
     if by
       if by == 'day'
-        entity.where(created_at: DateTime.now)
+        entity = entity.where(created_at: DateTime.now)
       elsif by == 'week'
-        entity.where(created_at: 1.week.ago..DateTime.now)
+        entity = entity.where(created_at: 1.week.ago..DateTime.now)
       elsif by == 'month'
-        entity.where(created_at: 1.month.ago..DateTime.now)
+        entity = entity.where(created_at: 1.month.ago..DateTime.now)
       elsif by == 'year'
-        entity.where(created_at: 1.year.ago..DateTime.now)
+        entity = entity.where(created_at: 1.year.ago..DateTime.now)
       end
     end
     entity = entity.sum(sum)

@@ -1,4 +1,5 @@
 class FanTicket < ApplicationRecord
+  validates_presence_of :price
   enum currency: CurrencyHelper.all
 
   belongs_to :account
