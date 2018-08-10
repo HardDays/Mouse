@@ -55,7 +55,9 @@ class AdminAccountsController < ApplicationController
     accounts = Account.all.order(:status => :asc, :created_at => :desc)
 
     if params[:text]
-      accounts = accounts.where("accounts.display_name ILIKE :query", query: "%#{params[:text]}%")
+      accounts = accounts.left_joins(:fan).where(
+        "(accounts.display_name ILIKE :query OR fans.first_name ILIKE :query OR fans.last_name ILIKE :query)",
+        query: "%#{params[:text]}%")
     end
 
     if params[:account_type] != 'all'
