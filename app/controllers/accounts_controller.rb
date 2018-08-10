@@ -598,7 +598,7 @@ class AccountsController < ApplicationController
     end
 
     def authorize_account
-      @account = AuthorizeHelper.auth_and_set_account(request)
+      @account = AuthorizeHelper.auth_and_set_account(request, params[:id])
 
       if @account == nil
         render json: {error: "Access forbidden"}, status: :forbidden and return
