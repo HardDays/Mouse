@@ -68,6 +68,8 @@ class QuestionsController < ApplicationController
 
     if @reply.save
       @question.reply = @reply
+      @question.save
+
       render json: @question, extended: true, status: :created
     else
       render json: @reply.errors, status: :unprocessable_entity
