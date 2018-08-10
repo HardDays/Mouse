@@ -4,6 +4,13 @@ class AcceptMessage < ApplicationRecord
   belongs_to :inbox_message, dependent: :destroy
   belongs_to :event
 
+  after_destroy :destroy_inbox_message
+
+  def destroy_inbox_message
+    return unless inbox_message
+    inbox_message.destroy unless inbox_message.destroyed?
+  end
+
 
   def as_json(options={})
     res = super

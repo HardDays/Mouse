@@ -7,6 +7,13 @@ class RequestMessage < ApplicationRecord
   belongs_to :artist_event, optional: true
   belongs_to :venue_event, optional: true
 
+  after_destroy :destroy_inbox_message
+
+  def destroy_inbox_message
+    return unless inbox_message
+    inbox_message.destroy unless inbox_message.destroyed?
+  end
+
   def as_json(options={})
     res = super
     res.delete('id')
