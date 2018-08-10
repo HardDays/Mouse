@@ -42,6 +42,7 @@ class InboxMessage < ApplicationRecord
     elsif decline_message
       res[:message_info] = decline_message
     elsif feedback_message
+      res[:rate_score] = feedback_message.rate_score
       res[:message_info] = feedback_message
     end
 
