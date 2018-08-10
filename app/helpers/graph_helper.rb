@@ -22,11 +22,11 @@ class GraphHelper
     if type == 'day'
       return DateTime.now.beginning_of_day.to_i..DateTime.now.end_of_day.to_i
     elsif type == 'week'
-      return DateTime.now.beginning_of_week.to_i..DateTime.now.end_of_week.to_i
+      return (DateTime.now - 1.week).to_i..DateTime.now.to_i
     elsif type == 'month'
-      return DateTime.now.beginning_of_month.to_i..DateTime.now.end_of_month.to_i
+      return (DateTime.now - 1.month).to_i..DateTime.now.to_i
     elsif type == 'year'
-      return DateTime.now.beginning_of_year.to_i..DateTime.now.end_of_year.to_i
+      return (DateTime.now - 1.year).to_i..DateTime.now.to_i
     end
   end
 
@@ -34,11 +34,11 @@ class GraphHelper
     if type == 'day'
       return DateTime.now.beginning_of_day..DateTime.now.end_of_day
     elsif type == 'week'
-      return DateTime.now.beginning_of_week..DateTime.now.end_of_week
+      return (DateTime.now - 1.week)..DateTime.now
     elsif type == 'month'
-      return DateTime.now.beginning_of_month..DateTime.now.end_of_month
+      return (DateTime.now - 1.month)..DateTime.now
     elsif type == 'year'
-      return DateTime.now.beginning_of_year..DateTime.now.end_of_year
+      return (DateTime.now - 1.year)..DateTime.now
     end
   end
 
