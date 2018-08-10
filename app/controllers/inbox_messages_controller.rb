@@ -18,9 +18,9 @@ class InboxMessagesController < ApplicationController
       query_now: DateTime.now, query_tomorrow: DateTime.now + 1.day
     )
 
-    messages = InboxMessage.where(sender_id: @account.id, is_parent: true).or(
+    messages = InboxMessage.where(receiver_id: @account.id, is_parent: true).or(
       InboxMessage.where(
-        receiver_id: @account.id,
+        sender_id: @account.id,
         message_type: [InboxMessage.message_types['support'], InboxMessage.message_types['feedback']],
         is_parent: true)
     )
