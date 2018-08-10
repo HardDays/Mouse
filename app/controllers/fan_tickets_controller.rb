@@ -197,6 +197,12 @@ class FanTicketsController < ApplicationController
   def create
     if @ticket.event.status == "active"
       @fan_ticket = FanTicket.new(fan_ticket_params)
+
+      # TODO: временный фикс, пока фронт не начнет передавать нормально, или перестанет вообще это юзать
+      unless @fan_ticket.price
+        @fan_ticket.price = @ticket.price
+        @fan_ticket.currency = @ticket.currency
+      end
       @fan_ticket.code = generate_auth_code
 
       if @fan_ticket.save
