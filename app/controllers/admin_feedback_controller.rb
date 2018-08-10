@@ -29,7 +29,9 @@ class AdminFeedbackController < ApplicationController
     response :ok
   end
   def overall
-    feedback = InboxMessage.joins(:feedback_message).pluck('sum(feedbacks.rate_score), count(feedbacks.id)').first
+    feedback = InboxMessage.joins(:feedback_message).where(
+      inbox_messages: {is_parent: true}
+    ).pluck('sum(feedbacks.rate_score), count(feedbacks.id)').first
 
     render json: feedback[0] / feedback[1], status: :ok
   end
@@ -131,7 +133,8 @@ class AdminFeedbackController < ApplicationController
     feedback_reply = InboxMessage.new(
       subject: "Admin's reply to your feedback",
       message_type: "feedback",
-      message: params[:message]
+      message: params[:message],
+      is_parent: false
     )
     feedback_reply.admin = @admin
     feedback_reply.receiver = feedback.sender

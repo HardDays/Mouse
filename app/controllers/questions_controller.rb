@@ -11,7 +11,7 @@ class QuestionsController < ApplicationController
     response :ok
   end
   def index
-    @questions = InboxMessage.where(message_type: 'support', reply: nil)
+    @questions = InboxMessage.where(message_type: 'support', is_parent: true)
 
     render json: @questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -63,6 +63,7 @@ class QuestionsController < ApplicationController
   def reply
     @reply = InboxMessage.new(question_params)
     @reply.sender_id = @account.id
+    @reply.is_parent = false
     @reply.message_type = 'support'
 
     if @reply.save

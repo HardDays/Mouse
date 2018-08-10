@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180808085247) do
+ActiveRecord::Schema.define(version: 20180810112402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -340,16 +340,6 @@ ActiveRecord::Schema.define(version: 20180808085247) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "history_actions", force: :cascade do |t|
-    t.integer "action"
-    t.integer "object_type"
-    t.integer "field"
-    t.integer "object_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "account_id"
-  end
-
   create_table "image_types", force: :cascade do |t|
     t.integer "image_id"
     t.integer "image_type"
@@ -378,6 +368,7 @@ ActiveRecord::Schema.define(version: 20180808085247) do
     t.string "message"
     t.integer "admin_id"
     t.integer "message_id"
+    t.boolean "is_parent", default: true
   end
 
   create_table "likes", force: :cascade do |t|
@@ -462,7 +453,6 @@ ActiveRecord::Schema.define(version: 20180808085247) do
     t.integer "inbox_message_id"
     t.integer "event_id"
     t.datetime "expiration_date"
-    t.integer "remain_time"
     t.integer "time_frame_range", default: 0
     t.integer "time_frame_number", default: 0
     t.integer "currency", default: 0
