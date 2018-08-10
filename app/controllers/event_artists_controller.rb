@@ -410,7 +410,7 @@ class EventArtistsController < ApplicationController
       @accept_message = AcceptMessage.new(accept_message_params)
       @accept_message.save
 
-      inbox_message = InboxMessage.new(name: "#{account.user_name} accepted #{@event.name} invitation", message_type: "accept")
+      inbox_message = InboxMessage.new(subject: "#{account.user_name} accepted #{@event.name} invitation", message_type: "accept")
       inbox_message.accept_message = @accept_message
 
       @event.accept_messages << @accept_message
