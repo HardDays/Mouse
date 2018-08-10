@@ -312,7 +312,7 @@ class EventsController < ApplicationController
       end
 
       @creator = Event.find(params[:id]).creator
-      render status: :unauthorized if @creator != @account or @creator.user != @user
+      render status: :unauthorized if @creator != @account
     end
 
     def set_image
