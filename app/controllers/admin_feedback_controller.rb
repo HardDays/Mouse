@@ -18,8 +18,7 @@ class AdminFeedbackController < ApplicationController
       feedback = feedback.where(feedbacks: {feedback_type: params[:feedback_type]})
     end
 
-    render json: feedback.limit(params[:limit]).offset(params[:offset]),
-           each_serializer: SimpleFeedbackSerializer, status: :ok
+    render json: feedback.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
 
   # GET /admin/feedbacks/overall
