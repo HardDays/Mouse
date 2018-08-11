@@ -187,8 +187,6 @@ class FanTicketsController < ApplicationController
     summary "Buy ticket"
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
-    param :form, :price, :integer, :required, "Ticket price"
-    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -199,10 +197,10 @@ class FanTicketsController < ApplicationController
       @fan_ticket = FanTicket.new(fan_ticket_params)
 
       # TODO: временный фикс, пока фронт не начнет передавать нормально, или перестанет вообще это юзать
-      unless @fan_ticket.price
-        @fan_ticket.price = @ticket.price
-        @fan_ticket.currency = @ticket.currency
-      end
+      #unless @fan_ticket.price
+      @fan_ticket.price = @ticket.price
+      @fan_ticket.currency = @ticket.currency
+      #end
       @fan_ticket.code = generate_auth_code
 
       if @fan_ticket.save
@@ -384,7 +382,7 @@ class FanTicketsController < ApplicationController
     end
 
     def fan_ticket_params
-      params.permit(:ticket_id, :account_id, :price, :currency)
+      params.permit(:ticket_id, :account_id)
     end
 
     def authorize_account

@@ -46,7 +46,7 @@ class AdminRevenueController < ApplicationController
   def cities
     cities = FanTicket.select(
       "fans.address, sum(fan_tickets.price) as price"
-    ).joins(account: :fan).group("fans.address").order('price')
+    ).joins(account: :fan).where('fan_tickets.price is not NULL').group("fans.address").order('price')
     render json: {
       total: FanTicket.sum(:price),
       cities: cities.as_json(only: [:address, :price])

@@ -58,9 +58,9 @@ class Artist < ApplicationRecord
             return res
         else
             attrs = account.get_attrs
-          attrs[:first_name] = first_name
-          attrs[:last_name] = last_name
-          return attrs
+            attrs[:first_name] = first_name
+            attrs[:last_name] = last_name
+            return attrs
         end
     end
 end
