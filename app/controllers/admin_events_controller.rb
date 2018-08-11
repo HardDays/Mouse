@@ -20,21 +20,27 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def new_status
-    success = Event.left_joins(:tickets => :fan_tickets).where(
-      "events.funding_to <= :query", query: DateTime.now
+    success_crowd = Event.left_joins(tickets: :fan_tickets).where(
+      "events.funding_to is not NULL and events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
-      "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
+      "sum(fan_tickets.price) >= events.funding_goal")
+    success_not_crowd = Event.where('funding_to is NULL AND date_to <= :date_to', date_to: DateTime.now)  
+    success = (success_crowd + success_not_crowd).uniq{|e| e.id}
 
-    failed = Event.left_joins(:tickets => :fan_tickets).where(
+    failed_crowd = Event.left_joins(tickets: :fan_tickets).where(
       "events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
       "sum(fan_tickets.price) < events.funding_goal").pluck("COUNT(events.id)")[0].to_i
 
+    pending_crowd = Event.where("events.funding_to is not NULL AND events.funding_to > :query", query: DateTime.now).count
+    pending_not_crowd = Event.where('funding_to is NULL AND date_to > :date_to', date_to: DateTime.now)
+    success = (pending_crowd + pending_not_crowd).uniq{|e| e.id}
+
     render json: {
       all: Event.count,
-      pending: Event.where("events.funding_to > :query", query: DateTime.now).count,
-      successful: success,
-      failed: failed,
+      pending: pending.count,
+      successful: success.count,
+      failed: failed_crowd,
     }, status: :ok
   end
 
@@ -45,15 +51,15 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def counts
-    success = Event.left_joins(:tickets => :fan_tickets).where(
+    success = Event.left_joins(tickets: :fan_tickets).where(
       "events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
       "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
 
-    failed = Event.left_joins(:tickets => :fan_tickets).where(
+    failed = Event.left_joins(tickets: :fan_tickets).where(
       "events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
-      "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
+      "sum(fan_tickets.price) < events.funding_goal").pluck("COUNT(events.id)")[0].to_i
 
     render json: {
       all: Event.count,
