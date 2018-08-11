@@ -33,7 +33,7 @@ class AdminEventsController < ApplicationController
       "sum(fan_tickets.price) < events.funding_goal").pluck("COUNT(events.id)")[0].to_i
 
     pending_crowd = Event.where("events.funding_to is not NULL AND events.funding_to > :query", query: DateTime.now)
-    pending_not_crowd = Event.where('funding_to is NULL AND date_to > :date_to', date_to: DateTime.now)
+    pending_not_crowd = Event.where('funding_to is NULL AND (date_to > :date_to OR date_to is NULL)', date_to: DateTime.now)
     pending = (pending_crowd.to_a + pending_not_crowd.to_a).uniq{|e| e.id}
 
     render json: {
