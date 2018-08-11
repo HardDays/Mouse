@@ -28,7 +28,7 @@ class AdminEventsController < ApplicationController
     failed = Event.left_joins(:tickets => :fan_tickets).where(
       "events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
-      "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
+      "sum(fan_tickets.price) < events.funding_goal").pluck("COUNT(events.id)")[0].to_i
 
     render json: {
       all: Event.count,
