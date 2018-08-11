@@ -34,7 +34,7 @@ class AdminEventsController < ApplicationController
 
     pending_crowd = Event.where("events.funding_to is not NULL AND events.funding_to > :query", query: DateTime.now)
     pending_not_crowd = Event.where('funding_to is NULL AND date_to > :date_to', date_to: DateTime.now)
-    success = (pending_crowd.to_a + pending_not_crowd.to_a).uniq{|e| e.id}
+    pending = (pending_crowd.to_a + pending_not_crowd.to_a).uniq{|e| e.id}
 
     render json: {
       all: Event.count,
