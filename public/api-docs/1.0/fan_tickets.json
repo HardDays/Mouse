@@ -297,21 +297,6 @@
               "required": true
             },
             {
-              "paramType": "form",
-              "name": "currency",
-              "type": "integer",
-              "description": "Preferred currency format",
-              "required": true,
-              "allowableValues": {
-                "valueType": "LIST",
-                "values": [
-                  "RUB",
-                  "USD",
-                  "EUR"
-                ]
-              }
-            },
-            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",
