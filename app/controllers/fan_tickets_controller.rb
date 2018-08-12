@@ -2,7 +2,7 @@ require 'paypal-sdk-rest'
 include PayPal::SDK::REST
 
 class FanTicketsController < ApplicationController
-  before_action :authorize_account, only: [:create, :create_many, :start_purchase, :destroy]
+  before_action :authorize_account, only: [:create, :create_many, :start_purchase, :destroy, :by_event, :show]
   before_action :set_ticket, only: [:create, :create_many, :start_purchase]
   before_action :check_ticket, only: [:create, :create_many, :start_purchase]
   before_action :set_fan_ticket, only: [:show, :destroy]
@@ -387,7 +387,6 @@ class FanTicketsController < ApplicationController
 
     def authorize_account
       @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
-
       if @account == nil or @account.account_type != 'fan'
         render json: {error: "Access forbidden"}, status: :forbidden and return
       end

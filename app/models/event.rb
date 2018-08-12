@@ -71,6 +71,7 @@ class Event < ApplicationRecord
 
       return res
     end
+    
 
     res[:backers] = tickets.joins(:fan_tickets).pluck(:account_id).uniq.count
     res[:founded] = tickets.joins(:fan_tickets).sum("fan_tickets.price")

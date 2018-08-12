@@ -15,7 +15,6 @@ class AuthorizeHelper
   def self.auth_and_set_account(request, id)
     user = AuthorizeHelper.authorize(request)
     account = Account.find(id)
-
     if user == nil or account.user != user or account.is_deleted
       return nil
     else
