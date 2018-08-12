@@ -702,7 +702,7 @@ class AccountsController < ApplicationController
                 @venue = @account.venue
                 @venue.update(venue_params)
                 params.each do |param|
-                    if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
+                    if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(
                           action: :update,
                           updated_by: @account.id,
@@ -826,7 +826,7 @@ class AccountsController < ApplicationController
                 @artist = @account.artist
                 @artist.update(artist_params)
                 params.each do |param|
-                    if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
+                    if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(
                           action: :update,
                           updated_by: @account.id,
