@@ -219,7 +219,6 @@ class FanTicketsController < ApplicationController
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
     param :form, :count, :integer, :required, "Count of tickets"
-    param :form, :price, :integer, :required, "Ticket price"
     param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
@@ -235,6 +234,8 @@ class FanTicketsController < ApplicationController
       while cnt < count do
         @fan_ticket = FanTicket.new(fan_ticket_params)
         @fan_ticket.code = code
+        @fan_ticket.price = @ticket.price
+        @fan_ticket.currency = @ticket.currency
 
         cnt += 1
         if @fan_ticket.save

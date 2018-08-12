@@ -52,6 +52,9 @@ Rails.application.configure do
   VkontakteApi.configure do |config|
     config.api_version = '5.73'
   end
+
+  Geocoder.configure(language: :en)
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
