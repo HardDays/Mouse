@@ -13,6 +13,17 @@ class ImagesController < ApplicationController
     render json: @image
   end
 
+  # GET /images/1
+  swagger_api :info do
+    summary "Get image info object"
+    param :path, :id, :integer, :required, "Image id"
+    response :not_found
+  end
+  def info
+    @image = Image.find(params[:id]).pluck(:id, :account_id, :created_at, :updated_at, :event_id, :description, :type, :type_decs)
+    render json: @image
+  end
+
   swagger_api :full do
     summary "Get full image"
     param :path, :id, :integer, :required, "Image id"
@@ -45,6 +56,7 @@ class ImagesController < ApplicationController
     }
     render json: hashed
   end
+  
 
   swagger_api :preview do
     summary "Get preview of image object"

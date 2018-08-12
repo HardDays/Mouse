@@ -123,6 +123,32 @@
       ]
     },
     {
+      "path": "/images/{id}/info.json",
+      "operations": [
+        {
+          "summary": "Get image info object",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Image id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Images#info",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/images/{id}.json",
       "operations": [
         {
