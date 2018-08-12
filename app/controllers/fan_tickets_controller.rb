@@ -60,7 +60,7 @@ class FanTicketsController < ApplicationController
     response :not_found
   end
   def show
-    render json: @fan_ticket, status: :ok
+    render json: @fan_ticket, user: @user, status: :ok
   end
 
   # POST /fan_tickets/start_purchase
@@ -282,7 +282,7 @@ class FanTicketsController < ApplicationController
     search_date
 
     @events = @events.group("events.id")
-    render json: @events.limit(params[:limit]).offset(params[:offset]), fan_ticket: true, account_id: params[:account_id], status: :ok
+    render json: @events.limit(params[:limit]).offset(params[:offset]), fan_ticket: true, account_id: params[:account_id], user: @user, status: :ok
   end
 
   # DELETE /fan_tickets/1
