@@ -4,11 +4,11 @@ class AdminEventRevenueSerializer < ActiveModel::Serializer
 
   def owner
     if object.creator
-      if object.creator.fan
+      if object.creator.fan and object.fan
         return "#{object.creator.fan.first_name} #{object.creator.fan.last_name}"
-      elsif object.creator.artist
+      elsif object.creator.artist and object.artist
         return "#{object.creator.artist.first_name} #{object.creator.artist.last_name}"
-      elsif object.creator.venue
+      elsif object.creator.venue and object.venue
         return object.creator.display_name
       end
     else
