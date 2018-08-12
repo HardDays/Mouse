@@ -20,8 +20,8 @@ class ImagesController < ApplicationController
     response :not_found
   end
   def info
-    @image = Image.pluck(:id, :account_id, :created_at, :updated_at, :event_id, :description, :type, :type_decs).find(params[:id])
-    render json: @image
+    @image = Image.where(id: params[:id]).select('id, account_id, created_at, updated_at, event_id, description')
+    render json: @image, image_only: true
   end
 
   swagger_api :full do
