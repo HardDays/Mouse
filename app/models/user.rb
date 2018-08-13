@@ -34,6 +34,9 @@ class User < ApplicationRecord
 	def check_old
 		if self.old_password != nil
 			errors.add(:old_password, 'NOT_MACHED') if User.find(id).password != User.encrypt_password(self.old_password)
+			#  TODO: check needeness
+			# else
+		# 	errors.add(:old_password, 'MUST_EXIST')
 		end
 	end
 

@@ -84,7 +84,7 @@ class AccountsController < ApplicationController
 
        accounts = @user.accounts.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
                                                            {:public => Venue.venue_types['public_venue']})
-       render json: accounts.order('accounts.user_name'), extended: @extended, status: :ok
+       render json: accounts.order('accounts.account_type DESC, accounts.user_name ASC'), extended: @extended, status: :ok
     end
 
     # GET /accounts/images/<id>

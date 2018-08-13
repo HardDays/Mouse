@@ -161,6 +161,7 @@ class EventVenuesController < ApplicationController
       end
 
       @venue_event.status = 'owner_declined'
+      @venue_event.is_active = false
       send_owner_decline(@venue_event.account)
       @venue_event.save
 
@@ -222,6 +223,7 @@ class EventVenuesController < ApplicationController
     if @venue_event and ["request_send"].include?(@venue_event.status)
       read_message
       @venue_event.status = 'declined'
+      @venue_event.is_active = false
       send_decline(@account)
       @venue_event.save
 
@@ -263,7 +265,7 @@ class EventVenuesController < ApplicationController
       new_message.request_message = message.request_message.dup
       new_message.request_message.time_frame_range = params[:time_frame_range]
       new_message.request_message.time_frame_number = params[:time_frame_number]
-      new_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
+      new_message.request_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
 
       if new_message.save!
         event_venue.status = 'request_send'
@@ -538,7 +540,7 @@ class EventVenuesController < ApplicationController
     @event.city_lat = @event.old_city_lat
     @event.city_lng = @event.old_city_lng
 
-    venue_acc = Account.find(@event.venue_id)
+    venue_acc = Account.find_by(venue_id: @event.venue_id)
     @event.venue_id = nil
     if venue_acc.venue.venue_type == 'private_residence'
       @event.has_private_venue = false
