@@ -35,6 +35,8 @@ class InboxMessage < ApplicationRecord
       res[:sender] = sender.as_json(for_message: true)
     end
 
+    res[:useeeee] = options[:user]
+
     if request_message
       res[:message_info] = request_message.as_json(user: options[:user])
     elsif accept_message
