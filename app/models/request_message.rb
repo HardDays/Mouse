@@ -21,7 +21,7 @@ class RequestMessage < ApplicationRecord
     res.delete('created_at')
     res.delete('updated_at')
 
-    res[:event_info] = event
+    res[:event_info] = event.as_json(user: options[:user])
       if expiration_date < DateTime.now
         res[:status] = 'time_expired'
       elsif expiration_date - 1.day <= DateTime.now

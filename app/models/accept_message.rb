@@ -17,7 +17,7 @@ class AcceptMessage < ApplicationRecord
     res.delete('id')
     res.delete('event_id')
 
-    res[:event_info] = event
+    res[:event_info] = event.as_json(user: options[:user])
     return res
   end
 end

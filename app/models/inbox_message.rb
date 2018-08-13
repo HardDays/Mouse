@@ -36,14 +36,14 @@ class InboxMessage < ApplicationRecord
     end
 
     if request_message
-      res[:message_info] = request_message
+      res[:message_info] = request_message.as_json(user: options[:user])
     elsif accept_message
-      res[:message_info] = accept_message
+      res[:message_info] = accept_message.as_json(user: options[:user])
     elsif decline_message
-      res[:message_info] = decline_message
+      res[:message_info] = decline_message.as_json(user: options[:user])
     elsif feedback_message
       res[:rate_score] = feedback_message.rate_score
-      res[:message_info] = feedback_message
+      res[:message_info] = feedback_message.as_json(user: options[:user])
     end
 
     return res
