@@ -21,6 +21,10 @@ class RequestMessage < ApplicationRecord
     res.delete('created_at')
     res.delete('updated_at')
 
+    if options[:user]
+      res[:converted_price] = CurrencyHelper.convert(price, currency, options[:user].preferred_currency) if price != nil
+    end
+
     res[:event_info] = event.as_json(user: options[:user])
       if expiration_date < DateTime.now
         res[:status] = 'time_expired'

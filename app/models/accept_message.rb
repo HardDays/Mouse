@@ -17,6 +17,10 @@ class AcceptMessage < ApplicationRecord
     res.delete('id')
     res.delete('event_id')
 
+    if options[:user]
+      res[:converted_price] = CurrencyHelper.convert(price, currency, options[:user].preferred_currency) if price != nil
+    end
+    
     res[:event_info] = event.as_json(user: options[:user])
     return res
   end
