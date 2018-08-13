@@ -2,11 +2,11 @@ class AdminAccountBankingSerializer < ActiveModel::Serializer
   attributes :id, :account_type, :user_name, :status, :address, :first_name, :last_name, :banking
 
   def address
-    if object.account_type == 'artist'
+    if object.account_type == 'artist' and object.artist
       return object.artist.preferred_address
-    elsif object.account_type == 'fan'
+    elsif object.account_type == 'fan' and object.fan
       return object.fan.address
-    elsif object.account_type == 'venue'
+    elsif object.account_type == 'venue' and object.venue
       return object.venue.address
     end
   end
