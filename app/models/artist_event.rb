@@ -39,36 +39,41 @@ class ArtistEvent < ApplicationRecord
     res[:artist] = account.artist.as_json(for_event: true) if account
 
     res[:approximate_price] = nil
-    unless account.artist.is_hide_pricing_from_search
-      res[:approximate_price] = account.artist.price_from.to_i * event.event_length.to_i
+
+    if account
+      unless account.artist.is_hide_pricing_from_search
+        res[:approximate_price] = account.artist.price_from.to_i * event.event_length.to_i
+      end
     end
 
     if ['owner_accepted'].include?(status)
       res[:agreement] = agreed_date_time_and_price
     end
 
-    if status == 'accepted'
-      message = account.sent_messages.joins(:accept_message).where(accept_messages: {event: event}).first
-      if message
-        res['message_id'] = message.id
-      end
-    elsif status == 'declined'
-      message = account.sent_messages.joins(:decline_message).where(decline_messages: {event: event}).first
-      if message
-        res['reason'] = message.decline_message.reason
-        res['reason_text'] = message.decline_message.additional_text
-      end
-    elsif status == 'owner_declined'
-      message = event.creator.sent_messages.joins(:decline_message).where(receiver_id: artist_id, decline_messages: {event: event}).first
-      if message
-        res['reason'] = message.decline_message.reason
-        res['reason_text'] = message.decline_message.additional_text
-        end
-    elsif status == 'request_send'
-        message = event.creator.sent_messages.joins(:request_message).where(receiver_id: artist_id, request_messages: {event: event}).first
+    if account
+      if status == 'accepted'
+        message = account.sent_messages.joins(:accept_message).where(accept_messages: {event: event}).first
         if message
-          res['price'] = message.request_message.estimated_price
+          res['message_id'] = message.id
         end
+      elsif status == 'declined'
+        message = account.sent_messages.joins(:decline_message).where(decline_messages: {event: event}).first
+        if message
+          res['reason'] = message.decline_message.reason
+          res['reason_text'] = message.decline_message.additional_text
+        end
+      elsif status == 'owner_declined'
+        message = event.creator.sent_messages.joins(:decline_message).where(receiver_id: artist_id, decline_messages: {event: event}).first
+        if message
+          res['reason'] = message.decline_message.reason
+          res['reason_text'] = message.decline_message.additional_text
+          end
+      elsif status == 'request_send'
+          message = event.creator.sent_messages.joins(:request_message).where(receiver_id: artist_id, request_messages: {event: event}).first
+          if message
+            res['price'] = message.request_message.estimated_price
+          end
+      end
     end
 
     return res
