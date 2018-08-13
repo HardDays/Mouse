@@ -54,7 +54,7 @@ class InboxMessagesController < ApplicationController
   end
   def show
     if @message.receiver_id == params[:account_id].to_i or @message.sender_id == params[:account_id].to_i
-      render json: @message, extended: true, status: :ok
+      render json: @message, user: @user, extended: true, status: :ok
     else
       render status: :not_found
     end

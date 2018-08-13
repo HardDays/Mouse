@@ -16,7 +16,7 @@ class TicketsController < ApplicationController
     response :not_found
   end
   def show
-    render json: @ticket, status: :ok
+    render json: @ticket, user: @user, status: :ok
   end
 
   # POST events/1/tickets
@@ -55,7 +55,7 @@ class TicketsController < ApplicationController
       )
       action.save
       
-      render json: @ticket, status: :created
+      render json: @ticket, user: @user, status: :created
     else
       render json: @ticket.errors, status: :unprocessable_entity
     end
@@ -88,7 +88,7 @@ class TicketsController < ApplicationController
       set_type
       change_event_tickets
 
-      render json: @ticket, status: :ok
+      render json: @ticket, user: @user, status: :ok
     else
       render json: @ticket.errors, status: :unprocessable_entity
     end

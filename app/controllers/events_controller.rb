@@ -130,7 +130,7 @@ class EventsController < ApplicationController
     if not forbidden and @event.update(event_params)
 
       log_update
-      render json: @event, extended: true, status: :ok
+      render json: @event, extended: true, user: @user, status: :ok
     else
       render json: @event.errors, status: (forbidden ? forbidden : :unprocessable_entity)
     end
