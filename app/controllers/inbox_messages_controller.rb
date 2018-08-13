@@ -39,9 +39,9 @@ class InboxMessagesController < ApplicationController
     end
     messages = messages.order(:created_at => :desc).limit(limit).offset(offset)
 
-    res = (top_messages + messages).collect{|m| m.as_json(user: @user)}
+    #res = (top_messages + messages).collect{|m| m.as_json(user: @user)}
 
-    render json: res, user: @user, status: :ok
+    render json: (top_messages + messages), user: @user, status: :ok
   end
 
   # GET account/1/inbox_messages/1
@@ -125,6 +125,7 @@ class InboxMessagesController < ApplicationController
 
     def authorize_account
       @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+      @user = @account.user
 
       if @account == nil
         render json: {error: "Access forbidden"}, status: :forbidden and return
