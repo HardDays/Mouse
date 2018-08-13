@@ -39,7 +39,9 @@ class InboxMessagesController < ApplicationController
     end
     messages = messages.order(:created_at => :desc).limit(limit).offset(offset)
 
-    render json: (top_messages + messages), user: @user, status: :ok
+    res = (top_messages + messages).collect{|m| m.as_json(user: @user)}
+
+    render json: res, user: @user, status: :ok
   end
 
   # GET account/1/inbox_messages/1
