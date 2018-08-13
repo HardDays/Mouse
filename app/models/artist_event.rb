@@ -36,7 +36,7 @@ class ArtistEvent < ApplicationRecord
     res.delete('id')
     res.delete('event_id')
 
-    res[:artist] = account.artist.as_json(for_event: true)
+    res[:artist] = account.artist.as_json(for_event: true) if account.artist
 
     res[:approximate_price] = nil
     unless account.artist.is_hide_pricing_from_search
