@@ -702,7 +702,7 @@ class AccountsController < ApplicationController
                 @venue = @account.venue
                 @venue.update(venue_params)
                 params.each do |param|
-                    if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
+                    if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(
                           action: :update,
                           updated_by: @account.id,
@@ -714,6 +714,18 @@ class AccountsController < ApplicationController
                         feed = FeedItem.new(account_update_id: action.id)
                         feed.save
                     end
+                end
+                if params[:image_base64]
+                  action = AccountUpdate.new(
+                    action: :update,
+                    updated_by: @account.id,
+                    account_id: @account.id,
+                    field: :image_base64,
+                    value: @account.image.id
+                  )
+                  action.save
+                  feed = FeedItem.new(account_update_id: action.id)
+                  feed.save
                 end
             else
                 @venue = Venue.new(venue_params)
@@ -826,7 +838,7 @@ class AccountsController < ApplicationController
                 @artist = @account.artist
                 @artist.update(artist_params)
                 params.each do |param|
-                    if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
+                    if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(
                           action: :update,
                           updated_by: @account.id,
@@ -838,6 +850,18 @@ class AccountsController < ApplicationController
                         feed = FeedItem.new(account_update_id: action.id)
                         feed.save
                     end
+                end
+                if params[:image_base64]
+                  action = AccountUpdate.new(
+                    action: :update,
+                    updated_by: @account.id,
+                    account_id: @account.id,
+                    field: :image_base64,
+                    value: @account.image.id
+                  )
+                  action.save
+                  feed = FeedItem.new(account_update_id: action.id)
+                  feed.save
                 end
             else
                 @artist = Artist.new(artist_params)
