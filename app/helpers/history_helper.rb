@@ -9,6 +9,6 @@ class HistoryHelper
     VENUE_FIELDS = [:name, :address, :phone, :has_vr, :user_name, :display_name]
     ARTIST_FIELDS = [:name, :about, :user_name, :display_name, :phone]
     # Enum to write in db
-    ACCOUNT_FIELDS = [:name, :address, :phone, :has_vr, :about, :user_name, :display_name, :image_base64]
+    ACCOUNT_FIELDS = [:name, :address, :phone, :has_vr, :about, :user_name, :display_name, :image, :gallery_image]
 
 end

@@ -638,6 +638,17 @@ class AccountsController < ApplicationController
         @account.images << image
 
         set_image_type(image)
+       
+        action = AccountUpdate.new(
+          action: :update,
+          updated_by: @account.id,
+          account_id: @account.id,
+          field: :gallery_image,
+          value: image.id
+        )
+        action.save
+        feed = FeedItem.new(account_update_id: action.id)
+        feed.save
       end
     end
 
@@ -650,6 +661,17 @@ class AccountsController < ApplicationController
         @account.images << image
 
         set_image_type(image)
+
+        action = AccountUpdate.new(
+          action: :update,
+          updated_by: @account.id,
+          account_id: @account.id,
+          field: :gallery_image,
+          value: image.id
+        )
+        action.save
+        feed = FeedItem.new(account_update_id: action.id)
+        feed.save
       end
     end
 
@@ -715,12 +737,12 @@ class AccountsController < ApplicationController
                         feed.save
                     end
                 end
-                if params[:image_base64]
+                if params[:image_base64] or params[:image]
                   action = AccountUpdate.new(
                     action: :update,
                     updated_by: @account.id,
                     account_id: @account.id,
-                    field: :image_base64,
+                    field: :image,
                     value: @account.image.id
                   )
                   action.save
@@ -851,12 +873,12 @@ class AccountsController < ApplicationController
                         feed.save
                     end
                 end
-                if params[:image_base64]
+                if params[:image_base64] or params[:image]
                   action = AccountUpdate.new(
                     action: :update,
                     updated_by: @account.id,
                     account_id: @account.id,
-                    field: :image_base64,
+                    field: :image,
                     value: @account.image.id
                   )
                   action.save
