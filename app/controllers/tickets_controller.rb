@@ -84,13 +84,17 @@ class TicketsController < ApplicationController
     response :not_found
   end
   def update
-    if @ticket.update(ticket_params) and allowed?
-      set_type
-      change_event_tickets
+    if allowed?
+      if @ticket.update(ticket_params)
+        set_type
+        change_event_tickets
 
-      render json: @ticket, user: @user, status: :ok
+        render json: @ticket, user: @user, status: :ok
+      else
+        render json: @ticket.errors, status: :unprocessable_entity
+      end
     else
-      render json: @ticket.errors, status: :unprocessable_entity
+      render json: {tickets: :ALREADY_BOUGHT}, status: :unprocessable_entity
     end
   end
 
