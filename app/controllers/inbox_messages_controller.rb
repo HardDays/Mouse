@@ -125,10 +125,10 @@ class InboxMessagesController < ApplicationController
 
     def authorize_account
       @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
-      @user = @account.user
 
       if @account == nil
         render json: {error: "Access forbidden"}, status: :forbidden and return
       end
+      @user = @account.user
     end
 end
