@@ -35,9 +35,9 @@ class VenueEvent < ApplicationRecord
         else
           res[:approximate_price] = account.venue.public_venue.price_for_daytime.to_i * event.event_length.to_i
         end
-        
+
         if options[:event]
-          res[:approximate_price_original] = res[:approximate_price]
+          res[:original_approximate_price] = res[:approximate_price]
           res[:approximate_price] = CurrencyHelper.convert(res[:approximate_price], account.user.preferred_currency, options[:event].currency) 
         end
       end
