@@ -41,6 +41,10 @@ class ArtistEvent < ApplicationRecord
       res[:approximate_price] = nil
       unless account.artist.is_hide_pricing_from_search
         res[:approximate_price] = account.artist.price_from.to_i * event.event_length.to_i
+        if options[:event]
+          res[:approximate_price_original] = res[:approximate_price]
+          #res[:approximate_price] = CurrencyHelper.convert(res[:approximate_price], currency, options[:event].currency) if price_for_nighttime
+        end
       end
     end
 
@@ -60,11 +64,13 @@ class ArtistEvent < ApplicationRecord
         res['reason_text'] = message.decline_message.additional_text
       end
     elsif status == 'owner_declined'
-      message = event.creator.sent_messages.joins(:decline_message).where(receiver_id: artist_id, decline_messages: {event: event}).first
-      if message
-        res['reason'] = message.decline_message.reason
-        res['reason_text'] = message.decline_message.additional_text
+      if event.creator
+        message = event.creator.sent_messages.joins(:decline_message).where(receiver_id: artist_id, decline_messages: {event: event}).first
+        if message
+          res['reason'] = message.decline_message.reason
+          res['reason_text'] = message.decline_message.additional_text
         end
+      end
     elsif status == 'request_send'
         message = event.creator.sent_messages.joins(:request_message).where(receiver_id: artist_id, request_messages: {event: event}).first
         if message

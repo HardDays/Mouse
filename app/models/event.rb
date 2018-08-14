@@ -75,17 +75,19 @@ class Event < ApplicationRecord
     res[:backers] = tickets.joins(:fan_tickets).pluck(:account_id).uniq.count
     res[:founded] = tickets.joins(:fan_tickets).sum("fan_tickets.price")
     
-    if options[:user]
+    '''if options[:user]
+      res[:founded_original] = res[:founded]
+      res[:founded] = CurrencyHelper.convert(res[:founded], currency, options[:user].preferred_currency) if res[:founded] != nil
       res[:founded_converted] = CurrencyHelper.convert(res[:founded], currency, options[:user].preferred_currency) if res[:founded] != nil
       res[:funding_goal_converted] = CurrencyHelper.convert(funding_goal, currency, options[:user].preferred_currency) if funding_goal != nil
       res[:additional_cost_converted] = CurrencyHelper.convert(additional_cost, currency, options[:user].preferred_currency) if additional_cost != nil
-    end
+    end'''
 
     if options[:extended]
       res[:collaborators] = collaborators
       res[:genres] = genres.pluck(:genre)
-      res[:artist] = artist_events.order(updated_at: :DESC)
-      res[:venue] = venue.as_json(extended: true)
+      res[:artist] = artist_events.order(updated_at: :DESC).collect{|a|a.to_json(event: self)}
+      res[:venue] = venue.as_json(extended: true, event: self)
       res[:venues] = venue_events.order(updated_at: :DESC)
       res[:tickets] = tickets.as_json(user: options[:user])
       res[:in_person_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'in_person'}).sum('tickets.count')

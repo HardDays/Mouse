@@ -42,6 +42,14 @@ class Venue < ApplicationRecord
                 res = res.merge(public_venue.get_attrs)
             end
 
+            if options[:event]
+               # res[:price_for_daytime_original] = price_for_daytime if price_for_daytime
+                #res[:price_for_daytime] = CurrencyHelper.convert(price_for_daytime, currency, options[:event].currency) if price_for_daytime
+                
+               # res[:price_for_nighttime_original] = price_for_nighttime if price_for_nighttime
+               # res[:price_for_nighttime] = CurrencyHelper.convert(price_for_nighttime, currency, options[:event].currency) if price_for_nighttime
+            end
+
             res[:video_links] = venue_video_links.pluck(:video_link)
             res[:operating_hours] = operating_hours
             res[:office_hours] = office_hours
