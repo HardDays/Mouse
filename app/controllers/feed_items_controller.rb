@@ -32,14 +32,16 @@ class FeedItemsController < ApplicationController
   end
   def index
     following = @account.following.pluck('id')
+    events = Ticket.where(id: FanTicket.where(account_id: @account.id).pluck(:ticket_id)).pluck(:event_id)
     feed = FeedItem.all
 
-    feed = feed.left_joins(:account_update, :event_update => :event).where(
-      "account_updates.account_id IN (:query)", query: following
-    ).or(
-      FeedItem.left_joins(:account_update, :event_update => :event).where(
-        "events.creator_id IN (:query) and events.status=:status", query: following, status: Event.statuses["active"]
-      )).order(:created_at => :desc)
+    feed = feed.left_joins(:account_update, :event_update => :event).where("account_updates.account_id IN (:query)", query: following)
+    .or(FeedItem.left_joins(:account_update, :event_update => :event).where(
+      "events.creator_id IN (:query) and events.status=:status", query: following, status: Event.statuses["active"])
+    ).or(FeedItem.left_joins(:account_update, :event_update => :event).where(
+      "events.id IN (:tickets)", tickets: events)
+    )
+    .order(:created_at => :desc)
 
     # likes = Like.where(account_id: following).joins(:event).as_json(feed: true)
     # likes.each do |e|
