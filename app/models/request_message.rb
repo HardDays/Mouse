@@ -23,7 +23,7 @@ class RequestMessage < ApplicationRecord
 
     if options[:user]
       res[:original_price] = estimated_price
-      res[:price] = CurrencyHelper.convert(estimated_price, currency, options[:user].preferred_currency) if price != nil
+      res[:price] = CurrencyHelper.convert(estimated_price, currency, options[:user].preferred_currency) if estimated_price != nil
     end
 
     res[:event_info] = event.as_json(user: options[:user])
