@@ -86,7 +86,7 @@ class Event < ApplicationRecord
     if options[:extended]
       res[:collaborators] = collaborators
       res[:genres] = genres.pluck(:genre)
-      res[:artist] = artist_events.order(updated_at: :DESC).collect{|a|a.to_json(event: self)}
+      res[:artist] = artist_events.order(updated_at: :DESC).collect{|a|a.as_json(event: self)}
       res[:venue] = venue.as_json(extended: true, event: self)
       res[:venues] = venue_events.order(updated_at: :DESC)
       res[:tickets] = tickets.as_json(user: options[:user])

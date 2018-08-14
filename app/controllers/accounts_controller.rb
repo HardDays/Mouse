@@ -564,7 +564,7 @@ class AccountsController < ApplicationController
     end
     def delete
       if User.encrypt_password(params[:password].to_s) == @account.user.password
-        @account.destroy
+        #@account.destroy
         render status: :ok
       else
         render status: :forbidden

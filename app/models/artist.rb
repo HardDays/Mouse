@@ -27,7 +27,10 @@ class Artist < ApplicationRecord
             attrs[:image_id] = account.image_id
 
             attrs[:is_hide_pricing_from_search] = is_hide_pricing_from_search
-            attrs[:price] = nil
+
+            #TODO replace account.user.... to artist.currency
+            attrs[:price_original] = price
+            attrs[:price] = CurrencyHelper.convert(price, account.user.preferred_currency, options[:event].currency) 
             return attrs
         end
 
