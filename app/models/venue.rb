@@ -32,7 +32,7 @@ class Venue < ApplicationRecord
             attrs[:user_name] = account.user_name
             attrs[:image_id] = account.image_id
 
-            attrs[:price] = nil
+            #attrs[:price] = nil
             return attrs
         end
 
@@ -40,14 +40,6 @@ class Venue < ApplicationRecord
             res = super.merge(account.get_attrs)
             if public_venue
                 res = res.merge(public_venue.get_attrs)
-            end
-
-            if options[:event]
-               # res[:price_for_daytime_original] = price_for_daytime if price_for_daytime
-                #res[:price_for_daytime] = CurrencyHelper.convert(price_for_daytime, currency, options[:event].currency) if price_for_daytime
-                
-               # res[:price_for_nighttime_original] = price_for_nighttime if price_for_nighttime
-               # res[:price_for_nighttime] = CurrencyHelper.convert(price_for_nighttime, currency, options[:event].currency) if price_for_nighttime
             end
 
             res[:video_links] = venue_video_links.pluck(:video_link)

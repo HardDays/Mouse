@@ -88,7 +88,7 @@ class Event < ApplicationRecord
       res[:genres] = genres.pluck(:genre)
       res[:artist] = artist_events.order(updated_at: :DESC).collect{|a|a.as_json(event: self)}
       res[:venue] = venue.as_json(extended: true, event: self)
-      res[:venues] = venue_events.order(updated_at: :DESC)
+      res[:venues] = venue_events.order(updated_at: :DESC).collect{|a|a.as_json(event: self)}
       res[:tickets] = tickets.as_json(user: options[:user])
       res[:in_person_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'in_person'}).sum('tickets.count')
       res[:vr_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'vr'}).sum('tickets.count')
