@@ -300,6 +300,13 @@
             },
             {
               "paramType": "form",
+              "name": "total",
+              "type": "integer",
+              "description": "Total",
+              "required": false
+            },
+            {
+              "paramType": "form",
               "name": "currency",
               "type": "integer",
               "description": "Preferred currency format",
@@ -595,6 +602,13 @@
               "name": "funding_goal",
               "type": "integer",
               "description": "Funding goal",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "total",
+              "type": "integer",
+              "description": "Total",
               "required": false
             },
             {
