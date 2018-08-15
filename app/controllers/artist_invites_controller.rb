@@ -4,6 +4,8 @@ class ArtistInvitesController < ApplicationController
 
   before_action :set_artist_invite, only: [:show, :destroy]
 
+  swagger_controller :admin_artist_invites, "AdminPanel"
+
   # GET /artist_invites
   swagger_api :index do
     summary "Get artist invites"

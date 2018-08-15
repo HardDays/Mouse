@@ -3,6 +3,8 @@ class VenueInvitesController < ApplicationController
   before_action :authorize_account, only: [:create]
 
   before_action :set_venue_invite, only: [:show, :destroy]
+  
+  swagger_controller :admin_venue_invites, "AdminPanel"
 
   # GET /venue_invites
   swagger_api :index do
