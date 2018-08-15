@@ -411,36 +411,8 @@
               "paramType": "form",
               "name": "address",
               "type": "string",
-              "description": "Event full address WARNING - pass here full address (concatenated street, state, city, country)",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "country",
-              "type": "string",
-              "description": "Event country",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "city",
-              "type": "string",
-              "description": "Event city",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "state",
-              "type": "string",
-              "description": "Event state",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "street",
-              "type": "string",
-              "description": "Event street adddress",
-              "required": true
+              "description": "Event address",
+              "required": false
             },
             {
               "paramType": "form",
