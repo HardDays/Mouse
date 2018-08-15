@@ -495,10 +495,28 @@ class AccountsController < ApplicationController
         render status: :unprocessable_entity and return if not set_fan_params
         render status: :unprocessable_entity and return if not set_venue_params
         render status: :unprocessable_entity and return if not set_artist_params
+        
+        @account.assign_attributes(account_update_params)
+        changed = @account.changed
+
         if @account.update(account_update_params)
-            render json: @account, extended: true, my: true, except: :password, status: :ok
+          changed.each do |param|
+            if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
+              action = AccountUpdate.new(
+                action: :update,
+                updated_by: @account.id,
+                account_id: @account.id,
+                field: param,
+                value: params[param]
+              )
+              action.save
+              feed = FeedItem.new(account_update_id: action.id)
+              feed.save
+            end
+          end
+          render json: @account, extended: true, my: true, except: :password, status: :ok
         else
-            render json: @account.errors, status: :unprocessable_entity
+          render json: @account.errors, status: :unprocessable_entity
         end
       end
     end
@@ -722,21 +740,25 @@ class AccountsController < ApplicationController
         if @account.account_type == 'venue'            
             if @account.venue 
                 @venue = @account.venue
+
+                @venue.assign_attributes(venue_params)
+                changed = @venue.changed
+
                 @venue.update(venue_params)
-                params.each do |param|
-                    if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(
-                          action: :update,
-                          updated_by: @account.id,
-                          account_id: @account.id,
-                          field: param,
-                          value: params[param]
-                        )
-                        action.save
-                        feed = FeedItem.new(account_update_id: action.id)
-                        feed.save
-                    end
-                end
+                changed.each do |param|
+                  if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
+                      action = AccountUpdate.new(
+                        action: :update,
+                        updated_by: @account.id,
+                        account_id: @account.id,
+                        field: param,
+                        value: params[param]
+                      )
+                      action.save
+                      feed = FeedItem.new(account_update_id: action.id)
+                      feed.save
+                  end
+              end
                 if params[:image_base64] or params[:image]
                   action = AccountUpdate.new(
                     action: :update,
@@ -858,8 +880,12 @@ class AccountsController < ApplicationController
         if @account.account_type == 'artist'
             if @account.artist
                 @artist = @account.artist
+               
+                @artist.assign_attributes(artist_params)
+                changed = @artist.changed
+
                 @artist.update(artist_params)
-                params.each do |param|
+                changed.each do |param|
                     if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
                         action = AccountUpdate.new(
                           action: :update,

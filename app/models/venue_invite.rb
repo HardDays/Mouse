@@ -1,3 +1,3 @@
-class ArtistInvite < ApplicationRecord
+class VenueInvite < ApplicationRecord
     validates :description, presence: true
 end

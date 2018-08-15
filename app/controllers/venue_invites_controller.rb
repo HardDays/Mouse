@@ -1,63 +1,63 @@
-class ArtistInvitesController < ApplicationController
+class VenueInvitesController < ApplicationController
   before_action :authorize_admin, only: [:show, :index, :destroy]
   before_action :authorize_account, only: [:create]
 
-  before_action :set_artist_invite, only: [:show, :destroy]
+  before_action :set_venue_invite, only: [:show, :destroy]
 
-  # GET /artist_invites
+  # GET /venue_invites
   swagger_api :index do
-    summary "Get artist invites"
+    summary "Get venue invites"
     param :form, :limit, :integer, :optional, "Limit"
     param :form, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
   end
   def index
-    @artist_invites = ArtistInvite.all
+    @venue_invites = VenueInvite.all
 
-    render json: @artist_invites.limit(params[:limit]).offset(params[:offset])
+    render json: @venue_invites.limit(params[:limit]).offset(params[:offset])
   end
 
-  # GET /artist_invites/1
+  # GET /venue_invites/1
   swagger_api :show do
-    summary "Get artist invite by id"
-    param :path, :id, :integer, :required, "Artist invite id"
+    summary "Get venue invite by id"
+    param :path, :id, :integer, :required, "Venue invite id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
   end
   def show
-    render json: @artist_invite
+    render json: @venue_invite
   end
 
-  # POST /artist_invites
+  # POST /venue_invites
   swagger_api :create do
-    summary "Create artist invite"
+    summary "Create venue invite"
     param :form, :account_id, :integer, :required, "Accountn id"
     param :form, :description, :string, :required, "Description"
-    param :form, :links, :string, :optional, "Links to artist"
+    param :form, :links, :string, :optional, "Links to venue"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
   end
   def create
-    @artist_invite = ArtistInvite.new(artist_invite_params)
-    @artist_invite.account_id = params[:account_id]
+    @venue_invite = VenueInvite.new(venue_invite_params)
+    @venue_invite.account_id = params[:account_id]
 
-    if @artist_invite.save
-      render json: @artist_invite, status: :created
+    if @venue_invite.save
+      render json: @venue_invite, status: :created
     else
-      render json: @artist_invite.errors, status: :unprocessable_entity
+      render json: @venue_invite.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /artist_invites/1
+  # DELETE /venue_invites/1
   swagger_api :destroy do
-    summary "Destroy artist invite by id"
-    param :path, :id, :integer, :required, "Artist invite id"
+    summary "Destroy venue invite by id"
+    param :path, :id, :integer, :required, "Venue invite id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
   end
   def destroy
-    @artist_invite.destroy
+    @venue_invite.destroy
   end
 
   private
@@ -78,12 +78,12 @@ class ArtistInvitesController < ApplicationController
       @user = @account.user
     end
     
-    def set_artist_invite
-      @artist_invite = ArtistInvite.find(params[:id])
+    def set_venue_invite
+      @venue_invite = VenueInvite.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
-    def artist_invite_params
+    def venue_invite_params
       params.permit(:description, :links)
     end
 end

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :artist_invites
+  resources :venue_invites
   resources :questions, only: [:index, :create, :show] do
     member do
       post :reply
@@ -150,6 +150,12 @@ Rails.application.routes.draw do
     end
   end
 
+  #artist_invites
+  post 'artist_invites', action: :create, controller: 'artist_invites'
+  
+  #venue_invites
+  post 'venue_invites', action: :create, controller: 'venue_invites'
+
   # admin routes
   resources :admin, only: [:create, :update]
   get 'admin/statuses', action: :statuses, controller: 'admin'
@@ -179,6 +185,15 @@ Rails.application.routes.draw do
   post 'admin/events/:id/approve', action: :approve, controller: 'admin_events'
   post 'admin/events/:id/deny', action: :deny, controller: 'admin_events'
   delete 'admin/events/:id', action: :destroy, controller: 'admin_events'
+
+  get 'admin/artist_invites', action: :index, controller: 'artist_invites'
+  get 'admin/artist_invites/:id', action: :show, controller: 'artist_invites'
+  delete 'admin/artist_invites/:id', action: :destroy, controller: 'artist_invites'
+
+  get 'admin/venue_invites', action: :index, controller: 'venue_invites'
+  get 'admin/venue_invites/:id', action: :show, controller: 'venue_invites'
+  delete 'admin/venue_invites/:id', action: :destroy, controller: 'venue_invites'
+
 
   get 'admin/questions', action: :index, controller: 'admin_questions'
   get 'admin/questions/:id', action: :show, controller: 'admin_questions'
