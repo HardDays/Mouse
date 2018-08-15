@@ -6,7 +6,7 @@ class ArtistInvitesController < ApplicationController
 
   swagger_controller :admin_artist_invites, "AdminPanel"
 
-  # GET /artist_invites
+  # GET /admin/artist_invites
   swagger_api :index do
     summary "Get artist invites"
     param :form, :limit, :integer, :optional, "Limit"
@@ -20,7 +20,7 @@ class ArtistInvitesController < ApplicationController
     render json: @artist_invites.limit(params[:limit]).offset(params[:offset])
   end
 
-  # GET /artist_invites/1
+  # GET /admin/artist_invites/1
   swagger_api :show do
     summary "Get artist invite by id"
     param :path, :id, :integer, :required, "Artist invite id"
@@ -51,7 +51,7 @@ class ArtistInvitesController < ApplicationController
     end
   end
 
-  # DELETE /artist_invites/1
+  # DELETE /admin/artist_invites/1
   swagger_api :destroy do
     summary "Destroy artist invite by id"
     param :path, :id, :integer, :required, "Artist invite id"

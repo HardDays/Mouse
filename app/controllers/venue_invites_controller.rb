@@ -6,7 +6,7 @@ class VenueInvitesController < ApplicationController
   
   swagger_controller :admin_venue_invites, "AdminPanel"
 
-  # GET /venue_invites
+  # GET /admin/venue_invites
   swagger_api :index do
     summary "Get venue invites"
     param :form, :limit, :integer, :optional, "Limit"
@@ -20,7 +20,7 @@ class VenueInvitesController < ApplicationController
     render json: @venue_invites.limit(params[:limit]).offset(params[:offset])
   end
 
-  # GET /venue_invites/1
+  # GET /admin/venue_invites/1
   swagger_api :show do
     summary "Get venue invite by id"
     param :path, :id, :integer, :required, "Venue invite id"
@@ -51,7 +51,7 @@ class VenueInvitesController < ApplicationController
     end
   end
 
-  # DELETE /venue_invites/1
+  # DELETE /admin/venue_invites/1
   swagger_api :destroy do
     summary "Destroy venue invite by id"
     param :path, :id, :integer, :required, "Venue invite id"
