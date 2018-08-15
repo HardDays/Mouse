@@ -21,7 +21,7 @@ class FeedItem < ApplicationRecord
       res[:account] = event_update.event.creator.as_json(:only => [:id, :user_name, :image_id])
 
       if event_update.action == 'add_ticket'
-        res[:ticket] = event_update.event.tickets.where(id: value.to_i)
+        res[:ticket] = event_update.event.tickets.where(id: event_update.value.to_i)
       else
         res[:value] = event_update.value
       end

@@ -31,18 +31,23 @@ class FeedItemsController < ApplicationController
     response :unauthorized
   end
   def index
-    following = @account.following.pluck('id')
-    events = Ticket.where(id: FanTicket.where(account_id: @account.id).pluck(:ticket_id)).pluck(:event_id)
-    feed = FeedItem.all
+    following = @account.following.pluck(:id)
+    events_tickets = Ticket.where(id: FanTicket.where(account_id: @account.id).pluck(:ticket_id).uniq).pluck(:event_id)
+    creator_events = Event.where(creator_id: following).pluck(:id)
 
-    feed = feed.left_joins(:account_update, :event_update => :event).where("account_updates.account_id IN (:query)", query: following)
-    .or(FeedItem.left_joins(:account_update, :event_update => :event).where(
-      "events.creator_id IN (:query) and events.status=:status", query: following, status: Event.statuses["active"])
-    ).or(FeedItem.left_joins(:account_update, :event_update => :event).where(
-      "events.id IN (:tickets)", tickets: events)
-    )
-    .order(:created_at => :desc)
-
+    account_updates = AccountUpdate.where(account_id: following).pluck(:id)
+    event_updates = EventUpdate.where(creator_id: creator_events).or(EventUpdate.where(event_id: events_tickets)).pluck(:id)
+    
+    feed = FeedItem.where(account_update_id: account_updates).or(FeedItem.where(event_update_id: event_updates)).order(:created_at => :desc)
+  
+    # feed = FeedItem.all
+    # feed = feed.left_joins(:account_update, :event_update => :event).where("account_updates.account_id IN (:query)", query: following)
+    # .or(FeedItem.left_joins(:account_update, :event_update => :event).where(
+    #   "events.creator_id IN (:query) and events.status=:status", query: following, status: Event.statuses["active"])
+    # ).or(FeedItem.left_joins(:account_update, :event_update => :event).where(
+    #   "events.id IN (NULL)", tickets: events_tickets)
+    # )
+    # .order(:created_at => :desc)
     # likes = Like.where(account_id: following).joins(:event).as_json(feed: true)
     # likes.each do |e|
     #   e[:type] = 'like'
