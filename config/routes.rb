@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :artist_invites
   resources :questions, only: [:index, :create, :show] do
     member do
       post :reply
