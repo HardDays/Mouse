@@ -37,7 +37,7 @@ class FeedItemsController < ApplicationController
 
     account_updates = AccountUpdate.where(account_id: following).pluck(:id)
     #event_updates = EventUpdate.where(event_id: creator_events).or(EventUpdate.where(event_id: events_tickets)).pluck(:id)
-    event_updates = EventUpdate.where(event_id: events_tickets).pluck(:id)
+    event_updates = EventUpdate.where(event_id: 63).pluck(:id)
 
     feed = FeedItem.where(account_update_id: account_updates).or(FeedItem.where(event_update_id: event_updates)).order(:created_at => :desc)
   
