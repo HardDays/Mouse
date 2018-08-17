@@ -33,7 +33,7 @@ class FeedItemsController < ApplicationController
   def index
     following = @account.following.pluck(:id)
     events_tickets = Ticket.where(id: FanTicket.where(account_id: @account.id).pluck(:ticket_id).uniq).pluck(:event_id)
-    creator_events = Event.where(creator_id: following).pluck(:id)
+    creator_events = Event.where(creator_id: following, status: :active).pluck(:id)
 
     account_updates = AccountUpdate.where(account_id: following).pluck(:id)
     event_updates = EventUpdate.where(event_id: creator_events).or(EventUpdate.where(event_id: events_tickets)).pluck(:id)
