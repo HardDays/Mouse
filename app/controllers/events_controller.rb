@@ -129,9 +129,26 @@ class EventsController < ApplicationController
     set_collaborators
 
     forbidden = check_params
+
+    @event.assign_attributes(event_params)
+    changed = @event.changed
+
     if not forbidden and @event.update(event_params)
 
-      log_update
+      changed.each do |param|
+        if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
+          action = EventUpdate.new(
+            action: :update,
+            updated_by: @account.id,
+            event_id: @event.id,
+            field: param,
+            value: params[param]
+          )
+          action.save
+          feed = FeedItem.new(event_update_id: action.id)
+          feed.save
+        end
+      end
       render json: @event, extended: true, user: @user, status: :ok
     else
       render json: @event.errors, status: (forbidden ? forbidden : :unprocessable_entity)
@@ -432,34 +449,17 @@ class EventsController < ApplicationController
       feed.save
     end
 
-    def log_update
-      params.each do |param|
-        if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
-          action = EventUpdate.new(
-            action: :update,
-            updated_by: @account.id,
-            event_id: @event.id,
-            field: param,
-            value: params[param]
-          )
-          action.save
-          feed = FeedItem.new(event_update_id: action.id)
-          feed.save
-        end
+    def check_params
+      if (params[:date_from] or params[:date_to]) and @event.is_crowdfunding_event
+        founded = @event.tickets.joins(:fan_tickets).sum("fan_tickets.price")
+
+        return :forbidden if founded >= @event.funding_goal
+      end
+
+      if (params[:address] or params[:city_lat] or params[:city_lng]) and @event.venue_id != nil
+        return :forbidden
       end
     end
-
-  def check_params
-    if (params[:date_from] or params[:date_to]) and @event.is_crowdfunding_event
-      founded = @event.tickets.joins(:fan_tickets).sum("fan_tickets.price")
-
-      return :forbidden if founded >= @event.funding_goal
-    end
-
-    if (params[:address] or params[:city_lat] or params[:city_lng]) and @event.venue_id != nil
-      return :forbidden
-    end
-  end
 
   def send_mouse_request(account)
     request_message = RequestMessage.new(request_message_params)
