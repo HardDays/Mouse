@@ -134,19 +134,20 @@ class EventsController < ApplicationController
     changed = @event.changed
 
     if not forbidden and @event.update(event_params)
-
-      changed.each do |param|
-        if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
-          action = EventUpdate.new(
-            action: :update,
-            updated_by: @account.id,
-            event_id: @event.id,
-            field: param,
-            value: params[param]
-          )
-          action.save
-          feed = FeedItem.new(event_update_id: action.id)
-          feed.save
+      if @event.is_active
+        changed.each do |param|
+          if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
+            action = EventUpdate.new(
+              action: :update,
+              updated_by: @account.id,
+              event_id: @event.id,
+              field: param,
+              value: params[param]
+            )
+            action.save
+            feed = FeedItem.new(event_update_id: action.id)
+            feed.save
+          end
         end
       end
       render json: @event, extended: true, user: @user, status: :ok
