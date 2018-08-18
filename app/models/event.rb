@@ -72,7 +72,7 @@ class Event < ApplicationRecord
       return res
     end
 
-    if options[:by_event]
+    #if options[:by_event]
       if venue and venue.public_venue
         res[:country] = venue.public_venue.country
         res[:city] = venue.public_venue.city
@@ -88,7 +88,7 @@ class Event < ApplicationRecord
         res[:street] = nil
         res[:other_address] = nil
       end
-    end
+    #end
 
     res[:backers] = tickets.joins(:fan_tickets).pluck(:account_id).uniq.count
     res[:founded] = tickets.joins(:fan_tickets).sum("fan_tickets.price")
