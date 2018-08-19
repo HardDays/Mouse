@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180818090124) do
+ActiveRecord::Schema.define(version: 20180819123507) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -197,6 +197,11 @@ ActiveRecord::Schema.define(version: 20180818090124) do
     t.float "late_cancellation_fee"
     t.string "refund_policy"
     t.string "artist_email"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
   end
 
   create_table "audio_links", force: :cascade do |t|
@@ -295,6 +300,11 @@ ActiveRecord::Schema.define(version: 20180818090124) do
     t.boolean "is_deleted", default: false
     t.boolean "is_viewed", default: false
     t.integer "total"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
   end
 
   create_table "fan_genres", force: :cascade do |t|
@@ -323,6 +333,11 @@ ActiveRecord::Schema.define(version: 20180818090124) do
     t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "last_name"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
   end
 
   create_table "feed_items", force: :cascade do |t|
@@ -642,6 +657,11 @@ ActiveRecord::Schema.define(version: 20180818090124) do
     t.integer "venue_type"
     t.boolean "has_vr"
     t.integer "vr_capacity", default: 200
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
   end
 
   create_table "vk_tokens", force: :cascade do |t|

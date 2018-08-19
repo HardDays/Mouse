@@ -1,5 +1,6 @@
 class AccountsController < ApplicationController
     before_action :authorize_user, only: [:create, :get_my_accounts]
+    before_action :authorize_search, only: [:search]
     before_action :authorize_account, only: [:update,  :upload_image, :follow, :unfollow, :is_followed,
                                              :follow_multiple, :delete]
     before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed]
@@ -277,7 +278,7 @@ class AccountsController < ApplicationController
       param :form, :artist_videos, :string, :optional, "Array of link objects [{'name': '', 'album_name': '', 'link': ''}, {...}]"
       param :form, :bio, :string, :optional, "Fan bio"
       param :form, :genres, :string, :optional, "Fan/Artist/Venue (public only) Genres ['genre1', 'genre2', ...]"
-      param :form, :address, :string, :optional, "Fan/Venue address"
+      param :form, :address, :string, :optional, "Fan address"
       param :form, :preferred_address, :string, :optional, "Artist preferred address to perform"
       param :form, :lat, :float, :optional, "Fan/Artist/Venue lat"
       param :form, :lng, :float, :optional, "Fan/Artist/Venue lng"
@@ -371,11 +372,22 @@ class AccountsController < ApplicationController
         if @account.save
             set_image
             set_base64_image
-
-            return if not set_fan_params
-            return if not set_venue_params
-            return if not set_artist_params
           
+            if not set_fan_params
+              raise ActiveRecord::Rollback
+              return
+            end
+
+            if not set_venue_params
+              raise ActiveRecord::Rollback
+              return
+            end
+
+            if not set_artist_params
+              raise ActiveRecord::Rollback
+              return
+            end
+            
             #AccessHelper.grant_account_access(@account)
             render json: @account, extended: true, my: true, except: :password, status: :created
         else
@@ -401,7 +413,7 @@ class AccountsController < ApplicationController
       param :form, :artist_videos, :string, :optional, "Array of link objects [{'name': '', 'album_name': '', 'link': ''}, {...}]"
       param :form, :bio, :string, :optional, "Fan bio"
       param :form, :genres, :string, :optional, "Fan/Artist/Venue (public only) Genres ['genre1', 'genre2', ...]"
-      param :form, :address, :string, :optional, "Fan/Venue address - full address including city, country, state, street etc"
+      param :form, :address, :string, :optional, "Fan address - full address including city, country, state, street etc"
       param :form, :preferred_address, :string, :optional, "Artist preferred address to perform"
       param :form, :lat, :float, :optional, "Fan/Artist/Venue lat"
       param :form, :lng, :float, :optional, "Fan/Artist/Venue lng"
@@ -491,7 +503,7 @@ class AccountsController < ApplicationController
       Account.transaction do
         set_image
         set_base64_image
-
+        
         render status: :unprocessable_entity and return if not set_fan_params
         render status: :unprocessable_entity and return if not set_venue_params
         render status: :unprocessable_entity and return if not set_artist_params
@@ -528,6 +540,8 @@ class AccountsController < ApplicationController
       param :query, :price_from, :integer, :optional, "Artist/Venue price from"
       param :query, :price_to, :integer, :optional, "Artist/Venue price to"
       param :query, :address, :string, :optional, "Artist/Venue address"
+      param :query, :city, :string, :optional, "Artist/Venue city"
+      param :query, :country, :string, :optional, "Artist/Venue country"
       param :query, :distance, :integer, :optional, "Artist/Venue address max distance"
       param :query, :units, :string, :optional, "Artist/Venue distance units of search 'km' or 'mi'"
       param :query, :capacity_from, :integer, :optional, "Venue capacity from"
@@ -539,6 +553,8 @@ class AccountsController < ApplicationController
       param :query, :sort_by_popularity, :boolean, :optional, "Sort results by popularity"
       param :query, :limit, :integer, :optional, "Limit"
       param :query, :offset, :integer, :optional, "Offset"
+      param :query, :account_id, :integer, :optional, "Account id"
+      param :header, 'Authorization', :string, :optional, 'Authentication token'
     end
     def search
       @extended = true
@@ -555,7 +571,8 @@ class AccountsController < ApplicationController
             {:public => Venue.venue_types['public_venue']})
         end   
       end
-      
+      search_city
+      search_country
       search_text
       search_type
       search_price
@@ -568,7 +585,7 @@ class AccountsController < ApplicationController
       order_accounts
       @accounts = @accounts.group("accounts.id")
 
-      render json: @accounts.limit(params[:limit]).offset(params[:offset]), extended: @extended, status: :ok
+      render json: @accounts.limit(params[:limit]).offset(params[:offset]), extended: @extended, account: @account, status: :ok
     end
 
     swagger_api :delete do
@@ -610,6 +627,8 @@ class AccountsController < ApplicationController
       end
     end
 
+
+
     def authorize_user
         @user = AuthorizeHelper.authorize(request)
         render status: :unauthorized if @user == nil
@@ -622,6 +641,13 @@ class AccountsController < ApplicationController
         render json: {error: "Access forbidden"}, status: :forbidden and return
       end
     end
+
+    def authorize_search
+      if request.headers['Authorization'] and params[:account_id]
+        @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+      end
+    end
+
 
     def set_image
         if params[:image]
@@ -743,7 +769,7 @@ class AccountsController < ApplicationController
 
                 @venue.assign_attributes(venue_params)
                 changed = @venue.changed
-
+               
                 @venue.update(venue_params)
                 changed.each do |param|
                   if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
@@ -1094,6 +1120,30 @@ class AccountsController < ApplicationController
       end
     end
 
+    def search_city
+      if params[:city]
+        if params[:type] == 'artist'
+          @arts = Artist.where("lower(city) = ?", params[:city].downcase.strip).select{|a| a.id}
+          @accounts = @accounts.where(artist_id: @arts)
+        elsif params[:type] == 'venue'
+          @vens = Venue.where("lower(city) = ?", params[:city].downcase.strip).select{|a| a.id}
+          @accounts = @accounts.where(venue_id: @vens)
+        end
+      end
+    end
+
+    def search_country
+      if params[:country]
+        if params[:type] == 'artist'
+          @arts = Artist.where("lower(country) = ?", params[:country].downcase.strip).select{|a| a.id}
+          @accounts = @accounts.where(artist_id: @arts)
+        elsif params[:type] == 'venue'
+          @vens = Venue.where("lower(country) = ?", params[:country].downcase.strip).select{|a| a.id}
+          @accounts = @accounts.where(venue_id: @vens)
+        end
+      end
+    end
+
     def search_address
       if params[:address]
         if params[:type] == 'artist'
@@ -1168,7 +1218,7 @@ class AccountsController < ApplicationController
     end
 
     def venue_params
-        params.permit(:description, :capacity, :venue_type, :has_vr, :address, :lat, :lng, :vr_capacity)
+        params.permit(:description, :capacity, :venue_type, :has_vr, :vr_capacity, :country, :city, :street, :state, :zipcode)
     end
 
     def public_venue_params

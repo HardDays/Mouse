@@ -300,6 +300,8 @@ class EventsController < ApplicationController
     @events = Event.available.search(params[:text])
     search_active
     search_genre
+    search_city
+    search_country
     search_location
     search_distance
     search_ticket_types
@@ -416,6 +418,18 @@ class EventsController < ApplicationController
           genres.append(EventGenre.genres[genre])
         end
         @events = @events.joins(:genres).where(:event_genres => {genre: genres})
+      end
+    end
+
+    def search_country
+      if params[:country]
+        @events = @events.where("lower(country) = ?", params[:country].downcase.strip)
+      end
+    end
+
+    def search_city
+      if params[:city]
+        @events = @events.where("lower(city) = ?", params[:city].downcase.strip)
       end
     end
 

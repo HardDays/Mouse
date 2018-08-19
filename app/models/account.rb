@@ -39,7 +39,7 @@ class Account < ApplicationRecord
 	has_many :comments, dependent: :nullify
 
 
-	def get_attrs
+	def get_attrs(options={})
 		attrs = {}
 		attrs[:id] = id
 		attrs[:user_name] = user_name
@@ -53,10 +53,17 @@ class Account < ApplicationRecord
 		attrs[:status] = status
 		attrs[:followers_count] = followers.count
 		attrs[:following_count] = following.count
+
+		if options[:account]
+			follower = Follower.find_by(by_id: options[:account].id, to_id: id)
+			attrs[:is_followed] = follower != nil
+		end
+
 		return attrs
 	end
 
-    def as_json(options={})
+	def as_json(options={})
+
 			if options[:for_message]
 				attrs = {}
 				attrs[:image_id] = image_id
@@ -98,7 +105,7 @@ class Account < ApplicationRecord
 				#attrs[:images] = images.pluck(:id)
 				#attrs[:followed] = followed_conn.pluck(:to_id)
 				#attrs[:followers] = followers_conn.pluck(:by_id)
-				return get_attrs
+				return get_attrs(options)
 			else
 				return super(options)
 			end

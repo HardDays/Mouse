@@ -125,7 +125,7 @@
               "paramType": "form",
               "name": "address",
               "type": "string",
-              "description": "Fan/Venue address",
+              "description": "Fan address",
               "required": false
             },
             {
@@ -855,7 +855,7 @@
               "paramType": "form",
               "name": "address",
               "type": "string",
-              "description": "Fan/Venue address - full address including city, country, state, street etc",
+              "description": "Fan address - full address including city, country, state, street etc",
               "required": false
             },
             {
@@ -1548,6 +1548,20 @@
             },
             {
               "paramType": "query",
+              "name": "city",
+              "type": "string",
+              "description": "Artist/Venue city",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "country",
+              "type": "string",
+              "description": "Artist/Venue country",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "distance",
               "type": "integer",
               "description": "Artist/Venue address max distance",
@@ -1621,6 +1635,20 @@
               "name": "offset",
               "type": "integer",
               "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
               "required": false
             }
           ],

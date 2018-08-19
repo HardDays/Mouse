@@ -1,6 +1,6 @@
 class Venue < ApplicationRecord
     validates :venue_type, presence: true
-    validates :address, presence: true
+    #validates :address, presence: true
     validates :description, presence: true
     # validates :lat, presence: true
     # validates :lng, presence: true
@@ -23,7 +23,11 @@ class Venue < ApplicationRecord
     geocoded_by :address, latitude: :lat, longitude: :lng
     reverse_geocoded_by :lat, :lng, address: :address
     after_validation :geocode
+    before_validation :set_address
 
+    def set_address
+        self.address = [self.zipcode, self.country, self.state, city, self.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
+    end
 
     def as_json(options={})
         if options[:for_event]
@@ -37,7 +41,7 @@ class Venue < ApplicationRecord
         end
 
         if options[:extended]
-            res = super.merge(account.get_attrs)
+            res = super.merge(account.get_attrs(options))
             if public_venue
                 res = res.merge(public_venue.get_attrs)
             end
