@@ -91,7 +91,7 @@ class Account < ApplicationRecord
 				end
 
 				if artist
-						return artist.as_json(options)
+					return artist.as_json(options)
 				end
 
 				#attrs[:genres] = user_genres.pluck(:name)
