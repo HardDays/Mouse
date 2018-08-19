@@ -7,27 +7,33 @@ class Fan < ApplicationRecord
     has_one :account
 
     geocoded_by :address do |obj, results|
-        if geo = results.first
-            obj.street = geo.street_address
-            obj.city = geo.city
-            obj.state = geo.state
-            obj.country = geo.country 
-            obj.zipcode = geo.postal_code
-            obj.lat = geo.latitude
-            obj.lng = geo.longitude
-            obj.address = [obj.zipcode, obj.country, obj.state, obj.city, obj.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
+        begin
+            if geo = results.first
+                obj.street = geo.street_address
+                obj.city = geo.city
+                obj.state = geo.state
+                obj.country = geo.country 
+                obj.zipcode = geo.postal_code
+                obj.lat = geo.latitude
+                obj.lng = geo.longitude
+                obj.address = [obj.zipcode, obj.country, obj.state, obj.city, obj.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
+            end
+        rescue => exception          
         end
     end
     reverse_geocoded_by :lat, :lng do |obj, results|
-        if geo = results.first
-            obj.street = geo.street_address
-            obj.city = geo.city
-            obj.state = geo.state
-            obj.country = geo.country 
-            obj.zipcode = geo.postal_code
-            obj.lat = geo.latitude
-            obj.lng = geo.longitude
-            obj.address = [obj.zipcode, obj.country, obj.state, obj.city, obj.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
+        begin
+            if geo = results.first
+                obj.street = geo.street_address
+                obj.city = geo.city
+                obj.state = geo.state
+                obj.country = geo.country 
+                obj.zipcode = geo.postal_code
+                obj.lat = geo.latitude
+                obj.lng = geo.longitude
+                obj.address = [obj.zipcode, obj.country, obj.state, obj.city, obj.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
+            end
+        rescue => exception          
         end
     end
     after_validation :geocode, :reverse_geocode

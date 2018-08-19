@@ -44,18 +44,7 @@ class Event < ApplicationRecord
   belongs_to :image, optional: true
 
   geocoded_by :address do |obj, results|
-    if geo = results.first
-        obj.street = geo.street_address
-        obj.city = geo.city
-        obj.state = geo.state
-        obj.country = geo.country 
-        obj.zipcode = geo.postal_code
-        obj.city_lat = geo.latitude
-        obj.city_lng = geo.longitude
-        obj.address = [obj.zipcode, obj.country, obj.state, obj.city, obj.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
-    end
-  end
-  reverse_geocoded_by :city_lat, :city_lng do |obj, results|
+    begin
       if geo = results.first
           obj.street = geo.street_address
           obj.city = geo.city
@@ -66,6 +55,23 @@ class Event < ApplicationRecord
           obj.city_lng = geo.longitude
           obj.address = [obj.zipcode, obj.country, obj.state, obj.city, obj.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
       end
+    rescue => exception          
+    end   
+  end
+  reverse_geocoded_by :city_lat, :city_lng do |obj, results|
+    begin  
+        if geo = results.first   
+          obj.street = geo.street_address
+          obj.city = geo.city
+          obj.state = geo.state
+          obj.country = geo.country 
+          obj.zipcode = geo.postal_code
+          obj.city_lat = geo.latitude
+          obj.city_lng = geo.longitude
+          obj.address = [obj.zipcode, obj.country, obj.state, obj.city, obj.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')      
+      end
+    rescue => exception          
+    end   
   end
   after_validation :geocode, :reverse_geocode
 
