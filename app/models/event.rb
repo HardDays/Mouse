@@ -140,7 +140,7 @@ class Event < ApplicationRecord
       res[:vr_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'vr'}).sum('tickets.count')
     elsif options[:analytics]
       # res[:location] = venue.address if venue
-      res[:comments] = comments.count
+      res[:comments] = 0# comments.count
       res[:likes] = likes.count
       res[:purchased_tickets] = tickets.joins(:fan_tickets).count
       res[:in_person_tickets_sold] = in_person_sold

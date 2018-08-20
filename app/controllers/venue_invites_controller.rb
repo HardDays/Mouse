@@ -36,6 +36,12 @@ class VenueInvitesController < ApplicationController
     summary "Create venue invite"
     param :form, :account_id, :integer, :required, "Accountn id"
     param :form, :description, :string, :required, "Description"
+    param :form, :email, :string, :optional, "Email"
+    param :form, :name, :string, :optional, "Name"
+    param :form, :facebook, :string, :optional, "Facebook"
+    param :form, :twitter, :string, :optional, "Twitter"
+    param :form, :vk, :string, :optional, "Vk"
+    param :form, :youtube, :string, :optional, "Youtube"
     param :form, :links, :string, :optional, "Links to venue"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
@@ -86,6 +92,6 @@ class VenueInvitesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def venue_invite_params
-      params.permit(:description, :links)
+      params.permit(:description, :links, :email, :name, :vk, :youtube, :twitter, :facebook)
     end
 end

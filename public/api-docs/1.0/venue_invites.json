@@ -66,6 +66,48 @@
             },
             {
               "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "type": "string",
+              "description": "Name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "facebook",
+              "type": "string",
+              "description": "Facebook",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "twitter",
+              "type": "string",
+              "description": "Twitter",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "vk",
+              "type": "string",
+              "description": "Vk",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "youtube",
+              "type": "string",
+              "description": "Youtube",
+              "required": false
+            },
+            {
+              "paramType": "form",
               "name": "links",
               "type": "string",
               "description": "Links to venue",

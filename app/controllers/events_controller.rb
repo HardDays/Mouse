@@ -130,10 +130,12 @@ class EventsController < ApplicationController
 
     forbidden = check_params
 
-    @event.assign_attributes(event_params)
+    upd_params = @event.is_active ? active_event_params : event_params
+
+    @event.assign_attributes(upd_params)
     changed = @event.changed
 
-    if not forbidden and @event.update(event_params)
+    if not forbidden and @event.update(upd_params)
       if @event.is_active
         changed.each do |param|
           if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
@@ -488,23 +490,27 @@ class EventsController < ApplicationController
     params.permit(:time_frame, :is_personal, :estimated_price, :message)
   end
 
-    def event_params
+  def active_event_params
+    params.permit(:description)
+  end
+
+  def event_params
       params.permit(:name, :tagline, :hashtag, :description, :funding_from, :funding_to,
                     :funding_goal, :comments_available, :updates_available, :date_from, :date_to,
                     :event_season, :event_year, :event_length, :event_time, :is_crowdfunding_event,
                     :city_lat, :city_lng, :address, :artists_number, :video_link, :additional_cost,
                     :family_and_friends_amount, :currency, :total)
-    end
+  end
 
-    def authorize
+  def authorize
       @user = AuthorizeHelper.authorize(request)
       return @user != nil
-    end
+  end
 
-    def authorize_user
+  def authorize_user
       if request.headers['Authorization']
         @user = AuthorizeHelper.authorize(request)
         return @user
       end
-    end
+  end
 end

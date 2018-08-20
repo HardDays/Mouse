@@ -220,16 +220,9 @@
             },
             {
               "paramType": "form",
-              "name": "ticket_id",
-              "type": "integer",
-              "description": "Ticket id",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "count",
-              "type": "integer",
-              "description": "Count of tickets",
+              "name": "tickets",
+              "type": "string",
+              "description": "Array of ftickets [{\"ticket_id\": 1, \"count\": 5}, ...]",
               "required": true
             },
             {
