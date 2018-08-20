@@ -141,7 +141,7 @@ class Event < ApplicationRecord
     elsif options[:analytics]
       # res[:location] = venue.address if venue
       res[:comments] = 0# comments.count
-      res[:likes] = likes.count
+      res[:likes] = 0 #likes.count
       res[:purchased_tickets] = tickets.joins(:fan_tickets).count
       res[:in_person_tickets_sold] = in_person_sold
       res[:vr_tickets_sold] = vr_sold
