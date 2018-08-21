@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180820091307) do
+ActiveRecord::Schema.define(version: 20180821142751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -573,6 +573,7 @@ ActiveRecord::Schema.define(version: 20180820091307) do
     t.integer "preferred_distance", default: 0
     t.integer "preferred_currency", default: 0
     t.string "preferred_time"
+    t.string "facebook_id"
   end
 
   create_table "venue_dates", force: :cascade do |t|

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   post 'auth/vk', action: :login_vk, controller: 'authenticate'
   post 'auth/google', action: :login_google, controller: 'authenticate'
   post 'auth/twitter', action: :login_twitter, controller: 'authenticate'
+  post 'auth/facebook', action: :login_facebook, controller: 'authenticate'
   post 'auth/logout', action: :logout, controller: 'authenticate'
 
   #User routes

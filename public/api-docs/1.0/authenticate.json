@@ -163,6 +163,32 @@
       ]
     },
     {
+      "path": "/auth/facebook.json",
+      "operations": [
+        {
+          "summary": "Authorize by facebook",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "access_token",
+              "type": "string",
+              "description": "Access token from fb",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Authenticate#login_facebook",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/auth/logout.json",
       "operations": [
         {

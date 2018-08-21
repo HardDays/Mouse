@@ -202,10 +202,25 @@ class AuthenticateController < ApplicationController
 	# POST /auth/login_facebook
 	swagger_api :login_facebook do
 		summary "Authorize by facebook"
+		param :form, :access_token, :string, :required, "Access token from fb"
 		response :unauthorized
 	end
 	def login_facebook
+		graph = Koala::Facebook::API.new(params[:access_token])
+		profile = graph.get_object("me?fields=name")
 		
+		@user = User.find_by(facebook_id: profile['id'])
+		if not @user
+			@user = User.new(facebook_id: profile['id'])
+
+			if not @user.save(validate: false)
+				render status: :unauthorized and return
+			end
+		end
+
+		token = AuthenticateHelper.process_token(request, @user)
+		render json: {token: token.token} , status: :ok
+
 	end
 
 	# POST /auth/logout

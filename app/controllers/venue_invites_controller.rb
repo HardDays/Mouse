@@ -35,7 +35,7 @@ class VenueInvitesController < ApplicationController
   swagger_api :create do
     summary "Create venue invite"
     param :form, :account_id, :integer, :required, "Accountn id"
-    param :form, :description, :string, :required, "Description"
+    param :form, :description, :string, :optional, "Description"
     param :form, :email, :string, :optional, "Email"
     param :form, :name, :string, :optional, "Name"
     param :form, :facebook, :string, :optional, "Facebook"
