@@ -206,8 +206,13 @@ class AuthenticateController < ApplicationController
 		response :unauthorized
 	end
 	def login_facebook
-		graph = Koala::Facebook::API.new(params[:access_token])
-		profile = graph.get_object("me?fields=name")
+		profile = {}
+		begin
+			graph = Koala::Facebook::API.new(params[:access_token])
+			profile = graph.get_object("me?fields=name")
+		rescue
+			render json: :unauthorized and return
+		end
 		
 		@user = User.find_by(facebook_id: profile['id'])
 		if not @user
