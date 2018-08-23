@@ -12,6 +12,20 @@ class UsersController < ApplicationController
     render json: @user, except: :password
   end
 
+  # GET /users/ip_location
+  swagger_api :get_location do
+    summary "Retrives user geolocation"
+    response :unauthorized
+  end
+  def get_location
+    begin
+      results = Geocoder.search(request.remote_ip)
+      render json: {location: results.first.coordinates}
+    rescue 
+      render status: :not_found
+    end 
+  end
+
   # POST /users/create
   swagger_api :create do
     summary "Creates user credential for login"

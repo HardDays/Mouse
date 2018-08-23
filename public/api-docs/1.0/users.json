@@ -78,6 +78,23 @@
       ]
     },
     {
+      "path": "/users/ip_location.json",
+      "operations": [
+        {
+          "summary": "Retrives user geolocation",
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Users#get_location",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/users/me.json",
       "operations": [
         {
