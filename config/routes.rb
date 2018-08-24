@@ -41,9 +41,11 @@ Rails.application.routes.draw do
     resources :inbox_messages do
       collection do
         get :my
+        get :unread_count
       end
       member do
         post :change_responce_time
+        post :read
       end
     end
   end

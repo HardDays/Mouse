@@ -11,6 +11,12 @@ class InboxMessage < ApplicationRecord
   has_one :request_message, dependent: :destroy
   has_one :feedback_message, foreign_key: 'inbox_message_id', class_name: 'Feedback', dependent: :destroy
 
+  before_create :set_default
+
+  def set_default
+    self.is_receiver_read = false
+  end
+
   def get_ancestor
     if self.reply
       return [self.reply] + self.reply.get_ancestor

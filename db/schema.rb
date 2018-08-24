@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180821142751) do
+ActiveRecord::Schema.define(version: 20180824155300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -409,6 +409,7 @@ ActiveRecord::Schema.define(version: 20180821142751) do
     t.integer "admin_id"
     t.integer "message_id"
     t.boolean "is_parent", default: true
+    t.boolean "is_receiver_read"
   end
 
   create_table "likes", force: :cascade do |t|
