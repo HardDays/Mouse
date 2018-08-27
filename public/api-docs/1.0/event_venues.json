@@ -1,0 +1,716 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "event_venues",
+  "apis": [
+    {
+      "path": "/events/{event_id}/venue/{id}/send_request.json",
+      "operations": [
+        {
+          "summary": "Send request to the venue",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Authorized account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "time_frame_range",
+              "type": "integer",
+              "description": "Time frame to answer range",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "hour",
+                  "day",
+                  "week",
+                  "month"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "time_frame_number",
+              "type": "integer",
+              "description": "Time frame to answer",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "is_personal",
+              "type": "boolean",
+              "description": "Is message personal",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "estimated_price",
+              "type": "integer",
+              "description": "Estimated price to perform",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "message",
+              "type": "string",
+              "description": "Additional text",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "EventVenues#send_request",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}/owner_accept.json",
+      "operations": [
+        {
+          "summary": "Accept venue for event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "datetime_from",
+              "type": "datetime",
+              "description": "Date and time of performance",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "datetime_to",
+              "type": "datetime",
+              "description": "Date and time of performance",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Authorized account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "message_id",
+              "type": "integer",
+              "description": "Inbox message id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "EventVenues#owner_accept",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}/owner_decline.json",
+      "operations": [
+        {
+          "summary": "Decline venue for event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue account id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Authorized account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "reason",
+              "type": "string",
+              "description": "Reason",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "price",
+                  "location",
+                  "time",
+                  "other"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "message_id",
+              "type": "integer",
+              "description": "Inbox message id",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "additional_text",
+              "type": "string",
+              "description": "Message",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "EventVenues#owner_decline",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}/venue_accept.json",
+      "operations": [
+        {
+          "summary": "Venue accepts request",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_date_from",
+              "type": "datetime",
+              "description": "Preferred date from",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_date_to",
+              "type": "datetime",
+              "description": "Preferred date to",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "price",
+              "type": "integer",
+              "description": "Price",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "other_price",
+              "type": "integer",
+              "description": "Other price",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "message_id",
+              "type": "integer",
+              "description": "Inbox message id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Venue auth key",
+              "required": true
+            }
+          ],
+          "nickname": "EventVenues#venue_accept",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}/venue_decline.json",
+      "operations": [
+        {
+          "summary": "Venue declines request",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "reason",
+              "type": "string",
+              "description": "Reason",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "price",
+                  "location",
+                  "time",
+                  "other"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "additional_text",
+              "type": "string",
+              "description": "Message",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "message_id",
+              "type": "integer",
+              "description": "Inbox message id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Venue auth key",
+              "required": true
+            }
+          ],
+          "nickname": "EventVenues#venue_decline",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}/resend_message.json",
+      "operations": [
+        {
+          "summary": "Resend message",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "time_frame_range",
+              "type": "integer",
+              "description": "Time frame to answer range",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "hour",
+                  "day",
+                  "week",
+                  "month"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "time_frame_number",
+              "type": "integer",
+              "description": "Time frame to answer",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Authorized account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "EventVenues#resend_message",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}/set_active.json",
+      "operations": [
+        {
+          "summary": "Set venue active",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Event owner id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Event owner auth key",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "EventVenues#venue_set_active",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}/remove_active.json",
+      "operations": [
+        {
+          "summary": "Remove active venue",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Event owner id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Event owner auth key",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "EventVenues#venue_remove_active",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue.json",
+      "operations": [
+        {
+          "summary": "Add venue to event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Authorized account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "venue_id",
+              "type": "integer",
+              "description": "Venue account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "price",
+              "type": "integer",
+              "description": "Estimated price to perform",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "EventVenues#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/venue/{id}.json",
+      "operations": [
+        {
+          "summary": "Remove venue from event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Event owner id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Event owner auth key",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "EventVenues#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

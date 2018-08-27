@@ -1,0 +1,179 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "images",
+  "apis": [
+    {
+      "path": "/images/{id}.json",
+      "operations": [
+        {
+          "summary": "Get image object",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Image id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Images#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/images/{id}/full.json",
+      "operations": [
+        {
+          "summary": "Get full image",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Image id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Images#full",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/images/{id}/preview.json",
+      "operations": [
+        {
+          "summary": "Get preview of image object",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Image id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "width",
+              "type": "integer",
+              "description": "Width to crop",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "height",
+              "type": "integer",
+              "description": "Height to crop",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Images#preview",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/images/{id}/size.json",
+      "operations": [
+        {
+          "summary": "Get full image with size",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Image id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Images#full_with_size",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/images/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete image",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Image id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account/Event owner id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Images#delete_image",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

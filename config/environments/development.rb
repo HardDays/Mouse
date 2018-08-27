@@ -1,3 +1,5 @@
+require 'vkontakte_api'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -37,7 +39,19 @@ Rails.application.configure do
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address              => "smtp.gmail.com",
+    :port                 => 587,
+    :user_name            => 'mousereminder@gmail.com',
+    :password             =>  ENV['EMAIL_PASSWORD'],
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  }
 
+  VkontakteApi.configure do |config|
+    config.api_version = '5.73'
+  end
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 

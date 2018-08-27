@@ -1,0 +1,114 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "phone_validations",
+  "apis": [
+    {
+      "path": "/phone_validations/codes.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of phone codes",
+          "nickname": "PhoneValidations#get_codes",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/phone_validations/new_codes.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of phone codes",
+          "nickname": "PhoneValidations#get_new_codes",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/phone_validations/resend.json",
+      "operations": [
+        {
+          "summary": "Request code for validation",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "phone",
+              "type": "string",
+              "description": "Phone number",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "PhoneValidations#resend",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/phone_validations.json",
+      "operations": [
+        {
+          "summary": "Request code for validation",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "phone",
+              "type": "string",
+              "description": "Phone number",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "PhoneValidations#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/phone_validations.json",
+      "operations": [
+        {
+          "summary": "Send validation code from SMS",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "phone",
+              "type": "string",
+              "description": "Phone number",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "code",
+              "type": "string",
+              "description": "Code",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "PhoneValidations#update",
+          "method": "patch"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

@@ -1,0 +1,452 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "admin_events",
+  "apis": [
+    {
+      "path": "/admin/events/new_count.json",
+      "operations": [
+        {
+          "summary": "Get number of new events added",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminEvents#new_count",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/new_status.json",
+      "operations": [
+        {
+          "summary": "Get events analytics",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "by",
+              "type": "string",
+              "description": "Data by",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "day",
+                  "week",
+                  "month",
+                  "year",
+                  "all"
+                ]
+              }
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminEvents#new_status",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/counts.json",
+      "operations": [
+        {
+          "summary": "Get events analytics",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminEvents#counts",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/requests.json",
+      "operations": [
+        {
+          "summary": "Get all event requests",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Search text",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "event_type",
+              "type": "string",
+              "description": "Type of events",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "all",
+                  "crowdfunding",
+                  "regular"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "status",
+              "type": "string",
+              "description": "Event status",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "just_added",
+                  "pending",
+                  "approved",
+                  "denied",
+                  "active",
+                  "inactive"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminEvents#event_requests",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/individual.json",
+      "operations": [
+        {
+          "summary": "Get top 5 events analytics",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Search text",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "event_type",
+              "type": "string",
+              "description": "Array of type of events [:viewed, :liked, :commented, :crowdfund, :regular, :successful, :pending, :failed]",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "sort_by",
+              "type": "string",
+              "description": "Sort by",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "name",
+                  "date"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminEvents#individual",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/graph.json",
+      "operations": [
+        {
+          "summary": "Get events info for graph",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "by",
+              "type": "string",
+              "description": "Data by",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "day",
+                  "week",
+                  "month",
+                  "year",
+                  "all"
+                ]
+              }
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "AdminEvents#graph",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/{id}.json",
+      "operations": [
+        {
+          "summary": "Retrieve event by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "AdminEvents#get_event",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/{id}/approve.json",
+      "operations": [
+        {
+          "summary": "Approve event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 405,
+              "responseModel": null,
+              "message": "Method Not Allowed"
+            }
+          ],
+          "nickname": "AdminEvents#approve",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/{id}/deny.json",
+      "operations": [
+        {
+          "summary": "Deny event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 405,
+              "responseModel": null,
+              "message": "Method Not Allowed"
+            }
+          ],
+          "nickname": "AdminEvents#deny",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/events/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminEvents#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

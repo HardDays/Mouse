@@ -1,0 +1,228 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "venue_dates",
+  "apis": [
+    {
+      "path": "/accounts/{account_id}/venue_dates/from_array.json",
+      "operations": [
+        {
+          "summary": "Create venue date",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "dates",
+              "type": "string",
+              "description": "Array of date objects [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',\n                                                              'is_available': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "VenueDates#create_from_array",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/venue_dates.json",
+      "operations": [
+        {
+          "summary": "Retrieve venue dates",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "current_date",
+              "type": "datetime",
+              "description": "Current date",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "VenueDates#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/venue_dates.json",
+      "operations": [
+        {
+          "summary": "Create venue date",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "date",
+              "type": "datetime",
+              "description": "Date",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "price_for_daytime",
+              "type": "integer",
+              "description": "Price for daytime",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_for_nighttime",
+              "type": "integer",
+              "description": "Price for nighttime",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_available",
+              "type": "boolean",
+              "description": "Is available flag",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "VenueDates#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/venue_dates/{id}.json",
+      "operations": [
+        {
+          "summary": "Destroy venue date",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Venue id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "datetime",
+              "description": "Date",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "VenueDates#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

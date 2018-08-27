@@ -1,0 +1,281 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "admin_feedback",
+  "apis": [
+    {
+      "path": "/admin/feedbacks.json",
+      "operations": [
+        {
+          "summary": "Retrieve feedback list",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "feedback_type",
+              "type": "string",
+              "description": "Type of feedback",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "all",
+                  "bug",
+                  "enhancement",
+                  "compliment"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "AdminFeedback#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/feedbacks/overall.json",
+      "operations": [
+        {
+          "summary": "Overall score",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "AdminFeedback#overall",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/feedbacks/counts.json",
+      "operations": [
+        {
+          "summary": "Get number of feedback of each type",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "AdminFeedback#counts",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/feedbacks/graph.json",
+      "operations": [
+        {
+          "summary": "Get feedback info for graph",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "by",
+              "type": "string",
+              "description": "Data by",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "day",
+                  "week",
+                  "month",
+                  "year",
+                  "all"
+                ]
+              }
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "AdminFeedback#graph",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/feedbacks/{id}.json",
+      "operations": [
+        {
+          "summary": "Retrieve question item",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminFeedback#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/feedbacks/{id}/thank_you.json",
+      "operations": [
+        {
+          "summary": "Reply on question",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "message",
+              "type": "string",
+              "description": "Message",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminFeedback#thank_you",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/feedbacks/{id}.json",
+      "operations": [
+        {
+          "summary": "Destroy question",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminFeedback#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

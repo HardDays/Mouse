@@ -1,0 +1,116 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "apis": [
+    {
+      "path": "/api-docs/1.0/questions.{format}",
+      "description": "Questions"
+    },
+    {
+      "path": "/api-docs/1.0/feedbacks.{format}",
+      "description": "Feedback"
+    },
+    {
+      "path": "/api-docs/1.0/authenticate.{format}",
+      "description": "Authentification"
+    },
+    {
+      "path": "/api-docs/1.0/users.{format}",
+      "description": "Users"
+    },
+    {
+      "path": "/api-docs/1.0/feed.{format}",
+      "description": "Feed"
+    },
+    {
+      "path": "/api-docs/1.0/venue_dates.{format}",
+      "description": "Venue dates"
+    },
+    {
+      "path": "/api-docs/1.0/inbox_messages.{format}",
+      "description": "Inbox messages"
+    },
+    {
+      "path": "/api-docs/1.0/accounts.{format}",
+      "description": "Accounts"
+    },
+    {
+      "path": "/api-docs/1.0/images.{format}",
+      "description": "Images"
+    },
+    {
+      "path": "/api-docs/1.0/artist_riders.{format}",
+      "description": "Artist Riders"
+    },
+    {
+      "path": "/api-docs/1.0/phone_validations.{format}",
+      "description": "Phone validation"
+    },
+    {
+      "path": "/api-docs/1.0/events.{format}",
+      "description": "Events"
+    },
+    {
+      "path": "/api-docs/1.0/tickets.{format}",
+      "description": "Tickets"
+    },
+    {
+      "path": "/api-docs/1.0/comments.{format}",
+      "description": "Comments"
+    },
+    {
+      "path": "/api-docs/1.0/likes.{format}",
+      "description": "Likes"
+    },
+    {
+      "path": "/api-docs/1.0/event_venues.{format}",
+      "description": "Event venues"
+    },
+    {
+      "path": "/api-docs/1.0/event_artists.{format}",
+      "description": "Event artists"
+    },
+    {
+      "path": "/api-docs/1.0/genres.{format}",
+      "description": "Genres"
+    },
+    {
+      "path": "/api-docs/1.0/fan_tickets.{format}",
+      "description": "FanTickets"
+    },
+    {
+      "path": "/api-docs/1.0/admin.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_accounts.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_events.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_questions.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_reply_templates.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_feedback.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_revenue.{format}",
+      "description": "AdminPanel"
+    }
+  ],
+  "authorizations": null,
+  "info": {
+    "title": "Mouse App",
+    "description": ""
+  }
+}

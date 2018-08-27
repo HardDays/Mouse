@@ -1,0 +1,2 @@
+class ForgotPassAttempt < ApplicationRecord
+end

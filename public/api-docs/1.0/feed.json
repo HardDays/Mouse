@@ -1,0 +1,52 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "feed",
+  "apis": [
+    {
+      "path": "/accounts/{account_id}/feed.json",
+      "operations": [
+        {
+          "summary": "Account's feed",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Feed#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/feed/action_types.json",
+      "operations": [
+        {
+          "summary": "Action types",
+          "nickname": "Feed#action_types",
+          "method": "get"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

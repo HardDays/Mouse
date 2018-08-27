@@ -150,6 +150,13 @@ class ArtistsController < ApplicationController
             if @account.artist
                 @artist = @account.artist
                 @artist.update(artist_params)
+
+                params.each do |param|
+                    if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
+                        action = HistoryAction.new(action: :update, account_id: @account.id, object_id: @account.id, object_type: :artist, field: param)
+                        action.save
+                    end
+                end
             else
                 @artist = Artist.new(artist_params)
                 @artist.save

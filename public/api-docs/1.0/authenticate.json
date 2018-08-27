@@ -1,0 +1,193 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "authenticate",
+  "apis": [
+    {
+      "path": "/auth/login.json",
+      "operations": [
+        {
+          "summary": "Authorize by username and password",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "user_name",
+              "type": "string",
+              "description": "Username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "password",
+              "type": "password",
+              "description": "Password",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Authenticate#login",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/auth/forgot_password.json",
+      "operations": [
+        {
+          "summary": "Remind password",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "user_name",
+              "type": "string",
+              "description": "Username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Authenticate#forgot_password",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/auth/vk.json",
+      "operations": [
+        {
+          "summary": "Authorize by VK",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "access_token",
+              "type": "string",
+              "description": "Access token returned from VK",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Authenticate#login_vk",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/auth/google.json",
+      "operations": [
+        {
+          "summary": "Authorize by google",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "access_token",
+              "type": "string",
+              "description": "Access token returned by authorization from google",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Authenticate#login_google",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/auth/twitter.json",
+      "operations": [
+        {
+          "summary": "Authorize by twitter",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "access_token",
+              "type": "string",
+              "description": "Access token from twitter",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "access_token_secret",
+              "type": "string",
+              "description": "Access token secret from twitter",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Authenticate#login_twitter",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/auth/logout.json",
+      "operations": [
+        {
+          "summary": "Logout",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 400,
+              "responseModel": null,
+              "message": "Bad Request"
+            }
+          ],
+          "nickname": "Authenticate#logout",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

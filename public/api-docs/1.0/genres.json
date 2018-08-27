@@ -1,0 +1,52 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "genres",
+  "apis": [
+    {
+      "path": "/genres/all.json",
+      "operations": [
+        {
+          "summary": "Get genres list",
+          "nickname": "Genres#all",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/genres/artists.json",
+      "operations": [
+        {
+          "summary": "Get list of artist by genres",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "genres",
+              "type": "string",
+              "description": "Array of genres ['rap', 'rock', ....]",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "nickname": "Genres#artists",
+          "method": "get"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

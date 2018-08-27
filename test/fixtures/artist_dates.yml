@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  artist_id: 1
+  begin_date: 2018-03-05
+  end_date: 2018-03-05
+
+two:
+  artist_id: 1
+  begin_date: 2018-03-05
+  end_date: 2018-03-05

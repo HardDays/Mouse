@@ -1,0 +1,327 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "admin",
+  "apis": [
+    {
+      "path": "/admin.json",
+      "operations": [
+        {
+          "summary": "Creates admin credential for login",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "image_base64",
+              "type": "string",
+              "description": "Image base64 string",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "first_name",
+              "type": "string",
+              "description": "First name",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "last_name",
+              "type": "string",
+              "description": "Last name",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "user_name",
+              "type": "string",
+              "description": "Mouse username",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "password",
+              "type": "password",
+              "description": "Your password",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "password_confirmation",
+              "type": "password",
+              "description": "Confirm your password",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "register_phone",
+              "type": "string",
+              "description": "Phone number",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "address",
+              "type": "string",
+              "description": "Address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "other_address",
+              "type": "string",
+              "description": "Other address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "city",
+              "type": "string",
+              "description": "City",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "country",
+              "type": "string",
+              "description": "Country",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "state",
+              "type": "string",
+              "description": "State",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Admin#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/{id}.json",
+      "operations": [
+        {
+          "summary": "Updates admin credential for login",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Admin id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "image_base64",
+              "type": "string",
+              "description": "Image base64 string",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "first_name",
+              "type": "string",
+              "description": "First name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "last_name",
+              "type": "string",
+              "description": "Last name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "user_name",
+              "type": "string",
+              "description": "Mouse username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "register_phone",
+              "type": "string",
+              "description": "Phone number",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "address",
+              "type": "string",
+              "description": "Address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "address_other",
+              "type": "string",
+              "description": "Other address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "city",
+              "type": "string",
+              "description": "City",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "country",
+              "type": "string",
+              "description": "Country",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "state",
+              "type": "string",
+              "description": "State",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Admin#update",
+          "method": "patch"
+        }
+      ]
+    },
+    {
+      "path": "/admin/statuses.json",
+      "operations": [
+        {
+          "summary": "Retrieve statuses values",
+          "nickname": "Admin#statuses",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/{user_id}/my.json",
+      "operations": [
+        {
+          "summary": "Get my admin account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "user_id",
+              "type": "integer",
+              "description": "User id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Admin#get_my",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/make_superuser.json",
+      "operations": [
+        {
+          "summary": "Give user a superuser role",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "user_id",
+              "type": "integer",
+              "description": "User id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "first_name",
+              "type": "string",
+              "description": "First name",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "last_name",
+              "type": "string",
+              "description": "Last name",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "user_name",
+              "type": "string",
+              "description": "Mouse username",
+              "required": true
+            }
+          ],
+          "nickname": "Admin#make_superuser",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

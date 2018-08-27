@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  prefered_date_from: 2018-03-17 15:59:45
+  prefered_date_to: 2018-03-17 15:59:45
+  price: 1
+  travel_price: 1
+  hotel_price: 1
+  transportation_price: 1
+  band_price: 1
+  other_price: 1
+
+two:
+  prefered_date_from: 2018-03-17 15:59:45
+  prefered_date_to: 2018-03-17 15:59:45
+  price: 1
+  travel_price: 1
+  hotel_price: 1
+  transportation_price: 1
+  band_price: 1
+  other_price: 1

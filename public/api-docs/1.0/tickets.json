@@ -1,0 +1,379 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "tickets",
+  "apis": [
+    {
+      "path": "/events/{event_id}/tickets.json",
+      "operations": [
+        {
+          "summary": "Creates ticket for event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Creator id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "type": "string",
+              "description": "Ticket name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price",
+              "type": "integer",
+              "description": "Ticket price",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "count",
+              "type": "integer",
+              "description": "Ticket count",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "type",
+              "type": "string",
+              "description": "Ticket type",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "in_person",
+                  "vr"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "is_promotional",
+              "type": "boolean",
+              "description": "Promotional ticket",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "promotional_description",
+              "type": "string",
+              "description": "Promotional ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "promotional_date_from",
+              "type": "datetime",
+              "description": "Promotional ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "promotional_date_to",
+              "type": "datetime",
+              "description": "Promotional ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_for_personal_use",
+              "type": "boolean",
+              "description": "Ticket for personal use",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Tickets#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/tickets/{id}.json",
+      "operations": [
+        {
+          "summary": "Event's ticket",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Ticket id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Creator id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Tickets#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/tickets/{id}.json",
+      "operations": [
+        {
+          "summary": "Update event's ticket",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Ticket id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Creator id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "type": "string",
+              "description": "Ticket name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price",
+              "type": "integer",
+              "description": "Ticket price",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "count",
+              "type": "integer",
+              "description": "Ticket count",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "type",
+              "type": "string",
+              "description": "Ticket type",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "in_person",
+                  "vr"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "is_promotional",
+              "type": "boolean",
+              "description": "Promotional ticket",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "promotional_description",
+              "type": "string",
+              "description": "Promotional ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "promotional_date_from",
+              "type": "datetime",
+              "description": "Promotional ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "promotional_date_to",
+              "type": "datetime",
+              "description": "Promotional ticket description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_for_personal_use",
+              "type": "boolean",
+              "description": "Ticket for personal use",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Tickets#update",
+          "method": "patch"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/tickets/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete event's ticket",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Ticket id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Creator id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Tickets#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

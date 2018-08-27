@@ -1,6 +1,9 @@
 class VenueOfficeHour < ApplicationRecord
     belongs_to :venue
-     def as_json(options={})
+
+    enum day: [:sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday], _prefix: true
+
+    def as_json(options={})
         res = super
         res.delete('id')
         res.delete('venue_id')

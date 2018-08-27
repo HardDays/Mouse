@@ -1,0 +1,2376 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://mouse-back.herokuapp.com",
+  "resourcePath": "accounts",
+  "apis": [
+    {
+      "path": "/accounts.json",
+      "operations": [
+        {
+          "summary": "Creates new account",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "user_name",
+              "type": "string",
+              "description": "Account's name",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "display_name",
+              "type": "string",
+              "description": "Account's name to display",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "phone",
+              "type": "string",
+              "description": "Account's phone",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_base64",
+              "type": "string",
+              "description": "Image base64 string",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_description",
+              "type": "string",
+              "description": "Image description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_type",
+              "type": "string",
+              "description": "Image type",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "outside_venue",
+                  "stage",
+                  "seating",
+                  "bar",
+                  "audience",
+                  "dressing_room",
+                  "other"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "image_type_description",
+              "type": "string",
+              "description": "Image other type description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_type",
+              "type": "string",
+              "description": "Account type",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "venue",
+                  "artist",
+                  "fan"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "image",
+              "type": "file",
+              "description": "Image",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "venue_video_links",
+              "type": "string",
+              "description": "Array of links",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_videos",
+              "type": "string",
+              "description": "Array of link objects [{'name': '', 'album_name': '', 'link': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "bio",
+              "type": "string",
+              "description": "Fan bio",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "genres",
+              "type": "string",
+              "description": "Fan/Artist/Venue (public only) Genres ['genre1', 'genre2', ...]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "address",
+              "type": "string",
+              "description": "Fan/Venue address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_address",
+              "type": "string",
+              "description": "Artist preferred address to perform",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "lat",
+              "type": "float",
+              "description": "Fan/Artist/Venue lat",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "lng",
+              "type": "float",
+              "description": "Fan/Artist/Venue lng",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "first_name",
+              "type": "string",
+              "description": "Fan/Artist first name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "last_name",
+              "type": "string",
+              "description": "Fan/Artist last name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Venue description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "fax",
+              "type": "string",
+              "description": "Venue fax (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "bank_name",
+              "type": "string",
+              "description": "Venue bank name (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_bank_number",
+              "type": "string",
+              "description": "Venue account bank number (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_bank_routing_number",
+              "type": "string",
+              "description": "Venue account routing number (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "capacity",
+              "type": "integer",
+              "description": "Venue capacity",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "num_of_bathrooms",
+              "type": "integer",
+              "description": "Venue num of bathrooms (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "min_age",
+              "type": "integer",
+              "description": "Venue min age (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "venue_type",
+              "type": "string",
+              "description": "Venue type",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "public_venue",
+                  "private_residence"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "type_of_space",
+              "type": "string",
+              "description": "Venue type of space (public_venue only)",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "night_club",
+                  "concert_hall",
+                  "event_space",
+                  "theatre",
+                  "additional_room",
+                  "stadium_arena",
+                  "outdoor_space",
+                  "other"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "other_genre_description",
+              "type": "string",
+              "description": "Venue other genre description (for public venue if genre other)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "has_bar",
+              "type": "boolean",
+              "description": "Has venue bar? (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "located",
+              "type": "string",
+              "description": "Venue located (public_venue only)",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "indoors",
+                  "outdoors",
+                  "both"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "dress_code",
+              "type": "string",
+              "description": "Venue dress code (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "has_vr",
+              "type": "boolean",
+              "description": "Has venue vr?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "audio_description",
+              "type": "string",
+              "description": "Venue audio description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "lighting_description",
+              "type": "string",
+              "description": "Venue lighting description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "stage_description",
+              "type": "string",
+              "description": "Venue stage description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "dates",
+              "type": "string",
+              "description": "Venue dates [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',\n                                                              'is_available': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "emails",
+              "type": "string",
+              "description": "Venue dates [{'name': '', 'email': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "office_hours",
+              "type": "string",
+              "description": "Venue dates [{'begin_time': '', 'end_time': '', 'day': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "operating_hours",
+              "type": "string",
+              "description": "Venue dates [{'begin_time': '', 'end_time': '', 'day': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price",
+              "type": "integer",
+              "description": "Venue (public only) price",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "country",
+              "type": "string",
+              "description": "Venue (public only) country",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "city",
+              "type": "string",
+              "description": "Venue (public only) city",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "state",
+              "type": "string",
+              "description": "Venue (public only) state",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "street",
+              "type": "string",
+              "description": "Venue (public only) street",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "zipcode",
+              "type": "integer",
+              "description": "Venue (public only) zipcode",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "other_address",
+              "type": "string",
+              "description": "Venue (public only) other address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "minimum_notice",
+              "type": "integer",
+              "description": "Venue (public only) minimum notice time",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_flexible",
+              "type": "boolean",
+              "description": "Is venue (public only) time flexible",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_for_daytime",
+              "type": "integer",
+              "description": "Venue (public only) price for daytime",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_for_nighttime",
+              "type": "integer",
+              "description": "Venue (public only) price for nighttime",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_time_from",
+              "type": "time",
+              "description": "Venue (public only) performance time from",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_time_to",
+              "type": "time",
+              "description": "Venue (public only) performance time to",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "vr_capacity",
+              "type": "integer",
+              "description": "Venue vr tickets available",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "about",
+              "type": "string",
+              "description": "About artist",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "stage_name",
+              "type": "string",
+              "description": "Artist stage name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "manager_name",
+              "type": "string",
+              "description": "Artist'smanager name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_email",
+              "type": "string",
+              "description": "Artist's email",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "audio_links",
+              "type": "string",
+              "description": "Array of links to audio of artist [{'song_name': '', 'album_name': '', 'audio_link': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_albums",
+              "type": "string",
+              "description": "Array of artist albums objects [{'album_name': '', 'album_artwork': '', 'album_link': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "disable_dates",
+              "type": "string",
+              "description": "Artist disable dates [{'date': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_min_time",
+              "type": "integer",
+              "description": "Artist min time to perform (hr)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_max_time",
+              "type": "integer",
+              "description": "Artist max time to perform (hr)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_from",
+              "type": "integer",
+              "description": "Artist min price to perform",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_to",
+              "type": "integer",
+              "description": "Artist max time to perform",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "additional_hours_price",
+              "type": "integer",
+              "description": "Artist price for additional hours",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_hide_pricing_from_profile",
+              "type": "boolean",
+              "description": "Hide artist pricing from profile?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_hide_pricing_from_search",
+              "type": "boolean",
+              "description": "Hide artist pricing from search?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "days_to_travel",
+              "type": "integer",
+              "description": "Artist days to travel",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_perform_with_band",
+              "type": "boolean",
+              "description": "Is artist perform with band?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "can_perform_without_band",
+              "type": "boolean",
+              "description": "Can artist perform without band?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_perform_with_backing_vocals",
+              "type": "boolean",
+              "description": "Is artist perform with backing vocals?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "can_perform_without_backing_vocals",
+              "type": "boolean",
+              "description": "Can artist perform without backing vocals?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_permitted_to_stream",
+              "type": "boolean",
+              "description": "Is artist give permission to stream?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_permitted_to_advertisement",
+              "type": "boolean",
+              "description": "Is artist give permission to advertisement?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "has_conflict_contracts",
+              "type": "boolean",
+              "description": "Has artist conflict contracts to advertisement?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "conflict_companies_names",
+              "type": "string",
+              "description": "Names of artist's conflict companies",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_venue_text",
+              "type": "string",
+              "description": "Artist other preferred venue types",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "min_time_to_book",
+              "type": "integer",
+              "description": "Artist min time to book",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "min_time_to_free_cancel",
+              "type": "integer",
+              "description": "Artist min time to cancel",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "late_cancellation_fee",
+              "type": "integer",
+              "description": "Artist late cancellation fee",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "refund_policy",
+              "type": "string",
+              "description": "Artist refund policy",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_riders",
+              "type": "string",
+              "description": "Artist array of riders objects\n                                [{'rider_type': 'stage|backstage|hospitality|technical', 'uploaded_file_base64': '', 'description': '', 'is_flexible': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_venues",
+              "type": "string",
+              "description": "Array of preferred venue types",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "facebook",
+              "type": "string",
+              "description": "Artist facebook username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "twitter",
+              "type": "string",
+              "description": "Artist twitter username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "instagram",
+              "type": "string",
+              "description": "Artist instagram username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "snapchat",
+              "type": "string",
+              "description": "Artist snapchat username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "spotify",
+              "type": "string",
+              "description": "Artist spotify username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "soundcloud",
+              "type": "string",
+              "description": "Artist soundcloud username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "youtube",
+              "type": "string",
+              "description": "Artist youtube username",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}.json",
+      "operations": [
+        {
+          "summary": "Updates existing account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "user_name",
+              "type": "string",
+              "description": "Account's name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "display_name",
+              "type": "string",
+              "description": "Account's name to display",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "phone",
+              "type": "string",
+              "description": "Account's phone",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_base64",
+              "type": "string",
+              "description": "Image base64 string",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_description",
+              "type": "string",
+              "description": "Image description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_type",
+              "type": "string",
+              "description": "Image type",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "outside_venue",
+                  "stage",
+                  "seating",
+                  "bar",
+                  "audience",
+                  "dressing_room",
+                  "other"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "image_type_description",
+              "type": "string",
+              "description": "Image other type description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_type",
+              "type": "string",
+              "description": "Account type",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "venue",
+                  "artist",
+                  "fan"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "image",
+              "type": "file",
+              "description": "Image",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "venue_video_links",
+              "type": "string",
+              "description": "Array of links",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_videos",
+              "type": "string",
+              "description": "Array of link objects [{'name': '', 'album_name': '', 'link': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "bio",
+              "type": "string",
+              "description": "Fan bio",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "genres",
+              "type": "string",
+              "description": "Fan/Artist/Venue (public only) Genres ['genre1', 'genre2', ...]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "address",
+              "type": "string",
+              "description": "Fan/Venue address - full address including city, country, state, street etc",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_address",
+              "type": "string",
+              "description": "Artist preferred address to perform",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "lat",
+              "type": "float",
+              "description": "Fan/Artist/Venue lat",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "lng",
+              "type": "float",
+              "description": "Fan/Artist/Venue lng",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "first_name",
+              "type": "string",
+              "description": "Fan/Artist first name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "last_name",
+              "type": "string",
+              "description": "Fan/Artist last name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Venue description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "fax",
+              "type": "string",
+              "description": "Venue fax (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "bank_name",
+              "type": "string",
+              "description": "Venue bank name (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_bank_number",
+              "type": "string",
+              "description": "Venue account bank number (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "account_bank_routing_number",
+              "type": "string",
+              "description": "Venue account routing number (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "capacity",
+              "type": "integer",
+              "description": "Venue capacity",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "num_of_bathrooms",
+              "type": "integer",
+              "description": "Venue num of bathrooms (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "min_age",
+              "type": "integer",
+              "description": "Venue min age (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "venue_type",
+              "type": "string",
+              "description": "Venue type",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "public_venue",
+                  "private_residence"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "type_of_space",
+              "type": "string",
+              "description": "Venue type of space (public_venue only)",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "night_club",
+                  "concert_hall",
+                  "event_space",
+                  "theatre",
+                  "additional_room",
+                  "stadium_arena",
+                  "outdoor_space",
+                  "other"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "other_genre_description",
+              "type": "string",
+              "description": "Venue other genre description (for public venue if genre other)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "has_bar",
+              "type": "boolean",
+              "description": "Has venue bar? (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "located",
+              "type": "string",
+              "description": "Venue located (public_venue only)",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "indoors",
+                  "outdoors",
+                  "both"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "dress_code",
+              "type": "string",
+              "description": "Venue dress code (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "has_vr",
+              "type": "boolean",
+              "description": "Has venue vr?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "audio_description",
+              "type": "string",
+              "description": "Venue audio description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "lighting_description",
+              "type": "string",
+              "description": "Venue lighting description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "stage_description",
+              "type": "string",
+              "description": "Venue stage description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "dates",
+              "type": "string",
+              "description": "Venue dates [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',\n                                                              'is_available': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "emails",
+              "type": "string",
+              "description": "Venue dates [{'name': '', 'email': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "office_hours",
+              "type": "string",
+              "description": "Venue dates [{'begin_time': '', 'end_time': '', 'day': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "operating_hours",
+              "type": "string",
+              "description": "Venue dates [{'begin_time': '', 'end_time': '', 'day': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price",
+              "type": "integer",
+              "description": "Venue (public only) price",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "country",
+              "type": "string",
+              "description": "Venue (public only) country",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "city",
+              "type": "string",
+              "description": "Venue (public only) city",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "street",
+              "type": "string",
+              "description": "Venue (public only) street",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "state",
+              "type": "string",
+              "description": "Venue (public only) state",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "zipcode",
+              "type": "integer",
+              "description": "Venue (public only) zipcode",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "other_address",
+              "type": "string",
+              "description": "Venue (public only) other address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "minimum_notice",
+              "type": "integer",
+              "description": "Venue (public only) minimum notice time",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_flexible",
+              "type": "boolean",
+              "description": "Is venue (public only) time flexible",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_for_daytime",
+              "type": "integer",
+              "description": "Venue (public only) price for daytime",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_for_nighttime",
+              "type": "integer",
+              "description": "Venue (public only) price for nighttime",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_time_from",
+              "type": "time",
+              "description": "Venue (public only) performance time from",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_time_to",
+              "type": "time",
+              "description": "Venue (public only) performance time to",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "vr_capacity",
+              "type": "integer",
+              "description": "Venue vr tickets available",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "about",
+              "type": "string",
+              "description": "About artist",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "stage_name",
+              "type": "string",
+              "description": "Artist stage name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "manager_name",
+              "type": "string",
+              "description": "Artist's manager name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_email",
+              "type": "string",
+              "description": "Artist's email",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "audio_links",
+              "type": "string",
+              "description": "Array of links to audio of artist [{'song_name': '', 'album_name': '', 'audio_link': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_albums",
+              "type": "string",
+              "description": "Array of artist albums objects [{'album_name': '', 'album_artwork': '', 'album_link': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "disable_dates",
+              "type": "string",
+              "description": "Artist disable dates [{'date': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_min_time",
+              "type": "integer",
+              "description": "Artist min time to perform (hr)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "performance_max_time",
+              "type": "integer",
+              "description": "Artist max time to perform (hr)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_from",
+              "type": "integer",
+              "description": "Artist min price to perform",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "price_to",
+              "type": "integer",
+              "description": "Artist max time to perform",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "additional_hours_price",
+              "type": "integer",
+              "description": "Artist price for additional hours",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_hide_pricing_from_profile",
+              "type": "boolean",
+              "description": "Hide artist pricing from profile?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_hide_pricing_from_search",
+              "type": "boolean",
+              "description": "Hide artist pricing from search?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "days_to_travel",
+              "type": "integer",
+              "description": "Artist days to travel",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_perform_with_band",
+              "type": "boolean",
+              "description": "Is artist perform with band?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "can_perform_without_band",
+              "type": "boolean",
+              "description": "Can artist perform without band?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_perform_with_backing_vocals",
+              "type": "boolean",
+              "description": "Is artist perform with backing vocals?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "can_perform_without_backing_vocals",
+              "type": "boolean",
+              "description": "Can artist perform without backing vocals?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_permitted_to_stream",
+              "type": "boolean",
+              "description": "Is artist give permission to stream?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "is_permitted_to_advertisement",
+              "type": "boolean",
+              "description": "Is artist give permission to advertisement?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "has_conflict_contracts",
+              "type": "boolean",
+              "description": "Has artist conflict contracts to advertisement?",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "conflict_companies_names",
+              "type": "string",
+              "description": "Names of artist's conflict companies",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_venue_text",
+              "type": "string",
+              "description": "Artist other preferred venue types",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "min_time_to_book",
+              "type": "integer",
+              "description": "Artist min time to book",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "min_time_to_free_cancel",
+              "type": "integer",
+              "description": "Artist min time to cancel",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "late_cancellation_fee",
+              "type": "integer",
+              "description": "Artist late cancellation fee",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "refund_policy",
+              "type": "string",
+              "description": "Artist refund policy",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "artist_riders",
+              "type": "string",
+              "description": "Artist array of riders objects\n                                [{'rider_type': 'stage|backstage|hospitality|technical', 'uploaded_file_base64': '', 'description': '', 'is_flexible': ''}, {...}]",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_venues",
+              "type": "string",
+              "description": "Array of preferred venue types",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "facebook",
+              "type": "string",
+              "description": "Artist facebook username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "twitter",
+              "type": "string",
+              "description": "Artist twitter username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "instagram",
+              "type": "string",
+              "description": "Artist instagram username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "snapchat",
+              "type": "string",
+              "description": "Artist snapchat username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "spotify",
+              "type": "string",
+              "description": "Artist spotify username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "soundcloud",
+              "type": "string",
+              "description": "Artist soundcloud username",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "youtube",
+              "type": "string",
+              "description": "Artist youtube username",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#update",
+          "method": "patch"
+        }
+      ]
+    },
+    {
+      "path": "/accounts.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of accounts",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "extended",
+              "type": "boolean",
+              "description": "Need extended info",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Accounts#get_all",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/search.json",
+      "operations": [
+        {
+          "summary": "Search account",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Search query",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "type",
+              "type": "string",
+              "description": "Account type to display",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "venue",
+                  "artist",
+                  "fan"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "price_from",
+              "type": "integer",
+              "description": "Artist/Venue price from",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "price_to",
+              "type": "integer",
+              "description": "Artist/Venue price to",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "address",
+              "type": "string",
+              "description": "Artist/Venue address",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "capacity_from",
+              "type": "integer",
+              "description": "Venue capacity from",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "capacity_to",
+              "type": "integer",
+              "description": "Venue capacity to",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "types_of_space",
+              "type": "string",
+              "description": "Venue types of space array ['night_club', 'concert_hall', ...]",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "genres",
+              "type": "string",
+              "description": "Array of genres ['rap', 'rock', ....]",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "exclude_event_id",
+              "type": "integer",
+              "description": "Exclude artists/venues added to event",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "extended",
+              "type": "boolean",
+              "description": "Extended info",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "sort_by_popularity",
+              "type": "boolean",
+              "description": "Sort results by popularity",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "nickname": "Accounts#search",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/my.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of my accounts",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "extended",
+              "type": "boolean",
+              "description": "Need extended info",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "nickname": "Accounts#get_my_accounts",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}.json",
+      "operations": [
+        {
+          "summary": "Retrieve account by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "extended",
+              "type": "boolean",
+              "description": "Need extended info",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Accounts#get",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/events.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of account events",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Text to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "nickname": "Accounts#get_events",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/images.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of images",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Accounts#get_images",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/is_followed.json",
+      "operations": [
+        {
+          "summary": "Is followed",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "My account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "follower_id",
+              "type": "integer",
+              "description": "Account id to check",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#is_followed",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/followers.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of followers",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Accounts#get_followers",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/following.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of following by me",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Accounts#get_followed",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/updates.json",
+      "operations": [
+        {
+          "summary": "Retrieve account updates by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Accounts#get_updates",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/upcoming_shows.json",
+      "operations": [
+        {
+          "summary": "Get upcoming shows",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#upcoming_shows",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/follow.json",
+      "operations": [
+        {
+          "summary": "Subscribe for accounts",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "follow",
+              "type": "string",
+              "description": "Accounts ids, array: [1, 2, 3 ...]",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#follow_multiple",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/images.json",
+      "operations": [
+        {
+          "summary": "Upload image to Account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "image",
+              "type": "file",
+              "description": "Image to upload",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_base64",
+              "type": "string",
+              "description": "Image base64 string",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_description",
+              "type": "string",
+              "description": "Image description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image_type",
+              "type": "string",
+              "description": "Image type",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "outside_venue",
+                  "stage",
+                  "seating",
+                  "bar",
+                  "audience",
+                  "dressing_room",
+                  "other"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "image_type_description",
+              "type": "string",
+              "description": "Image other type description",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#upload_image",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/follow.json",
+      "operations": [
+        {
+          "summary": "Subscribe for account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "My account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "follower_id",
+              "type": "integer",
+              "description": "Following account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#follow",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/verify.json",
+      "operations": [
+        {
+          "summary": "Verify account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#verify",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/preferences.json",
+      "operations": [
+        {
+          "summary": "Set account preferences",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "preferred_username",
+              "type": "string",
+              "description": "preferred username language",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_date",
+              "type": "string",
+              "description": "Preferred date format",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_distance",
+              "type": "integer",
+              "description": "Preferred distance format",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "km",
+                  "mile"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_currency",
+              "type": "integer",
+              "description": "Preferred currency format",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "RUB",
+                  "USD",
+                  "EUR"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "preferred_time",
+              "type": "string",
+              "description": "Preferred time format",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#preferences",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/unfollow.json",
+      "operations": [
+        {
+          "summary": "Unubscribe from account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "My account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "follower_id",
+              "type": "integer",
+              "description": "Following account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 204,
+              "responseModel": null,
+              "message": "No Content"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Accounts#unfollow",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete account",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "password",
+              "type": "string",
+              "description": "Account password",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#delete",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

@@ -1,5 +1,5 @@
 class FanGenre < ApplicationRecord
-    enum genre: [:rock, :pop, :rap, :jazz]
+    enum genre: GenresHelper.all
 	validates :genre, presence: true
 
     belongs_to :fan

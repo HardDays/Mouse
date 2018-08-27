@@ -1,3 +1,3 @@
 class PhoneValidation < ApplicationRecord
-    validates :phone, presence: true
+    validates :phone, uniqueness: true, allow_nil: true
 end
