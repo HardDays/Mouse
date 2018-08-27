@@ -22,9 +22,12 @@ class EventVenuesController < ApplicationController
     
     if venue_available?
 
-      if @venue_acc.venue.venue_type == :private_residence
+      if @venue_acc.venue.venue_type == 'private_residence'
         if @venue_acc.user_id == @event.creator.user_id
           venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id, status: :owner_accepted)
+          venue_evt.save
+        
+          venue_evt.status = 'owner_accepted'
           venue_evt.save
         else
           render status: :forbidden
