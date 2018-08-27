@@ -1,0 +1,99 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://protected-island-7029.herokuapp.com",
+  "resourcePath": "comments",
+  "apis": [
+    {
+      "path": "/events/{event_id}/comments.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of comments",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "nickname": "Comments#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/comments.json",
+      "operations": [
+        {
+          "summary": "Create a comment",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "text",
+              "type": "string",
+              "description": "Text",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Comments#create",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

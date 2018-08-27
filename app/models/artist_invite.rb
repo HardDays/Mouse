@@ -1,0 +1,2 @@
+class ArtistInvite < ApplicationRecord
+end

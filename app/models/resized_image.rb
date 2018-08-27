@@ -1,0 +1,2 @@
+class ResizedImage < ApplicationRecord
+end

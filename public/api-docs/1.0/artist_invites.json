@@ -1,0 +1,204 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://protected-island-7029.herokuapp.com",
+  "resourcePath": "artist_invites",
+  "apis": [
+    {
+      "path": "/artist_invites.json",
+      "operations": [
+        {
+          "summary": "Create artist invite",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Accountn id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "name",
+              "type": "string",
+              "description": "Name",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "facebook",
+              "type": "string",
+              "description": "Facebook",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "twitter",
+              "type": "string",
+              "description": "Twitter",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "vk",
+              "type": "string",
+              "description": "Vk",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "youtube",
+              "type": "string",
+              "description": "Youtube",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "links",
+              "type": "string",
+              "description": "Links to artist",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "ArtistInvites#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/artist_invites.json",
+      "operations": [
+        {
+          "summary": "Get artist invites",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "ArtistInvites#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/artist_invites/{id}.json",
+      "operations": [
+        {
+          "summary": "Get artist invite by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Artist invite id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "ArtistInvites#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/artist_invites/{id}.json",
+      "operations": [
+        {
+          "summary": "Destroy artist invite by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Artist invite id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "ArtistInvites#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

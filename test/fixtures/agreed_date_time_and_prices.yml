@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  datetime_from: 2018-03-31 09:37:23
+  datetime_to: 2018-03-31 09:37:23
+  price: 1
+  account_event_id: 1
+
+two:
+  datetime_from: 2018-03-31 09:37:23
+  datetime_to: 2018-03-31 09:37:23
+  price: 1
+  account_event_id: 1

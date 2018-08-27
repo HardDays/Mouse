@@ -1,3 +1,5 @@
+require 'vkontakte_api'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -78,6 +80,23 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address              => "smtp.gmail.com",
+    :port                 => 587,
+    :user_name            => 'mousereminder@gmail.com',
+    :password             => ENV['EMAIL_PASSWORD'],
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  }
+
+  VkontakteApi.configure do |config|
+    config.api_version = '5.73'
+  end
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  Geocoder.configure(language: :en)
+
 end

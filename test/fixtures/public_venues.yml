@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  fax: MyString
+  bank_name: MyString
+  account_bank_number: MyString
+  account_bank_routing_number: MyString
+  num_of_bathrooms: 1
+  min_age: 1
+  has_bar: false
+  located: 1
+  dress_code: MyString
+  audio_description: MyString
+  lightning_description: MyString
+  stage_description: MyString
+
+two:
+  fax: MyString
+  bank_name: MyString
+  account_bank_number: MyString
+  account_bank_routing_number: MyString
+  num_of_bathrooms: 1
+  min_age: 1
+  has_bar: false
+  located: 1
+  dress_code: MyString
+  audio_description: MyString
+  lightning_description: MyString
+  stage_description: MyString

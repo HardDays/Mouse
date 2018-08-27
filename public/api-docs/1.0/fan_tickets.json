@@ -1,0 +1,530 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://protected-island-7029.herokuapp.com",
+  "resourcePath": "fan_tickets",
+  "apis": [
+    {
+      "path": "/fan_tickets/by_event.json",
+      "operations": [
+        {
+          "summary": "Bought tickets by event",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "FanTickets#by_event",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets/search.json",
+      "operations": [
+        {
+          "summary": "Search in account tickets",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "time",
+              "type": "string",
+              "description": "Tickets time frame",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "current",
+                  "past"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "genres",
+              "type": "string",
+              "description": "Array of genres",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "ticket_types",
+              "type": "string",
+              "description": "Array of ticket types",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "location",
+              "type": "string",
+              "description": "Location of event",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "date_from",
+              "type": "datetime",
+              "description": "Event date from",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "date_to",
+              "type": "datetime",
+              "description": "Event date to",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#search",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets/finish_paypal.json",
+      "operations": [
+        {
+          "summary": "Finish paypal payment, call it after success redirect",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "paymentId",
+              "type": "string",
+              "description": "PaymentId",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#finish_paypal",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets/start_purchase.json",
+      "operations": [
+        {
+          "summary": "Buy ticket",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "platform",
+              "type": "string",
+              "description": "Platform",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "yandex",
+                  "paypal"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "tickets",
+              "type": "string",
+              "description": "Array of ftickets [{\"ticket_id\": 1, \"count\": 5}, ...]",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "redirect_url",
+              "type": "string",
+              "description": "Redirect after success purchase",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#start_purchase",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets/many.json",
+      "operations": [
+        {
+          "summary": "Buy tickets",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "ticket_id",
+              "type": "integer",
+              "description": "Ticket id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "count",
+              "type": "integer",
+              "description": "Count of tickets",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#create_many",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of fan tickets",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "time",
+              "type": "string",
+              "description": "Tickets time frame",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "current",
+                  "past"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "FanTickets#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets.json",
+      "operations": [
+        {
+          "summary": "Buy ticket",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "ticket_id",
+              "type": "integer",
+              "description": "Ticket id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets/{id}.json",
+      "operations": [
+        {
+          "summary": "Fan ticket info",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "FanTicket id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "FanTickets#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/fan_tickets/{id}.json",
+      "operations": [
+        {
+          "summary": "Return ticket",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Ticket id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Fan account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "FanTickets#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

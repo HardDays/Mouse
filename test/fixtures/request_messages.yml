@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  event_id: 1
+  time_frame: 1
+  is_personal: false
+  estimated_price: 1
+  message: 
+
+two:
+  event_id: 1
+  time_frame: 1
+  is_personal: false
+  estimated_price: 1
+  message: 
