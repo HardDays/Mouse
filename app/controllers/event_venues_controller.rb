@@ -19,9 +19,20 @@ class EventVenuesController < ApplicationController
     response :not_found
   end
   def create
+    
     if venue_available?
-      @event.venues << @venue_acc
-      @event.save
+
+      if @venue_acc.venue.venue_type == :private_residence
+        if @venue_acc.user_id == @event.creator.user_id
+          venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id, status: :owner_accepted)
+          venue_evt.save
+        else
+          render status: :forbidden
+        end
+      else
+        @event.venues << @venue_acc
+        @event.save
+      end
 
       render status: :ok
     else
