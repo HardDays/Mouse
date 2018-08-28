@@ -54,7 +54,7 @@ class AccountsController < ApplicationController
       elsif @to_find.account_type == 'artist'
         @events = Event.joins(:artist_events).where(artist_events: {artist_id: @to_find.id, status: "owner_accepted"})
       else 
-        @events = Event.where(creator_id: @to_find.id)
+        @events = Event.where(creator_id: @to_find.id, status: 'active')
       end
 
       if @events
