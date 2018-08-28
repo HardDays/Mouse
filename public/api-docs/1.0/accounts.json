@@ -1625,6 +1625,20 @@
             },
             {
               "paramType": "query",
+              "name": "sort_by",
+              "type": "string",
+              "description": "Sort results",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "popularity",
+                  "stage_name"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
               "name": "limit",
               "type": "integer",
               "description": "Limit",

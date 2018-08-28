@@ -553,6 +553,7 @@ class AccountsController < ApplicationController
       param :query, :exclude_event_id, :integer, :optional, "Exclude artists/venues added to event"
       param :query, :extended, :boolean, :optional, "Extended info"
       param :query, :sort_by_popularity, :boolean, :optional, "Sort results by popularity"
+      param_list :query, :sort_by, :string, :optional, "Sort results", [:popularity, :stage_name]
       param :query, :limit, :integer, :optional, "Limit"
       param :query, :offset, :integer, :optional, "Offset"
       param :query, :account_id, :integer, :optional, "Account id"
@@ -564,11 +565,15 @@ class AccountsController < ApplicationController
       
       @accounts = Account.approved
 
-      if params[:type] != 'artist'
+      if params[:type] == 'artist'
+        @accounts = @accounts.joins(:artist).group('artists.id')
+      end
+
+      if params[:type] and params[:type] == 'venue'
         if params[:exclude_event_id]
-          @accounts= Account.left_joins(:venue => {:public_venue => :genres})
+          @accounts= @accounts.left_joins(:venue => {:public_venue => :genres})
         else
-          @accounts = Account.left_joins(:venue => {:public_venue => :genres}).where(
+          @accounts = @accounts.left_joins(:venue => {:public_venue => :genres}).where(
             "(accounts.venue_id IS NULL OR venues.venue_type=:public)",
             {:public => Venue.venue_types['public_venue']})
         end   
@@ -583,6 +588,7 @@ class AccountsController < ApplicationController
       search_capacity
       search_type_of_space
       exclude_event
+      sort_results_old
       sort_results
       order_accounts
       @accounts = @accounts.group("accounts.id")
@@ -1060,8 +1066,10 @@ class AccountsController < ApplicationController
     def search_text
       if params[:text]
         if params[:type] == 'artist'
-          @accounts = @accounts.joins(:artist).
-            where("(accounts.user_name ILIKE :query) OR (accounts.display_name ILIKE :query) OR (artists.first_name ILIKE :query) OR (artists.stage_name ILIKE :query) OR (artists.last_name ILIKE :query)", query: "%#{params[:text]}%")
+          @accounts = @accounts.where(
+            "(accounts.user_name ILIKE :query) OR (accounts.display_name ILIKE :query)
+              OR (artists.first_name ILIKE :query) OR (artists.stage_name ILIKE :query)
+              OR (artists.last_name ILIKE :query)", query: "%#{params[:text]}%")
         else
           @accounts = @accounts.where("accounts.user_name ILIKE :query OR accounts.display_name ILIKE :query", query: "%#{params[:text]}%")
         end
@@ -1077,10 +1085,10 @@ class AccountsController < ApplicationController
     def search_price
       if params[:type] == 'artist'
         if params[:price_from]
-          @accounts = @accounts.joins(:artist).where("artists.price_from >= :price", {:price => params[:price_from]})
+          @accounts = @accounts.where("artists.price_from >= :price", {:price => params[:price_from]})
         end
         if params[:price_to]
-          @accounts = @accounts.joins(:artist).where("artists.price_to <= :price", {:price => params[:price_to]})
+          @accounts = @accounts.where("artists.price_to <= :price", {:price => params[:price_to]})
         end
       elsif params[:type] == 'venue'
         if params[:price_from]
@@ -1195,11 +1203,21 @@ class AccountsController < ApplicationController
       end
     end
 
-    def sort_results
+    def sort_results_old
       if params[:sort_by_popularity]
         @accounts = @accounts.select(
           "accounts.*, COUNT(followers.id) as followers_count"
         ).left_joins(:followers).group('id').order('followers_count')
+      end
+    end
+
+    def sort_results
+      if params[:sort_by] == 'popularity'
+        @accounts = @accounts.select(
+          "accounts.*, COUNT(followers.id) as followers_count"
+        ).left_joins(:followers).group('id').order('followers_count')
+      elsif params[:sort_by] == 'stage_name' and params[:type] == 'artist'
+        @accounts = @accounts.order('artists.stage_name')
       end
     end
 
