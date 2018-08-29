@@ -19,11 +19,11 @@ class AuthenticateController < ApplicationController
 	def forgot_password
 		if params[:user_name]
 			@account = Account.find_by("LOWER(user_name) = ?", params[:user_name].downcase)
-			render status: :unauthorized and return if not @account
+			render json: {error: :LOGIN_DOES_NOT_EXIST}, status: :unauthorized and return if not @account
 			@user = @account.user
 		else
 			@user = User.find_by("LOWER(email) = ?", params[:email].downcase)
-			render status: :unauthorized and return if not @user
+			render json: {error: :LOGIN_DOES_NOT_EXIST}, status: :unauthorized and return if not @user
 		end
 
 		@attempt = ForgotPassAttempt.where(user_id: @user.id, created_at: (Time.zone.now.beginning_of_day..Time.zone.now.end_of_day)).first
