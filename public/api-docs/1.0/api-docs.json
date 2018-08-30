@@ -4,10 +4,6 @@
   "basePath": "https://protected-island-7029.herokuapp.com",
   "apis": [
     {
-      "path": "/api-docs/1.0/venue_invites.{format}",
-      "description": "AdminPanel"
-    },
-    {
       "path": "/api-docs/1.0/questions.{format}",
       "description": "Questions"
     },
@@ -89,7 +85,11 @@
     },
     {
       "path": "/api-docs/1.0/artist_invites.{format}",
-      "description": "AdminPanel"
+      "description": "Artist invites"
+    },
+    {
+      "path": "/api-docs/1.0/venue_invites.{format}",
+      "description": "VenueInvites"
     },
     {
       "path": "/api-docs/1.0/admin.{format}",
@@ -101,6 +101,10 @@
     },
     {
       "path": "/api-docs/1.0/admin_events.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_invites.{format}",
       "description": "AdminPanel"
     },
     {

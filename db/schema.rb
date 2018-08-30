@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180824155300) do
+ActiveRecord::Schema.define(version: 20180830205404) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,20 +114,6 @@ ActiveRecord::Schema.define(version: 20180824155300) do
     t.integer "genre"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "artist_invites", force: :cascade do |t|
-    t.string "description"
-    t.string "links"
-    t.integer "account_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "email"
-    t.string "name"
-    t.string "facebook"
-    t.string "twitter"
-    t.string "youtube"
-    t.string "vk"
   end
 
   create_table "artist_preferred_venues", force: :cascade do |t|
@@ -402,6 +388,21 @@ ActiveRecord::Schema.define(version: 20180824155300) do
     t.boolean "is_receiver_read"
   end
 
+  create_table "invites", force: :cascade do |t|
+    t.string "description"
+    t.string "links"
+    t.integer "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "email"
+    t.string "name"
+    t.string "facebook"
+    t.string "twitter"
+    t.string "youtube"
+    t.string "vk"
+    t.integer "invited_type"
+  end
+
   create_table "likes", force: :cascade do |t|
     t.integer "feed_item_id"
     t.integer "user_id"
@@ -602,20 +603,6 @@ ActiveRecord::Schema.define(version: 20180824155300) do
     t.integer "genre"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "venue_invites", force: :cascade do |t|
-    t.string "description"
-    t.string "links"
-    t.integer "account_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "email"
-    t.string "name"
-    t.string "facebook"
-    t.string "twitter"
-    t.string "youtube"
-    t.string "vk"
   end
 
   create_table "venue_office_hours", force: :cascade do |t|

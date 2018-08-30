@@ -1,0 +1,133 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://protected-island-7029.herokuapp.com",
+  "resourcePath": "admin_invites",
+  "apis": [
+    {
+      "path": "/admin/invites.json",
+      "operations": [
+        {
+          "summary": "Get artist invites",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "invite_type",
+              "type": "required",
+              "description": [
+                "all",
+                "artist",
+                "venue",
+                "fan"
+              ],
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminInvites#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/invites/{id}.json",
+      "operations": [
+        {
+          "summary": "Get artist invite by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Invite id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminInvites#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin/invites/{id}.json",
+      "operations": [
+        {
+          "summary": "Destroy artist invite by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Invite id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminInvites#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

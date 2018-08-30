@@ -14,7 +14,7 @@
               "paramType": "form",
               "name": "account_id",
               "type": "integer",
-              "description": "Accountn id",
+              "description": "Account id",
               "required": true
             },
             {
@@ -90,112 +90,6 @@
           ],
           "nickname": "ArtistInvites#create",
           "method": "post"
-        }
-      ]
-    },
-    {
-      "path": "/admin/artist_invites.json",
-      "operations": [
-        {
-          "summary": "Get artist invites",
-          "parameters": [
-            {
-              "paramType": "form",
-              "name": "limit",
-              "type": "integer",
-              "description": "Limit",
-              "required": false
-            },
-            {
-              "paramType": "form",
-              "name": "offset",
-              "type": "integer",
-              "description": "Offset",
-              "required": false
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            }
-          ],
-          "nickname": "ArtistInvites#index",
-          "method": "get"
-        }
-      ]
-    },
-    {
-      "path": "/admin/artist_invites/{id}.json",
-      "operations": [
-        {
-          "summary": "Get artist invite by id",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Artist invite id",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            }
-          ],
-          "nickname": "ArtistInvites#show",
-          "method": "get"
-        }
-      ]
-    },
-    {
-      "path": "/admin/artist_invites/{id}.json",
-      "operations": [
-        {
-          "summary": "Destroy artist invite by id",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Artist invite id",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            }
-          ],
-          "nickname": "ArtistInvites#destroy",
-          "method": "delete"
         }
       ]
     }

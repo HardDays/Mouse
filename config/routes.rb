@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :venue_invites
   resources :questions, only: [:index, :create, :show] do
     member do
       post :reply
@@ -190,13 +189,9 @@ Rails.application.routes.draw do
   post 'admin/events/:id/deny', action: :deny, controller: 'admin_events'
   delete 'admin/events/:id', action: :destroy, controller: 'admin_events'
 
-  get 'admin/artist_invites', action: :index, controller: 'artist_invites'
-  get 'admin/artist_invites/:id', action: :show, controller: 'artist_invites'
-  delete 'admin/artist_invites/:id', action: :destroy, controller: 'artist_invites'
-
-  get 'admin/venue_invites', action: :index, controller: 'venue_invites'
-  get 'admin/venue_invites/:id', action: :show, controller: 'venue_invites'
-  delete 'admin/venue_invites/:id', action: :destroy, controller: 'venue_invites'
+  get 'admin/invites', action: :index, controller: 'admin_invites'
+  get 'admin/invites/:id', action: :show, controller: 'admin_invites'
+  delete 'admin/invites/:id', action: :destroy, controller: 'admin_invites'
 
 
   get 'admin/questions', action: :index, controller: 'admin_questions'

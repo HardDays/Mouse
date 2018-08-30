@@ -8,53 +8,13 @@
       "path": "/venue_invites.json",
       "operations": [
         {
-          "summary": "Get venue invites",
-          "parameters": [
-            {
-              "paramType": "form",
-              "name": "limit",
-              "type": "integer",
-              "description": "Limit",
-              "required": false
-            },
-            {
-              "paramType": "form",
-              "name": "offset",
-              "type": "integer",
-              "description": "Offset",
-              "required": false
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            }
-          ],
-          "nickname": "VenueInvites#index",
-          "method": "get"
-        }
-      ]
-    },
-    {
-      "path": "/venue_invites.json",
-      "operations": [
-        {
           "summary": "Create venue invite",
           "parameters": [
             {
               "paramType": "form",
               "name": "account_id",
               "type": "integer",
-              "description": "Accountn id",
+              "description": "Account id",
               "required": true
             },
             {
@@ -130,72 +90,6 @@
           ],
           "nickname": "VenueInvites#create",
           "method": "post"
-        }
-      ]
-    },
-    {
-      "path": "/venue_invites/{id}.json",
-      "operations": [
-        {
-          "summary": "Get venue invite by id",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Venue invite id",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            }
-          ],
-          "nickname": "VenueInvites#show",
-          "method": "get"
-        }
-      ]
-    },
-    {
-      "path": "/venue_invites/{id}.json",
-      "operations": [
-        {
-          "summary": "Destroy venue invite by id",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Venue invite id",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            }
-          ],
-          "nickname": "VenueInvites#destroy",
-          "method": "delete"
         }
       ]
     }
