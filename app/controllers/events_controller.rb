@@ -299,7 +299,7 @@ class EventsController < ApplicationController
     response :ok
   end
   def search
-    @events = Event.available.search(params[:text])
+    @events = Event.searchable.search(params[:text])
     search_active
     search_genre
     search_city
@@ -383,8 +383,10 @@ class EventsController < ApplicationController
     end
 
     def search_active
-      if params[:is_active]
+      if ActiveRecord::Type::Boolean.new.cast(params[:is_active]) == true
         @events = @events.where(status: "active")
+      elsif ActiveRecord::Type::Boolean.new.cast(params[:is_active]) == false
+        @events = @events.where(status: ["inactive", "approved"])
       end
     end
 
