@@ -30,6 +30,20 @@ class EventsController < ApplicationController
     render json: @event, extended: true, user: @user, status: :ok
   end
 
+  # GET /events/1/backers
+  swagger_api :backers do
+    summary "Retrieve list of event backers"
+    param :path, :id, :integer, :required, "Event id"
+    param :query, :limit, :integer, :optional, "Limit"
+    param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :optional, 'Authentication token'
+    response :ok
+  end
+  def backers
+    backers = Account.joins(fan_tickets: :ticket).where(tickets: {event_id: params[:id]}).order(created_at: :desc)
+    render json: backers, only: [:id, :first_name, :last_name, :image_id], status: :ok
+  end
+
   # POST /events
   swagger_api :create do
     summary 'Create event'

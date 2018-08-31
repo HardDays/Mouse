@@ -133,6 +133,7 @@ Rails.application.routes.draw do
   get 'events/:id/view', action: :view, controller: 'events'
   get 'events/:id/analytics', action: :analytics, controller: 'events'
   get 'events/:id/updates', action: :get_updates, controller: 'events'
+  get 'events/:id/backers', action: :backers, controller: 'events'
 
   # genre routes
   get 'genres/all', action: :all, controller: 'genres'

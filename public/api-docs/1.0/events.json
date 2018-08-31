@@ -1044,6 +1044,53 @@
           "method": "get"
         }
       ]
+    },
+    {
+      "path": "/events/{id}/backers.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of event backers",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Events#backers",
+          "method": "get"
+        }
+      ]
     }
   ],
   "authorizations": null
