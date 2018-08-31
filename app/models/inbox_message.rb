@@ -30,9 +30,14 @@ class InboxMessage < ApplicationRecord
     res.delete('admin_id')
     res.delete('updated_at')
     res.delete('message_id')
+    res.delete('is_closed')
 
     if options[:extended]
       res[:reply] = get_ancestor
+    end
+
+    if options[:admin]
+      res[:is_closed] = is_closed
     end
 
     if admin

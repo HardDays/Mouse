@@ -13,7 +13,7 @@ class AdminQuestionsController < ApplicationController
   def index
     questions = InboxMessage.where(message_type: 'support', is_parent: true).order(:created_at => :desc)
 
-    render json: questions.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: questions.limit(params[:limit]).offset(params[:offset]), admin: true, status: :ok
   end
 
   # GET /admin/questions/1
@@ -26,7 +26,7 @@ class AdminQuestionsController < ApplicationController
   end
   def show
     question = InboxMessage.where(message_type: 'support').find(params[:id])
-    render json: question, extended: true, status: :ok
+    render json: question, extended: true, admin: true, status: :ok
   end
 
   # POST /admin/questions/1/reply
@@ -37,6 +37,7 @@ class AdminQuestionsController < ApplicationController
     param :form, :message, :string, :required, "Message"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
+    response :unprocessable_entity
     response :created
   end
   def reply
@@ -54,9 +55,33 @@ class AdminQuestionsController < ApplicationController
       question.reply = question_reply
       question.save
 
-      render json: question, extended: true, status: :created
+      render json: question, extended: true, admin: true, status: :created
     else
       render json: question_reply.errors, status: :unprocessable_entity
+    end
+  end
+
+  # POST /admin/questions/1/close
+  swagger_api :close do
+    summary "Reply on question"
+    param :path, :id, :integer, :required, "Id"
+    param :form, :subject, :string, :required, "Subject"
+    param :form, :message, :string, :required, "Message"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :not_found
+    response :created
+  end
+  def close
+    question = InboxMessage.where(message_type: 'support').find(params[:id])
+
+    unless question
+      render status: :not_found and return
+    end
+
+    if question.update(is_closed: true)
+      render json: question, extended: true, admin: true, status: :created
+    else
+      render json: question.errors, status: :unprocessable_entity
     end
   end
 
