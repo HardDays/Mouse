@@ -24,15 +24,16 @@ class EventVenuesController < ApplicationController
 
       if @venue_acc.venue.venue_type == 'private_residence'
         if @venue_acc.user_id == @event.creator.user_id
-          venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id, status: :owner_accepted)
+          venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id, status: 'owner_accepted')
           venue_evt.save
         
-          venue_evt.status = 'owner_accepted'
-          venue_evt.save
+          @event.venue = @venue_acc.venue
+          @event.has_private_venue = true
+          @event.save
         else
           render status: :forbidden
         end
-      else
+      elsif @event.has_private_venue == false
         @event.venues << @venue_acc
         @event.save
       end
@@ -166,6 +167,11 @@ class EventVenuesController < ApplicationController
       @venue_event.is_active = false
       send_owner_decline(@venue_event.account)
       @venue_event.save
+
+      if @venue_event.venue.venue_type == 'private_residence'
+        @event.has_private_venue = false
+        @event.save
+      end
 
       render status: :ok
     else
