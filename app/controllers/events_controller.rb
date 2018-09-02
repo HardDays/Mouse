@@ -14,7 +14,7 @@ class EventsController < ApplicationController
     response :ok
   end
   def index
-    @events = Event.available.where(is_active: true)
+    @events = Event.available.where(status: 'active')
 
     render json: @events.limit(params[:limit]).offset(params[:offset]).order(:date_from, :funding_from), status: :ok
   end
@@ -144,13 +144,13 @@ class EventsController < ApplicationController
 
     forbidden = check_params
 
-    upd_params = @event.is_active ? active_event_params : event_params
+    upd_params = @event.is_launched? ? active_event_params : event_params
 
     @event.assign_attributes(upd_params)
     changed = @event.changed
 
     if not forbidden and @event.update(upd_params)
-      if @event.is_active
+      if @event.is_launched?
         changed.each do |param|
           if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
             action = EventUpdate.new(
@@ -493,18 +493,6 @@ class EventsController < ApplicationController
         return :forbidden
       end
     end
-
-  def send_mouse_request(account)
-    request_message = RequestMessage.new(request_message_params)
-    request_message.save
-
-    @event.request_messages << request_message
-    account.request_messages << request_message
-  end
-
-  def request_message_params
-    params.permit(:time_frame, :is_personal, :estimated_price, :message)
-  end
 
   def active_event_params
     params.permit(:description)

@@ -188,4 +188,8 @@ class Event < ApplicationRecord
     events = Event.where(creator_id: account.id)
     return events
   end
+
+  def is_launched?
+    return ["approved", "active", "inactive"].include?(status)
+  end
 end
