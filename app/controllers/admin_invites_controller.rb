@@ -20,7 +20,7 @@ class AdminInvitesController < ApplicationController
       @invites = @invites.where(invited_type: Invite.invited_types[params[:invite_type]])
     end
 
-    render json: @invites.limit(params[:limit]).offset(params[:offset])
+    render json: @invites.limit(params[:limit]).offset(params[:offset]).order(created_at: :desc)
   end
 
   # GET /admin/artist_invites/1
