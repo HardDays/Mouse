@@ -177,7 +177,7 @@ class AdminFeedbackController < ApplicationController
     if topic.save
       message = AdminMessage.new(
         sender_id: @admin.id,
-        message: feedback.message,
+        message: params[:message],
         forwarded_message: feedback.message,
         forwarded_from: feedback.sender.id,
         forwarder_type: 'account',
@@ -188,11 +188,9 @@ class AdminFeedbackController < ApplicationController
       else
         render json: message.errors, status: :unprocessable_entity
         topic.destroy
-        message.destroy
       end
     else
       render json: topic.errors, status: :unprocessable_entity
-      topic.destroy
     end
   end
 

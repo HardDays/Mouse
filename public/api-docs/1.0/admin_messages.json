@@ -90,6 +90,276 @@
           "method": "get"
         }
       ]
+    },
+    {
+      "path": "/admin/messages.json",
+      "operations": [
+        {
+          "summary": "Send message",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "topic_id",
+              "type": "integer",
+              "description": "Topic id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "receiver",
+              "type": "integer",
+              "description": "Receiver id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "message",
+              "type": "string",
+              "description": "Message",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "topic",
+              "type": "string",
+              "description": "Topic",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminMessages#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/messages/new.json",
+      "operations": [
+        {
+          "summary": "Create new dialog",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "receivers_ids",
+              "type": "string",
+              "description": "Array of receivers ids",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "message",
+              "type": "string",
+              "description": "Message",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "topic",
+              "type": "string",
+              "description": "Topic",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminMessages#new",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/messages/{id}/forward.json",
+      "operations": [
+        {
+          "summary": "Forward message",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "string",
+              "description": "Message id",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "receiver_id",
+              "type": "string",
+              "description": "Receiver id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminMessages#forward",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/messages/{id}/solve.json",
+      "operations": [
+        {
+          "summary": "Solve bug",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "string",
+              "description": "Dialog id",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminMessages#solve",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/admin/messages/{id}/delete.json",
+      "operations": [
+        {
+          "summary": "Solve bug",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "string",
+              "description": "Dialog id",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminMessages#delete",
+          "method": "delete"
+        }
+      ]
+    },
+    {
+      "path": "/admin/messages/{id}/delete_message.json",
+      "operations": [
+        {
+          "summary": "Solve bug",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "string",
+              "description": "Dialog id",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminMessages#delete_message",
+          "method": "delete"
+        }
+      ]
     }
   ],
   "authorizations": null

@@ -319,6 +319,13 @@
             },
             {
               "paramType": "form",
+              "name": "web_site",
+              "type": "string",
+              "description": "Venue web site",
+              "required": false
+            },
+            {
+              "paramType": "form",
               "name": "dates",
               "type": "string",
               "description": "Venue dates [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',\n                                                              'is_available': ''}, {...}]",
@@ -1045,6 +1052,13 @@
               "name": "stage_description",
               "type": "string",
               "description": "Venue stage description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "web_site",
+              "type": "string",
+              "description": "Venue web site",
               "required": false
             },
             {

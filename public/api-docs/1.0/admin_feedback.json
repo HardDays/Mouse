@@ -259,6 +259,13 @@
               "required": true
             },
             {
+              "paramType": "form",
+              "name": "message",
+              "type": "string",
+              "description": "Additional message",
+              "required": false
+            },
+            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",
