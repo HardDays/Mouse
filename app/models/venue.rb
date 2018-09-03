@@ -1,6 +1,6 @@
 class Venue < ApplicationRecord
     validates :venue_type, presence: true
-    #validates :address, presence: true
+    validates :address, presence: true
     validates :description, presence: true
     # validates :lat, presence: true
     # validates :lng, presence: true
