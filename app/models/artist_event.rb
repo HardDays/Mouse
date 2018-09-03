@@ -40,7 +40,7 @@ class ArtistEvent < ApplicationRecord
       res[:artist] = account.artist.as_json(for_event: true, event: options[:event])
       res[:approximate_price] = nil
       unless account.artist.is_hide_pricing_from_search
-        res[:approximate_price] = account.artist.price_from.to_i * event.event_length.to_i
+        res[:approximate_price] = account.artist.price_to.to_i * event.event_length.to_i
         if options[:event]
           #TODO replace account.user.... to artist.currency
           res[:original_approximate_price] = res[:approximate_price]
