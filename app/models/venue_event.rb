@@ -43,7 +43,7 @@ class VenueEvent < ApplicationRecord
       end
     end
 
-    if ['accepted', 'owner_accepted'].include?(status) and venue.public_venue
+    if ['accepted', 'owner_accepted'].include?(status) and account.venue.public_venue
       res[:agreement] = agreed_date_time_and_price.as_json(event: event)
     end
 

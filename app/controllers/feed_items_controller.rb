@@ -32,38 +32,15 @@ class FeedItemsController < ApplicationController
   end
   def index
     following = @account.following.pluck(:id)
-    events_tickets = Ticket.where(id: FanTicket.where(account_id: @account.id).pluck(:ticket_id).uniq).pluck(:event_id)
+    events_tickets = Ticket.where(
+      id: FanTicket.where(account_id: @account.id).pluck(:ticket_id).uniq
+    ).pluck(:event_id)
     creator_events = Event.where(creator_id: following, status: :active).pluck(:id)
 
     account_updates = AccountUpdate.where(account_id: following).pluck(:id)
     event_updates = EventUpdate.where(event_id: creator_events).or(EventUpdate.where(event_id: events_tickets)).pluck(:id)
     
     feed = FeedItem.where(account_update_id: account_updates).or(FeedItem.where(event_update_id: event_updates)).order(:created_at => :desc)
-  
-    # feed = FeedItem.all
-    # feed = feed.left_joins(:account_update, :event_update => :event).where("account_updates.account_id IN (:query)", query: following)
-    # .or(FeedItem.left_joins(:account_update, :event_update => :event).where(
-    #   "events.creator_id IN (:query) and events.status=:status", query: following, status: Event.statuses["active"])
-    # ).or(FeedItem.left_joins(:account_update, :event_update => :event).where(
-    #   "events.id IN (NULL)", tickets: events_tickets)
-    # )
-    # .order(:created_at => :desc)
-    # likes = Like.where(account_id: following).joins(:event).as_json(feed: true)
-    # likes.each do |e|
-    #   e[:type] = 'like'
-    #   e[:action] = ''
-    # end
-    #
-    # event_updates = EventUpdate.left_joins(:event => :comments).where(
-    #   :events => {creator_id: following, is_active: true}
-    # ).as_json(feed: true, user: @user)
-    # event_updates.each do |e|
-    #   e[:type] = "event update"
-    #   e[:action] = "#{e['action']} #{e['field']}"
-    #   e.delete('field')
-    # end
-    # #
-    # @feed = likes.concat(event_updates).sort_by{|u| u[:created_at]}.reverse
 
     render json: feed.limit(params[:limit]).offset(params[:offset]), user: @user
   end
