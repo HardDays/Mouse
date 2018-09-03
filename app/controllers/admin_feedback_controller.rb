@@ -152,6 +152,7 @@ class AdminFeedbackController < ApplicationController
     summary "Reply on question"
     param :path, :id, :integer, :required, "Id"
     param :form, :receiver, :integer, :required, "Receiver id"
+    param :form, :message, :string, :optional, "Additional message"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
     response :created
@@ -177,6 +178,7 @@ class AdminFeedbackController < ApplicationController
       message = AdminMessage.new(
         sender_id: @admin.id,
         message: feedback.message,
+        forwarded_message: feedback.message,
         forwarded_from: feedback.sender.id,
         forwarder_type: 'account',
         topic_id: topic.id

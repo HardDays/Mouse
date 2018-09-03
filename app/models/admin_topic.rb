@@ -10,4 +10,16 @@ class AdminTopic < ApplicationRecord
   belongs_to :receiver, foreign_key: 'receiver_id', class_name: 'Admin'
 
   has_many :admin_messages, foreign_key: 'topic_id', dependent: :destroy
+
+  def as_json(options={})
+    res = super
+
+    if sender_id == options[:my_id]
+      res[:with] = receiver.as_json(only: [:user_name, :first_name, :last_name])
+    else
+      res[:with] = sender.as_json(only: [:user_name, :first_name, :last_name])
+    end
+
+    return res
+  end
 end

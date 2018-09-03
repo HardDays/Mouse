@@ -14,7 +14,7 @@ class AdminMessagesController < ApplicationController
     topics = AdminTopic.where(sender_id: @admin.id, sender_deleted: false).or(
       AdminTopic.where(receiver_id: @admin.id, receiver_deleted: false)).order(created_at: :desc)
 
-    render json: topics.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: topics.limit(params[:limit]).offset(params[:offset]), my_id: @admin.id, status: :ok
   end
 
   swagger_api :show do
