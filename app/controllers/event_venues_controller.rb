@@ -26,6 +26,9 @@ class EventVenuesController < ApplicationController
         if @venue_acc.user_id == @event.creator.user_id
           venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id, status: 'owner_accepted')
           venue_evt.save
+
+          venue_evt.status = 'owner_accepted'
+          venue_evt.save
         
           @event.venue = @venue_acc.venue
           @event.has_private_venue = true

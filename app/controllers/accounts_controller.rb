@@ -305,6 +305,7 @@ class AccountsController < ApplicationController
       param :form, :audio_description, :string, :optional, "Venue audio description (public_venue only)"
       param :form, :lighting_description, :string, :optional, "Venue lighting description (public_venue only)"
       param :form, :stage_description, :string, :optional, "Venue stage description (public_venue only)"
+      param :form, :web_site, :string, :optional, "Venue web site"
       param :form, :dates, :string, :optional, "Venue dates [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
                                                               'is_available': ''}, {...}]"
       param :form, :emails, :string, :optional, "Venue dates [{'name': '', 'email': ''}, {...}]"
@@ -440,6 +441,7 @@ class AccountsController < ApplicationController
       param :form, :audio_description, :string, :optional, "Venue audio description (public_venue only)"
       param :form, :lighting_description, :string, :optional, "Venue lighting description (public_venue only)"
       param :form, :stage_description, :string, :optional, "Venue stage description (public_venue only)"
+      param :form, :web_site, :string, :optional, "Venue web site"
       param :form, :dates, :string, :optional, "Venue dates [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
                                                               'is_available': ''}, {...}]"
       param :form, :emails, :string, :optional, "Venue dates [{'name': '', 'email': ''}, {...}]"
@@ -1238,7 +1240,8 @@ class AccountsController < ApplicationController
     end
 
     def venue_params
-        params.permit(:description, :capacity, :venue_type, :has_vr, :vr_capacity, :country, :city, :street, :state, :zipcode)
+        params.permit(:description, :capacity, :venue_type, :has_vr, :vr_capacity,
+                      :country, :city, :street, :state, :zipcode, :web_site)
     end
 
     def public_venue_params
