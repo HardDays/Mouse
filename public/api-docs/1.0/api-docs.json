@@ -122,6 +122,10 @@
     {
       "path": "/api-docs/1.0/admin_revenue.{format}",
       "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_messages.{format}",
+      "description": "AdminPanel"
     }
   ],
   "authorizations": null,

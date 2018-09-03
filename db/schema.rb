@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180831182344) do
+ActiveRecord::Schema.define(version: 20180903110626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,30 @@ ActiveRecord::Schema.define(version: 20180831182344) do
     t.integer "status", default: 0
     t.integer "processed_by"
     t.boolean "is_deleted", default: false
+  end
+
+  create_table "admin_messages", force: :cascade do |t|
+    t.integer "topic_id"
+    t.string "message"
+    t.integer "sender_id"
+    t.integer "forwarded_from"
+    t.integer "forwarder_type"
+    t.boolean "sender_deleted", default: false
+    t.boolean "receiver_deleted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "admin_topics", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "receiver_id"
+    t.string "topic"
+    t.integer "topic_type"
+    t.boolean "is_solved", default: false
+    t.boolean "sender_deleted", default: false
+    t.boolean "receiver_deleted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "admins", force: :cascade do |t|

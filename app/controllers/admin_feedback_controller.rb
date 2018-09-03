@@ -147,6 +147,53 @@ class AdminFeedbackController < ApplicationController
     end
   end
 
+  # POST /admin/feedbacks/1/forward
+  swagger_api :forward do
+    summary "Reply on question"
+    param :path, :id, :integer, :required, "Id"
+    param :form, :receiver, :integer, :required, "Receiver id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :not_found
+    response :created
+  end
+  def forward
+    feedback = InboxMessage.joins(:feedback_message).find(params[:id])
+    unless feedback
+      render json: {error: MESSAGE_NOT_FOUND}, status: :not_found and return
+    end
+
+    receiver = Admin.find(params[:receiver_id])
+    unless receiver
+      render json: {error: ADMIN_NOT_FOUND}, status: :not_found and return
+    end
+
+    topic = AdminTopic.new(
+      sender_id: @admin.id,
+      receiver_id: receiver.id,
+      topic: 'bug',
+      topic_type: 'bug'
+    )
+    if topic.save
+      message = AdminMessage.new(
+        sender_id: @admin.id,
+        message: feedback.message,
+        forwarded_from: feedback.sender.id,
+        forwarder_type: 'account',
+        topic_id: topic.id
+      )
+      if message.save
+        render status: :created
+      else
+        render json: message.errors, status: :unprocessable_entity
+        topic.destroy
+        message.destroy
+      end
+    else
+      render json: topic.errors, status: :unprocessable_entity
+      topic.destroy
+    end
+  end
+
   # DELETE /admin/feedbacks/1
   swagger_api :destroy do
     summary "Destroy question"

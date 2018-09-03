@@ -239,6 +239,51 @@
       ]
     },
     {
+      "path": "/admin/feedbacks/{id}/forward.json",
+      "operations": [
+        {
+          "summary": "Reply on question",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "receiver",
+              "type": "integer",
+              "description": "Receiver id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminFeedback#forward",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/admin/feedbacks/{id}.json",
       "operations": [
         {

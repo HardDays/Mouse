@@ -8,6 +8,46 @@
       "path": "/admin.json",
       "operations": [
         {
+          "summary": "Get list of admins",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Admin#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/admin.json",
+      "operations": [
+        {
           "summary": "Creates admin credential for login",
           "parameters": [
             {

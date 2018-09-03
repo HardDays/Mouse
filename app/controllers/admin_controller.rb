@@ -40,6 +40,18 @@ class AdminController < ApplicationController
     end
   end
 
+  # GET /admin
+  swagger_api :index do
+    summary "Get list of admins"
+    param :query, :limit, :integer, :optional, "Limit"
+    param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+  end
+  def index
+    render json: Admin.all.limit(params[:limit]).offset(params[:offset]).as_json(only: [:id, :user_name]), status: :ok
+  end
+
   # POST /admin/create_admin
   swagger_api :create do
     summary "Creates admin credential for login"

@@ -161,7 +161,7 @@ Rails.application.routes.draw do
   post 'venue_invites', action: :create, controller: 'venue_invites'
 
   # admin routes
-  resources :admin, only: [:create, :update]
+  resources :admin, only: [:index, :create, :update]
   get 'admin/statuses', action: :statuses, controller: 'admin'
   get 'admin/:user_id/my', action: :get_my, controller: 'admin'
   post 'admin/make_superuser', action: :make_superuser, controller: 'admin'
@@ -215,6 +215,7 @@ Rails.application.routes.draw do
   get 'admin/feedbacks/graph', action: :graph, controller: 'admin_feedback'
   get 'admin/feedbacks/:id', action: :show, controller: 'admin_feedback'
   post 'admin/feedbacks/:id/thank_you', action: :thank_you, controller: 'admin_feedback'
+  post 'admin/feedbacks/:id/forward', action: :forward, controller: 'admin_feedback'
   delete 'admin/feedbacks/:id', action: :destroy, controller: 'admin_feedback'
 
   get 'admin/revenue', action: :index, controller: 'admin_revenue'
@@ -228,4 +229,7 @@ Rails.application.routes.draw do
   get 'admin/revenue/counts/advertising', action: :advertising, controller: 'admin_revenue'
   get 'admin/revenue/counts/funding', action: :funding, controller: 'admin_revenue'
   get 'admin/revenue/:id', action: :show, controller: 'admin_revenue'
+
+  get 'admin/messages', action: :index, controller: 'admin_messages'
+  get 'admin/messages/:id', action: :show, controller: 'admin_messages'
 end
