@@ -294,7 +294,7 @@ class EventsController < ApplicationController
     search_distance
     search_date
 
-    render json: @events.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
 
   # DELETE /events/1
