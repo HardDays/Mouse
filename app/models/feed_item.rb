@@ -5,13 +5,13 @@ class FeedItem < ApplicationRecord
   belongs_to :account, optional: true
   belongs_to :event, optional: true
 
-  has_many :comments
+  has_many :feed_comments
   has_many :likes
 
   def as_json(options={})
     res = super
 
-    res[:comments] = comments.count
+    res[:comments] = feed_comments.count
     res[:likes] = likes.count
     res[:is_liked] = likes.where(user_id: options[:user].id).exists?
 
