@@ -158,7 +158,7 @@
             {
               "paramType": "query",
               "name": "status",
-              "type": "boolean",
+              "type": "string",
               "description": "Search events by status",
               "required": false,
               "allowableValues": {
