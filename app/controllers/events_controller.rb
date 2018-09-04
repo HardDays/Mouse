@@ -287,7 +287,7 @@ class EventsController < ApplicationController
     response :unauthorized
   end
   def my
-    @events = Event.available.get_my(@account)
+    @events = Event.available.get_my(@account).search(params[:text])
     search_status
     search_genre
     search_location
