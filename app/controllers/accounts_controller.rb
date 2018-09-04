@@ -618,10 +618,18 @@ class AccountsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def find_account
         @to_find = Account.find(params[:id])
+
+        if @to_find.is_deleted
+          render status: :not_found and return
+        end
     end
 
     def find_follower_account
       @to_find = Account.find(params[:follower_id])
+
+      if @to_find.is_deleted
+        render status: :not_found and return
+      end
     end
 
     def find_image
@@ -1175,7 +1183,6 @@ class AccountsController < ApplicationController
 
     def exclude_event
       if params[:exclude_event_id]
-        @accounts = @accounts.where(status: 'approved')
         accounts_ids = ArtistEvent.where(event_id: params[:exclude_event_id]).pluck("artist_id") +
           VenueEvent.where(event_id: params[:exclude_event_id]).pluck("venue_id")
 

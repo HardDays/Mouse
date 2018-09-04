@@ -33,6 +33,20 @@
             },
             {
               "paramType": "query",
+              "name": "city",
+              "type": "string",
+              "description": "City",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "country",
+              "type": "string",
+              "description": "Country",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "lat",
               "type": "float",
               "description": "Latitude (lng and distance must be present)",
@@ -96,20 +110,6 @@
             },
             {
               "paramType": "query",
-              "name": "only_my",
-              "type": "boolean",
-              "description": "Search only in created by account events",
-              "required": false
-            },
-            {
-              "paramType": "query",
-              "name": "account_id",
-              "type": "integer",
-              "description": "Account id (required if :only_my parameter set True)",
-              "required": false
-            },
-            {
-              "paramType": "query",
               "name": "limit",
               "type": "integer",
               "description": "Limit",
@@ -147,6 +147,87 @@
               "type": "integer",
               "description": "Account id",
               "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Text to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "status",
+              "type": "boolean",
+              "description": "Search events by status",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "just_added",
+                  "pending",
+                  "approved",
+                  "denied",
+                  "active",
+                  "inactive"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "location",
+              "type": "string",
+              "description": "Address",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "lat",
+              "type": "float",
+              "description": "Latitude (lng and distance must be present)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "lng",
+              "type": "float",
+              "description": "Longitude (lat and distance must be present)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "distance",
+              "type": "integer",
+              "description": "Artist/Venue address max distance",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "units",
+              "type": "string",
+              "description": "Artist/Venue distance units of search 'km' or 'mi'",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "from_date",
+              "type": "datetime",
+              "description": "Left bound of date (to_date must be presenty)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "to_date",
+              "type": "datetime",
+              "description": "Right bound of date (from_date must be present)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "genres",
+              "type": "string",
+              "description": "Genres list ['pop', 'rock', ...]",
+              "required": false
             },
             {
               "paramType": "query",

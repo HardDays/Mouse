@@ -271,6 +271,16 @@ class EventsController < ApplicationController
   swagger_api :my do
     summary "Get my events"
     param :query, :account_id, :integer, :required, "Account id"
+    param :query, :text, :string, :optional, "Text to search"
+    param_list :query, :status, :boolean, :optional, "Search events by status", [:just_added, :pending, :approved, :denied, :active, :inactive]
+    param :query, :location, :string, :optional, "Address"
+    param :query, :lat, :float, :optional, "Latitude (lng and distance must be present)"
+    param :query, :lng, :float, :optional, "Longitude (lat and distance must be present)"
+    param :query, :distance, :integer, :optional, "Artist/Venue address max distance"
+    param :query, :units, :string, :optional, "Artist/Venue distance units of search 'km' or 'mi'"
+    param :query, :from_date, :datetime, :optional, "Left bound of date (to_date must be presenty)"
+    param :query, :to_date, :datetime, :optional, "Right bound of date (from_date must be present)"
+    param :query, :genres, :string, :optional, "Genres list ['pop', 'rock', ...]"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, "Auth token"
@@ -278,6 +288,11 @@ class EventsController < ApplicationController
   end
   def my
     @events = Event.available.get_my(@account)
+    search_status
+    search_genre
+    search_location
+    search_distance
+    search_date
 
     render json: @events.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -301,6 +316,8 @@ class EventsController < ApplicationController
     param :query, :text, :string, :optional, "Text to search"
     param :query, :is_active, :boolean, :optional, "Search only active events"
     param :query, :location, :string, :optional, "Address"
+    param :query, :city, :string, :optional, "City"
+    param :query, :country, :string, :optional, "Country"
     param :query, :lat, :float, :optional, "Latitude (lng and distance must be present)"
     param :query, :lng, :float, :optional, "Longitude (lat and distance must be present)"
     param :query, :distance, :integer, :optional, "Artist/Venue address max distance"
@@ -310,8 +327,6 @@ class EventsController < ApplicationController
     param :query, :genres, :string, :optional, "Genres list ['pop', 'rock', ...]"
     param :query, :ticket_types, :string, :optional, "Array of ticket types ['in_person', 'vip']"
     param :query, :size, :string, :optional, "Event's venue type of space ('night_club'|'concert_hall'|...)"
-    param :query, :only_my, :boolean, :optional, "Search only in created by account events"
-    param :query, :account_id, :integer, :optional, "Account id (required if :only_my parameter set True)"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     response :ok
@@ -327,6 +342,7 @@ class EventsController < ApplicationController
     search_ticket_types
     search_type_of_space
     search_date
+    # TODO: fix
     search_only_my
 
     render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.date_from, events.funding_from"), search: true, status: :ok
@@ -405,6 +421,12 @@ class EventsController < ApplicationController
         @events = @events.where(status: "active")
       elsif ActiveRecord::Type::Boolean.new.cast(params[:is_active]) == false
         @events = @events.where(status: ["inactive", "approved"])
+      end
+    end
+
+    def search_status
+      if params[:status] != 'all'
+        @events = @events.where(status: Event.statuses[params[:status]])
       end
     end
 
