@@ -41,6 +41,11 @@ class TicketsController < ApplicationController
     response :not_found
   end
   def create
+    unless ActiveRecord::Type::Boolean.new.cast(params[:is_for_personal_use])
+      if params[:price].to_i <= 0
+        render json: {errors: :PRICE_TOO_SMALL}, status: :unprocessable_entity and return
+      end
+    end
     @ticket = Ticket.new(ticket_params)
     set_type
 

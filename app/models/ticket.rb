@@ -1,5 +1,6 @@
 class Ticket < ApplicationRecord
-  validates_inclusion_of :price, in: 1..10000000
+  validates_inclusion_of :price, in: 0..10000000
+  validates_inclusion_of :count, in: 1..10000000
   enum currency: CurrencyHelper.all
   belongs_to :event
 
