@@ -36,7 +36,7 @@ class EventVenuesController < ApplicationController
         else
           render status: :forbidden
         end
-      elsif @event.has_private_venue == false
+      elsif !@event.has_private_venue
         @event.venues << @venue_acc
         @event.save
       end
