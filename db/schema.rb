@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904120932) do
+ActiveRecord::Schema.define(version: 20180904122439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -214,14 +214,6 @@ ActiveRecord::Schema.define(version: 20180904120932) do
     t.string "album_name"
   end
 
-  create_table "comments", force: :cascade do |t|
-    t.integer "feed_item_id"
-    t.integer "account_id"
-    t.string "text"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "decline_messages", force: :cascade do |t|
     t.integer "reason"
     t.string "additional_text"
@@ -329,6 +321,14 @@ ActiveRecord::Schema.define(version: 20180904120932) do
     t.string "state"
     t.string "country"
     t.integer "zipcode"
+  end
+
+  create_table "feed_comments", force: :cascade do |t|
+    t.integer "feed_item_id"
+    t.integer "account_id"
+    t.string "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "feed_items", force: :cascade do |t|

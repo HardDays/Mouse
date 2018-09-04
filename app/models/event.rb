@@ -37,7 +37,8 @@ class Event < ApplicationRecord
   has_many :genres, foreign_key: 'event_id', class_name: 'EventGenre', dependent: :destroy
   has_many :tickets, dependent: :destroy
   has_many :images, dependent: :destroy
-  has_many :event_updates
+  has_many :feed_items, dependent: :nullify
+  has_many :comments, dependent: :destroy
 
   belongs_to :venue, optional: true
   belongs_to :admin, foreign_key: 'processed_by', class_name: 'Admin', optional: true
@@ -142,7 +143,7 @@ class Event < ApplicationRecord
       res[:top_backers] = tickets.joins(:fan_tickets).order(created_at: :desc).limit(5).as_json(only: [:id, :image_id])
     elsif options[:analytics]
       # res[:location] = venue.address if venue
-      res[:comments] = 0# comments.count
+      res[:comments] = comments.count
       res[:likes] = 0 #likes.count
       res[:purchased_tickets] = tickets.joins(:fan_tickets).count
       res[:in_person_tickets_sold] = in_person_sold
