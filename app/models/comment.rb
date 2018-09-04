@@ -2,7 +2,7 @@ class Comment < ApplicationRecord
   validates :text, presence: true
 
   belongs_to :event
-  belongs_to :account
+  belongs_to :account, foreign_key: 'fan_id'
 
   def as_json(options={})
     res = super
