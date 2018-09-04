@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904101134) do
+ActiveRecord::Schema.define(version: 20180904120932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,16 +29,6 @@ ActiveRecord::Schema.define(version: 20180904101134) do
     t.integer "inbox_message_id"
     t.integer "event_id"
     t.integer "currency", default: 0
-  end
-
-  create_table "account_updates", force: :cascade do |t|
-    t.integer "account_id"
-    t.integer "updated_by"
-    t.integer "action"
-    t.integer "field"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "value"
   end
 
   create_table "accounts", force: :cascade do |t|
@@ -255,16 +245,6 @@ ActiveRecord::Schema.define(version: 20180904101134) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "event_updates", force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "updated_by"
-    t.integer "action"
-    t.integer "field"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "value"
-  end
-
   create_table "events", force: :cascade do |t|
     t.string "name"
     t.string "tagline"
@@ -352,8 +332,6 @@ ActiveRecord::Schema.define(version: 20180904101134) do
   end
 
   create_table "feed_items", force: :cascade do |t|
-    t.integer "event_update_id"
-    t.integer "account_update_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "account_id"

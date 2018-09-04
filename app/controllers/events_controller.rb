@@ -90,7 +90,6 @@ class EventsController < ApplicationController
       set_base64_image
       set_genres
       set_collaborators
-      log_create
 
       render json: @event, status: :created
     else
@@ -153,15 +152,13 @@ class EventsController < ApplicationController
       if @event.is_launched?
         changed.each do |param|
           if HistoryHelper::EVENT_FIELDS.include?(param.to_sym)
-            action = EventUpdate.new(
+            feed = FeedItem.new(
               action: :update,
               updated_by: @account.id,
               event_id: @event.id,
               field: param,
               value: params[param]
             )
-            action.save
-            feed = FeedItem.new(event_update_id: action.id)
             feed.save
           end
         end
@@ -214,6 +211,13 @@ class EventsController < ApplicationController
     if ["approved", "inactive"].include?(@event.status)
       @event.status = "active"
       @event.save
+
+      feed = FeedItem.new(
+        action: :launch_event,
+        updated_by: @account.id,
+        event_id: @event.id,
+      )
+      feed.save
 
       render status: :ok
     end
@@ -473,13 +477,6 @@ class EventsController < ApplicationController
       if params[:only_my]
         @events = @events.where(creator_id: params[:account_id])
       end
-    end
-
-    def log_create
-      action = EventUpdate.new(action: :add_event, updated_by: @account.id, event_id: @event.id)
-      action.save
-      feed = FeedItem.new(event_update_id: action.id)
-      feed.save
     end
 
     def check_params

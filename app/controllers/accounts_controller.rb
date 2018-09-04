@@ -518,15 +518,13 @@ class AccountsController < ApplicationController
         if @account.update(account_update_params)
           changed.each do |param|
             if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
-              action = AccountUpdate.new(
+              feed = FeedItem.new(
                 action: :update,
                 updated_by: @account.id,
                 account_id: @account.id,
                 field: param,
                 value: params[param]
               )
-              action.save
-              feed = FeedItem.new(account_update_id: action.id)
               feed.save
             end
           end
@@ -685,46 +683,38 @@ class AccountsController < ApplicationController
 
     def set_image_gallery
       if params[:image]
-        #@account.image.delete if @account.image != nil
         image = Image.new(description: params[:image_description], base64: Base64.encode64(File.read(params[:image].path)))
         image.save
-        #@account.image = image
         @account.images << image
 
         set_image_type(image)
        
-        action = AccountUpdate.new(
+        feed = FeedItem.new(
           action: :update,
           updated_by: @account.id,
           account_id: @account.id,
           field: :gallery_image,
           value: image.id
         )
-        action.save
-        feed = FeedItem.new(account_update_id: action.id)
         feed.save
       end
     end
 
     def set_base64_image_gallery
       if params[:image_base64] and params[:image_base64] != ""
-        #@account.image.delete if @account.image != nil
         image = Image.new(description: params[:image_description], base64: params[:image_base64])
         image.save
-        #@account.image = image
         @account.images << image
 
         set_image_type(image)
 
-        action = AccountUpdate.new(
+        feed = FeedItem.new(
           action: :update,
           updated_by: @account.id,
           account_id: @account.id,
           field: :gallery_image,
           value: image.id
         )
-        action.save
-        feed = FeedItem.new(account_update_id: action.id)
         feed.save
       end
     end
@@ -783,28 +773,24 @@ class AccountsController < ApplicationController
                 @venue.update(venue_params)
                 changed.each do |param|
                   if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
-                      action = AccountUpdate.new(
+                      feed = FeedItem.new(
                         action: :update,
                         updated_by: @account.id,
                         account_id: @account.id,
                         field: param,
                         value: params[param]
                       )
-                      action.save
-                      feed = FeedItem.new(account_update_id: action.id)
                       feed.save
                   end
               end
                 if params[:image_base64] or params[:image]
-                  action = AccountUpdate.new(
+                  feed = FeedItem.new(
                     action: :update,
                     updated_by: @account.id,
                     account_id: @account.id,
                     field: :image,
                     value: @account.image.id
                   )
-                  action.save
-                  feed = FeedItem.new(account_update_id: action.id)
                   feed.save
                 end
             else
@@ -923,28 +909,24 @@ class AccountsController < ApplicationController
                 @artist.update(artist_params)
                 changed.each do |param|
                     if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(
+                        feed = FeedItem.new(
                           action: :update,
                           updated_by: @account.id,
                           account_id: @account.id,
                           field: param,
                           value: params[param]
                         )
-                        action.save
-                        feed = FeedItem.new(account_update_id: action.id)
                         feed.save
                     end
                 end
                 if params[:image_base64] or params[:image]
-                  action = AccountUpdate.new(
+                  feed = FeedItem.new(
                     action: :update,
                     updated_by: @account.id,
                     account_id: @account.id,
                     field: :image,
                     value: @account.image.id
                   )
-                  action.save
-                  feed = FeedItem.new(account_update_id: action.id)
                   feed.save
                 end
             else
