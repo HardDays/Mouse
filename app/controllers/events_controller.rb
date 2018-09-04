@@ -281,6 +281,7 @@ class EventsController < ApplicationController
     param :query, :from_date, :datetime, :optional, "Left bound of date (to_date must be presenty)"
     param :query, :to_date, :datetime, :optional, "Right bound of date (from_date must be present)"
     param :query, :genres, :string, :optional, "Genres list ['pop', 'rock', ...]"
+    param :query, :ticket_types, :string, :optional, "Array of ticket types ['in_person', 'vip']"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, "Auth token"
@@ -293,6 +294,7 @@ class EventsController < ApplicationController
     search_location
     search_distance
     search_date
+    search_ticket_types
 
     render json: @events.distinct.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
