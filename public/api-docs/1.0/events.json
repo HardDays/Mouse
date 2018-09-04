@@ -160,10 +160,11 @@
               "name": "status",
               "type": "string",
               "description": "Search events by status",
-              "required": false,
+              "required": true,
               "allowableValues": {
                 "valueType": "LIST",
                 "values": [
+                  "all",
                   "just_added",
                   "pending",
                   "approved",

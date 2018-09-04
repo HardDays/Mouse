@@ -272,7 +272,7 @@ class EventsController < ApplicationController
     summary "Get my events"
     param :query, :account_id, :integer, :required, "Account id"
     param :query, :text, :string, :optional, "Text to search"
-    param_list :query, :status, :string, :optional, "Search events by status", [:just_added, :pending, :approved, :denied, :active, :inactive]
+    param_list :query, :status, :string, :required, "Search events by status", [:all, :just_added, :pending, :approved, :denied, :active, :inactive]
     param :query, :location, :string, :optional, "Address"
     param :query, :lat, :float, :optional, "Latitude (lng and distance must be present)"
     param :query, :lng, :float, :optional, "Longitude (lat and distance must be present)"
