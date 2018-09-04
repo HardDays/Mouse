@@ -671,13 +671,9 @@ class AccountsController < ApplicationController
 
     def set_base64_image
         if params[:image_base64] and params[:image_base64] != ""
-            #@account.image.delete if @account.image != nil  
             image = Image.new(description: params[:image_description], base64: params[:image_base64])
             image.save
             @account.image = image
-            #@account.images << image
-
-            #set_image_type(image)
         end
     end
 
@@ -783,7 +779,7 @@ class AccountsController < ApplicationController
                       feed.save
                   end
               end
-                if params[:image_base64] or params[:image]
+                if (params[:image_base64] and params[:image_base64] != "") or params[:image]
                   feed = FeedItem.new(
                     action: :update,
                     updated_by: @account.id,
@@ -919,7 +915,7 @@ class AccountsController < ApplicationController
                         feed.save
                     end
                 end
-                if params[:image_base64] or params[:image]
+                if (params[:image_base64] and params[:image_base64] != "") or params[:image]
                   feed = FeedItem.new(
                     action: :update,
                     updated_by: @account.id,
