@@ -232,6 +232,20 @@
             },
             {
               "paramType": "query",
+              "name": "ticket_types",
+              "type": "string",
+              "description": "Array of ticket types ['in_person', 'vip']",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "size",
+              "type": "string",
+              "description": "Event's venue type of space ('night_club'|'concert_hall'|...)",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "limit",
               "type": "integer",
               "description": "Limit",
