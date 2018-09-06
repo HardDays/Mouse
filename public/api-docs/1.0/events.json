@@ -19,13 +19,6 @@
             },
             {
               "paramType": "query",
-              "name": "is_active",
-              "type": "boolean",
-              "description": "Search only active events",
-              "required": false
-            },
-            {
-              "paramType": "query",
               "name": "location",
               "type": "string",
               "description": "Address",
@@ -157,22 +150,10 @@
             },
             {
               "paramType": "query",
-              "name": "status",
-              "type": "string",
-              "description": "Search events by status",
-              "required": true,
-              "allowableValues": {
-                "valueType": "LIST",
-                "values": [
-                  "all",
-                  "just_added",
-                  "pending",
-                  "approved",
-                  "denied",
-                  "active",
-                  "inactive"
-                ]
-              }
+              "name": "is_active",
+              "type": "boolean",
+              "description": "Search only active events",
+              "required": false
             },
             {
               "paramType": "query",

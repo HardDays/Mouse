@@ -272,7 +272,7 @@ class EventsController < ApplicationController
     summary "Get my events"
     param :query, :account_id, :integer, :required, "Account id"
     param :query, :text, :string, :optional, "Text to search"
-    param_list :query, :status, :string, :required, "Search events by status", [:all, :just_added, :pending, :approved, :denied, :active, :inactive]
+    param :query, :is_active, :boolean, :optional, "Search only active events"
     param :query, :location, :string, :optional, "Address"
     param :query, :lat, :float, :optional, "Latitude (lng and distance must be present)"
     param :query, :lng, :float, :optional, "Longitude (lat and distance must be present)"
@@ -290,7 +290,7 @@ class EventsController < ApplicationController
   end
   def my
     @events = Event.available.get_my(@account).search(params[:text])
-    search_status
+    search_active
     search_genre
     search_location
     search_distance
@@ -318,7 +318,6 @@ class EventsController < ApplicationController
   swagger_api :search do
     summary "Search for event"
     param :query, :text, :string, :optional, "Text to search"
-    param :query, :is_active, :boolean, :optional, "Search only active events"
     param :query, :location, :string, :optional, "Address"
     param :query, :city, :string, :optional, "City"
     param :query, :country, :string, :optional, "Country"
@@ -337,7 +336,6 @@ class EventsController < ApplicationController
   end
   def search
     @events = Event.searchable.search(params[:text])
-    search_active
     search_genre
     search_city
     search_country
@@ -424,13 +422,7 @@ class EventsController < ApplicationController
       if ActiveRecord::Type::Boolean.new.cast(params[:is_active]) == true
         @events = @events.where(status: "active")
       elsif ActiveRecord::Type::Boolean.new.cast(params[:is_active]) == false
-        @events = @events.where(status: ["inactive", "approved"])
-      end
-    end
-
-    def search_status
-      if params[:status] != 'all'
-        @events = @events.where(status: Event.statuses[params[:status]])
+        @events = @events.where.not(status: "active")
       end
     end
 
