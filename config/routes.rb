@@ -231,6 +231,7 @@ Rails.application.routes.draw do
   get 'admin/revenue/:id', action: :show, controller: 'admin_revenue'
 
   get 'admin/messages', action: :index, controller: 'admin_messages'
+  get 'admin/messages/topics', action: :topics_search, controller: 'admin_messages'
   get 'admin/messages/:id', action: :show, controller: 'admin_messages'
   post 'admin/messages', action: :create, controller: 'admin_messages'
   post 'admin/messages/new', action: :new, controller: 'admin_messages'

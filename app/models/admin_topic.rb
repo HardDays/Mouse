@@ -22,4 +22,15 @@ class AdminTopic < ApplicationRecord
 
     return res
   end
+
+  def self.search(text)
+    @topics = AdminTopic.all
+    if text
+      @topics = @topics.where(
+        "topic ILIKE :query", query: "%#{sanitize_sql_like(text)}%"
+      )
+    end
+
+    return @topics
+  end
 end

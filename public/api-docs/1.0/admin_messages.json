@@ -45,6 +45,58 @@
       ]
     },
     {
+      "path": "/admin/messages/topics.json",
+      "operations": [
+        {
+          "summary": "Search for message topics",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Message topic",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 201,
+              "responseModel": null,
+              "message": "Created"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "AdminMessages#topics_search",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/admin/messages/{id}.json",
       "operations": [
         {

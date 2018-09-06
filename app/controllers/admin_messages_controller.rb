@@ -36,6 +36,22 @@ class AdminMessagesController < ApplicationController
     render json: messages.limit(params[:limit]).offset(params[:offset]).reverse, status: :ok
   end
 
+  # GET /admin/messages/topics
+  swagger_api :topics_search do
+    summary "Search for message topics"
+    param :query, :text, :string, :optional, "Message topic"
+    param :query, :limit, :integer, :optional, "Limit"
+    param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :not_found
+    response :created
+  end
+  def topics_search
+    @topics = AdminTopic.search(params[:text])
+
+    render json: @topics.limit(params[:limit]).offset(params[:offset]), status: :ok
+  end
+
   # POST /admin/messages/new
   swagger_api :new do
     summary "Create new dialog"
