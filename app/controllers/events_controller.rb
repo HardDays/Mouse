@@ -469,13 +469,13 @@ class EventsController < ApplicationController
 
     def search_country
       if params[:country]
-        @events = @events.where("lower(country) = ?", params[:country].downcase.strip)
+        @events = @events.where("lower(events.country) = ?", params[:country].downcase.strip)
       end
     end
 
     def search_city
       if params[:city]
-        @events = @events.where("lower(city) = ?", params[:city].downcase.strip)
+        @events = @events.where("lower(events.city) = ?", params[:city].downcase.strip)
       end
     end
 
