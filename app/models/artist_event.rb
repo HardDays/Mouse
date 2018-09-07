@@ -28,7 +28,7 @@ class ArtistEvent < ApplicationRecord
       res.delete("status")
       res.delete("created_at")
       res.delete("updated_at")
-      res[:date] = event.date_from
+      res[:date] = event.exact_date_from
 
       return res
     end

@@ -360,11 +360,11 @@ class FanTicketsController < ApplicationController
     def filter_by_time
       if params[:time] == 'current'
         @events = @events.where(
-          "(events.date_to >= :date OR events.date_to IS NULL)", {:date => DateTime.now}
+          "(events.exact_date_to >= :date OR events.date_to IS NULL)", {:date => DateTime.now}
         )
       else
         @events = @events.where(
-          "events.date_to < :date", {:date => DateTime.now}
+          "events.exact_date_to < :date", {:date => DateTime.now}
         )
       end
     end
@@ -384,11 +384,11 @@ class FanTicketsController < ApplicationController
     def search_time
       if params[:time] == 'current'
         @events = @events.where(
-          "(events.date_from >= :date OR events.date_from IS NULL)", {:date => DateTime.now}
+          "(events.exact_date_from >= :date OR events.exact_date_from IS NULL)", {:date => DateTime.now}
         ).group("events.id")
       else
         @events = @events.where(
-          "events.date_from < :date", {:date => DateTime.now}
+          "events.exact_date_from < :date", {:date => DateTime.now}
         ).group("events.id")
       end
     end
@@ -421,11 +421,11 @@ class FanTicketsController < ApplicationController
 
     def search_date
       if params[:from_date]
-        @events = @events.where("events.date_from >= :date",
+        @events = @events.where("events.exact_date_from >= :date",
                                 {:date => DateTime.parse(params[:from_date])})
       end
       if params[:to_date]
-        @events = @events.where("events.date_to <= :date",
+        @events = @events.where("events.exact_date_to <= :date",
                                 {:date => DateTime.parse(params[:to_date])})
       end
     end

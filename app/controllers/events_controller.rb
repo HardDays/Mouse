@@ -1,9 +1,9 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
-                                   :click, :view, :verify]
+                                   :click, :view, :verify, :set_date]
   before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
-  before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify]
+  before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify, :set_date]
   swagger_controller :events, "Events"
 
   # GET /events
@@ -180,6 +180,30 @@ class EventsController < ApplicationController
     render json: @event, analytics: true, status: :ok
   end
 
+  # POST /events/1/set_date
+  swagger_api :set_date do
+    summary "Set event's exact date"
+    param :path, :id, :integer, :required, "Event id"
+    param :form, :exact_date_from, :integer, :required, "Exact start date"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+    response :not_found
+  end
+  def set_date
+    date = DateTime.parse(params[:exact_date_from])
+    valid = date_valid?(date)
+
+    if valid and ["declined", "just_added", "pending", "approved"].include?(@event.status)
+      @event.exact_date_from = params[:exact_date_from]
+      @event.exact_date_to = DateTime.parse(params[:exact_date_from]) + @event.event_length.hours
+      @event.save
+
+      render json: @event, status: :ok
+    elsif valid
+      render status: :forbidden
+    end
+  end
+
   # POST /events/1/verify
   swagger_api :verify do
     summary "Send event to check"
@@ -208,6 +232,22 @@ class EventsController < ApplicationController
     response :not_found
   end
   def launch
+    if @event.tickets.empty?
+      render json: {errors: :NO_TICKETS}, status: :forbidden and return
+    end
+
+    if @event.artists.where(status: "active").empty?
+      render json: {errors: :NO_ARTISTS}, status: :forbidden and return
+    end
+
+    if @event.venue == nil
+      render json: {errors: :NO_VENUE}, status: :forbidden and return
+    end
+
+    if @event.exact_date_from == nil
+      render json: {errors: :NO_EXACT_DATE}, status: :forbidden and return
+    end
+
     if ["approved", "inactive"].include?(@event.status)
       @event.status = "active"
       @event.save
@@ -347,7 +387,7 @@ class EventsController < ApplicationController
     # TODO: fix
     search_only_my
 
-    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.date_from, events.funding_from"), search: true, status: :ok
+    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from, events.funding_from"), search: true, status: :ok
   end
 
   private
@@ -419,7 +459,7 @@ class EventsController < ApplicationController
     end
 
     def search_active
-      if ActiveRecord::Type::Boolean.new.cast(params[:is_active]) == true
+      if ActiveRecord::Type::Boolean.new.cast(params[:is_active])
         @events = @events.where(status: "active")
       elsif ActiveRecord::Type::Boolean.new.cast(params[:is_active]) == false
         @events = @events.where.not(status: "active")
@@ -428,11 +468,11 @@ class EventsController < ApplicationController
 
     def search_date
        if params[:from_date]
-         @events = @events.where("events.date_from >= :date",
+         @events = @events.where("events.exact_date_from >= :date",
                                  {:date => DateTime.parse(params[:from_date])})
        end
        if params[:to_date]
-         @events = @events.where("events.date_to <= :date",
+         @events = @events.where("events.exact_date_to <= :date",
                                  {:date => DateTime.parse(params[:to_date])})
        end
     end
@@ -508,6 +548,15 @@ class EventsController < ApplicationController
         return :forbidden
       end
     end
+
+  def date_valid?(date)
+    unless @event.date_from <= date and date <= (@event.date_to - @event.event_length.hours)
+      render json: {errors: :INVALID_DATE}, status: :unprocessable_entity
+      return false
+    end
+
+    true
+  end
 
   def active_event_params
     params.permit(:description)

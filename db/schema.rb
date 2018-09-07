@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904122730) do
+ActiveRecord::Schema.define(version: 20180907133329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -296,6 +296,8 @@ ActiveRecord::Schema.define(version: 20180904122730) do
     t.string "state"
     t.string "country"
     t.integer "zipcode"
+    t.datetime "exact_date_from"
+    t.datetime "exact_date_to"
   end
 
   create_table "fan_genres", force: :cascade do |t|

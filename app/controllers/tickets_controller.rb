@@ -41,11 +41,16 @@ class TicketsController < ApplicationController
     response :not_found
   end
   def create
+    if @event.venue == nil
+      render json: {errors: :NO_VENUE}, status: :forbidden and return
+    end
+
     unless ActiveRecord::Type::Boolean.new.cast(params[:is_for_personal_use])
       if params[:price].to_i <= 0
         render json: {errors: :PRICE_TOO_SMALL}, status: :unprocessable_entity and return
       end
     end
+
     @ticket = Ticket.new(ticket_params)
     set_type
 
