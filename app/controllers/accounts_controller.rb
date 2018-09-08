@@ -271,7 +271,6 @@ class AccountsController < ApplicationController
       param :form, :display_name, :string, :optional, "Account's name to display"
       param :form, :phone, :string, :optional, "Account's phone"
       param :form, :image_base64, :string, :optional, "Image base64 string"
-      param :form, :image_description, :string, :optional, "Image description"
       param_list :form, :image_type, :string, :optional, "Image type", ["outside_venue", "stage", "seating", "bar", "audience", "dressing_room", "other"]
       param :form, :image_type_description, :string, :optional, "Image other type description"
       param_list :form, :account_type, :string, :required, "Account type", ["venue", "artist", "fan"]
@@ -407,7 +406,6 @@ class AccountsController < ApplicationController
       param :form, :display_name, :string, :optional, "Account's name to display"
       param :form, :phone, :string, :optional, "Account's phone"
       param :form, :image_base64, :string, :optional, "Image base64 string"
-      param :form, :image_description, :string, :optional, "Image description"
       param_list :form, :image_type, :string, :optional, "Image type", ["outside_venue", "stage", "seating", "bar", "audience", "dressing_room", "other"]
       param :form, :image_type_description, :string, :optional, "Image other type description"
       param_list :form, :account_type, :string, :required, "Account type", ["venue", "artist", "fan"]
@@ -516,18 +514,8 @@ class AccountsController < ApplicationController
         changed = @account.changed
 
         if @account.update(account_update_params)
-          changed.each do |param|
-            if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
-              feed = FeedItem.new(
-                action: :update,
-                updated_by: @account.id,
-                account_id: @account.id,
-                field: param,
-                value: params[param]
-              )
-              feed.save
-            end
-          end
+          log_changes(changed, account)
+
           render json: @account, extended: true, my: true, except: :password, status: :ok
         else
           render json: @account.errors, status: :unprocessable_entity
@@ -643,8 +631,6 @@ class AccountsController < ApplicationController
       end
     end
 
-
-
     def authorize_user
         @user = AuthorizeHelper.authorize(request)
         render status: :unauthorized if @user == nil
@@ -664,24 +650,24 @@ class AccountsController < ApplicationController
       end
     end
 
-
     def set_image
         if params[:image]
-            #@account.image.delete if @account.image != nil
-            image = Image.new(description: params[:image_description], base64: Base64.encode64(File.read(params[:image].path)))
+            image = Image.new(base64: Base64.encode64(File.read(params[:image].path)))
             image.save
             @account.image = image
-            #@account.images << image
 
             set_image_type(image)
+            log_changed_value(:image, @account, image.id)
         end
     end
 
     def set_base64_image
         if params[:image_base64] and params[:image_base64] != ""
-            image = Image.new(description: params[:image_description], base64: params[:image_base64])
+            image = Image.new(base64: params[:image_base64])
             image.save
             @account.image = image
+
+            log_changed_value(:image, @account, image.id)
         end
     end
 
@@ -692,15 +678,7 @@ class AccountsController < ApplicationController
         @account.images << image
 
         set_image_type(image)
-       
-        feed = FeedItem.new(
-          action: :update,
-          updated_by: @account.id,
-          account_id: @account.id,
-          field: :gallery_image,
-          value: image.id
-        )
-        feed.save
+        log_changed_value(:gallery_image, @account, image.id)
       end
     end
 
@@ -711,15 +689,7 @@ class AccountsController < ApplicationController
         @account.images << image
 
         set_image_type(image)
-
-        feed = FeedItem.new(
-          action: :update,
-          updated_by: @account.id,
-          account_id: @account.id,
-          field: :gallery_image,
-          value: image.id
-        )
-        feed.save
+        log_changed_value(:gallery_image, @account, image.id)
       end
     end
 
@@ -775,28 +745,7 @@ class AccountsController < ApplicationController
                 changed = @venue.changed
                
                 @venue.update(venue_params)
-                changed.each do |param|
-                  if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
-                      feed = FeedItem.new(
-                        action: :update,
-                        updated_by: @account.id,
-                        account_id: @account.id,
-                        field: param,
-                        value: params[param]
-                      )
-                      feed.save
-                  end
-              end
-                if (params[:image_base64] and params[:image_base64] != "") or params[:image]
-                  feed = FeedItem.new(
-                    action: :update,
-                    updated_by: @account.id,
-                    account_id: @account.id,
-                    field: :image,
-                    value: @account.image.id
-                  )
-                  feed.save
-                end
+                log_changes(changed, @account)
             else
                 @venue = Venue.new(venue_params)
                 render json: @venue.errors and return false if not @venue.save
@@ -897,6 +846,8 @@ class AccountsController < ApplicationController
           obj = VenueVideoLink.new(video_link: link)
           obj.save
           @venue.venue_video_links << obj
+
+          log_changed_value(:video, @account, obj.id)
         end
         @venue.save
       end
@@ -911,28 +862,7 @@ class AccountsController < ApplicationController
                 changed = @artist.changed
 
                 @artist.update(artist_params)
-                changed.each do |param|
-                    if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
-                        feed = FeedItem.new(
-                          action: :update,
-                          updated_by: @account.id,
-                          account_id: @account.id,
-                          field: param,
-                          value: params[param]
-                        )
-                        feed.save
-                    end
-                end
-                if (params[:image_base64] and params[:image_base64] != "") or params[:image]
-                  feed = FeedItem.new(
-                    action: :update,
-                    updated_by: @account.id,
-                    account_id: @account.id,
-                    field: :image,
-                    value: @account.image.id
-                  )
-                  feed.save
-                end
+                log_changes(changed, @account)
             else
                 @artist = Artist.new(artist_params)
                 render json: @artist.errors and return false if not @artist.save 
@@ -969,6 +899,8 @@ class AccountsController < ApplicationController
           obj = ArtistVideo.new(artist_video_params(link))
           obj.save
           @artist.artist_videos << obj
+
+          log_changed_value(:video, @account, obj.id)
         end
         @artist.save
       end
@@ -981,6 +913,8 @@ class AccountsController < ApplicationController
           obj = ArtistAlbum.new(artist_album_params(album))
           obj.save
           @artist.artist_albums << obj
+
+          log_changed_value(:album, @account, obj.id)
         end
         @artist.save
       end
@@ -1006,6 +940,8 @@ class AccountsController < ApplicationController
             obj = AudioLink.new(artist_audio_params(link))
             obj.save
             objs << obj
+
+            log_changed_value(:audio, @account, obj.id)
           else
             objs.clear
             return false
@@ -1210,6 +1146,36 @@ class AccountsController < ApplicationController
 
     def order_accounts
       @accounts = @accounts.order('accounts.display_name, accounts.user_name')
+    end
+
+    def log_changes(changed, account)
+      if @account.status == "approved"
+        changed.each do |param|
+          if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
+            feed = FeedItem.new(
+              action: :update,
+              updated_by: account.id,
+              account_id: account.id,
+              field: param,
+              value: params[param]
+            )
+            feed.save
+          end
+        end
+      end
+    end
+
+    def log_changed_value(field, account, value)
+      if @account.status == "approved"
+        feed = FeedItem.new(
+          action: :update,
+          updated_by: account.id,
+          account_id: account.id,
+          field: field,
+          value: value
+        )
+        feed.save
+      end
     end
 
     def account_params

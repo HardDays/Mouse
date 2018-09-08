@@ -1215,6 +1215,13 @@
             },
             {
               "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Text to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "limit",
               "type": "integer",
               "description": "Limit",

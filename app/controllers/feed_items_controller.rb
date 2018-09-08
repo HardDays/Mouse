@@ -8,9 +8,9 @@ class FeedItemsController < ApplicationController
   end
   def action_types
     actions = []
-    HistoryHelper::EVENT_ACTIONS.each do |action|
+    HistoryHelper::ACTIONS.each do |action|
       if action == :update
-        HistoryHelper::EVENT_FIELDS.each do |field|
+        HistoryHelper::FIELDS.each do |field|
           actions.push("#{action} #{field}")
         end
       else

@@ -40,13 +40,6 @@
             },
             {
               "paramType": "form",
-              "name": "image_description",
-              "type": "string",
-              "description": "Image description",
-              "required": false
-            },
-            {
-              "paramType": "form",
               "name": "image_type",
               "type": "string",
               "description": "Image type",
@@ -773,13 +766,6 @@
               "name": "image_base64",
               "type": "string",
               "description": "Image base64 string",
-              "required": false
-            },
-            {
-              "paramType": "form",
-              "name": "image_description",
-              "type": "string",
-              "description": "Image description",
               "required": false
             },
             {

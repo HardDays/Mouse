@@ -84,6 +84,18 @@ class Account < ApplicationRecord
 				return attrs
 			end
 
+			if options[:backers]
+				attrs = {}
+				attrs[:image_id] = image_id
+				attrs[:user_name] = user_name
+
+				if fan
+					attrs[:full_name] = "#{fan.first_name} #{fan.last_name}"
+				end
+
+				return attrs
+			end
+
 			if not options[:only]
 				if fan
 					return fan.as_json(options)
@@ -116,6 +128,14 @@ class Account < ApplicationRecord
 			"accounts.user_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%"
 		).or(
 			Account.where("accounts.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
+		)
+	end
+
+	def self.search_fan_fullname(text)
+		return self.joins(:fan).where(
+			"(fans.first_name ILIKE :query OR fans.last_name ILIKE :query)", query: "%#{sanitize_sql_like(text)}%"
+		).or(
+			Account.joins(:fan).where("accounts.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
 		)
 	end
 end

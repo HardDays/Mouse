@@ -307,6 +307,10 @@ class EventVenuesController < ApplicationController
     @venue_acc = Account.find(params[:id])
     @venue_event = @event.venue_events.find_by(venue_id: @venue_acc.id)
 
+    unless ["time_expired", "declined", "owner_declined"].include?(@venue_event.status)
+      render status: :forbidden and return
+    end
+
     if @venue_event
       @venue_event.is_active = true
       @venue_event.save!

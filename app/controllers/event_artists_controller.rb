@@ -291,6 +291,10 @@ class EventArtistsController < ApplicationController
     @artist_acc = Account.find(params[:id])
     @artist_event = @event.artist_events.find_by(artist_id: @artist_acc.id)
 
+    unless ["time_expired", "declined", "owner_declined"].include?(@artist_event.status)
+      render status: :forbidden and return
+    end
+
     if @artist_event
       @artist_event.is_active = true
       @artist_event.save!

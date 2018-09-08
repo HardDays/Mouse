@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
-                                   :click, :view, :verify, :set_date]
+                                   :click, :view, :verify, :set_date, :backers]
   before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
   before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify, :set_date]
@@ -34,14 +34,21 @@ class EventsController < ApplicationController
   swagger_api :backers do
     summary "Retrieve list of event backers"
     param :path, :id, :integer, :required, "Event id"
+    param :query, :text, :string, :optional, "Text to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :optional, 'Authentication token'
     response :ok
   end
   def backers
-    backers = Account.joins(fan_tickets: :ticket).where(tickets: {event_id: params[:id]}).order(created_at: :desc)
-    render json: backers, only: [:id, :first_name, :last_name, :image_id], status: :ok
+    backers = Account.joins(fan_tickets: :ticket).where(tickets: {event_id: params[:id]})
+
+    if params[:text]
+      backers = backers.search_fan_fullname(params[:text])
+    end
+
+    backers = backers.order(created_at: :desc)
+    render json: backers, backers: true, status: :ok
   end
 
   # GET /events/1/updates
@@ -49,7 +56,7 @@ class EventsController < ApplicationController
     summary "Retrieve event updates by id"
     param :path, :id, :integer, :required, "Event id"
     response :ok
-  end	  
+  end
   def get_updates
     event_updates = @event.feed_items.select(:action, :field, :created_at).as_json.each {|e| e[:type] = "event"}
     venue_updates = @event.venue.account.feed_items.select(
