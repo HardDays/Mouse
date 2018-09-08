@@ -161,20 +161,21 @@ class EventVenuesController < ApplicationController
         read_message
       end
 
-      if @venue_event.status == 'owner_accepted'
-        undo_change_event_date
-        undo_change_event_address
+      if @venue_event.account.venue.venue_type == 'private_residence'
+        @event.has_private_venue = false
+        @event.save
+      else
+        if @venue_event.status == 'owner_accepted'
+          undo_change_event_date
+          undo_change_event_address
+        end
+
+        send_owner_decline(@venue_event.account)
       end
 
       @venue_event.status = 'owner_declined'
       @venue_event.is_active = false
-      send_owner_decline(@venue_event.account)
       @venue_event.save
-
-      if @venue_event.venue.venue_type == 'private_residence'
-        @event.has_private_venue = false
-        @event.save
-      end
 
       render status: :ok
     else
