@@ -36,6 +36,22 @@
       "description": "Inbox messages"
     },
     {
+      "path": "/api-docs/1.0/artist_videos.{format}",
+      "description": "Artist videos"
+    },
+    {
+      "path": "/api-docs/1.0/artist_albums.{format}",
+      "description": "Artist albums"
+    },
+    {
+      "path": "/api-docs/1.0/artist_audios.{format}",
+      "description": "Artist audios"
+    },
+    {
+      "path": "/api-docs/1.0/venue_videos.{format}",
+      "description": "Venue videos"
+    },
+    {
       "path": "/api-docs/1.0/accounts.{format}",
       "description": "Accounts"
     },

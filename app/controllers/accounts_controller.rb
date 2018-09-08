@@ -514,7 +514,7 @@ class AccountsController < ApplicationController
         changed = @account.changed
 
         if @account.update(account_update_params)
-          log_changes(changed, account)
+          log_changes(changed, @account)
 
           render json: @account, extended: true, my: true, except: :password, status: :ok
         else

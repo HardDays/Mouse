@@ -47,6 +47,10 @@ Rails.application.routes.draw do
         post :read
       end
     end
+    resources :artist_videos, only: [:index, :show]
+    resources :artist_albums, only: [:index, :show]
+    resources :artist_audios, only: [:index, :show]
+    resources :venue_videos, only: [:index, :show]
   end
   get 'accounts', action: :get_all, controller: 'accounts'
   get 'accounts/search', action: :search, controller: 'accounts'
