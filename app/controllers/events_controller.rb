@@ -184,6 +184,7 @@ class EventsController < ApplicationController
   swagger_api :set_date do
     summary "Set event's exact date"
     param :path, :id, :integer, :required, "Event id"
+    param :form, :account_id, :integer, :required, "Authorized account id"
     param :form, :exact_date_from, :integer, :required, "Exact start date"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized

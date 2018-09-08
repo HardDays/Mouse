@@ -905,6 +905,58 @@
       ]
     },
     {
+      "path": "/events/{id}/set_date.json",
+      "operations": [
+        {
+          "summary": "Set event's exact date",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Authorized account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "exact_date_from",
+              "type": "integer",
+              "description": "Exact start date",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Events#set_date",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/events/{id}/verify.json",
       "operations": [
         {
