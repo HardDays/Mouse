@@ -1175,6 +1175,32 @@
       ]
     },
     {
+      "path": "/events/{id}/updates.json",
+      "operations": [
+        {
+          "summary": "Retrieve event updates by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Events#get_updates",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/events/{id}/backers.json",
       "operations": [
         {
