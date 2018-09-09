@@ -13,7 +13,9 @@ class FeedItem < ApplicationRecord
 
     res[:comments] = feed_comments.count
     res[:likes] = likes.count
-    res[:is_liked] = likes.where(user_id: options[:user].id).exists?
+    if options[:user]
+      res[:is_liked] = likes.where(user_id: options[:user].id).exists?
+    end
 
     if event_id
       res[:type] = "event_update"
