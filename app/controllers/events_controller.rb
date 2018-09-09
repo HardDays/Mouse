@@ -220,7 +220,7 @@ class EventsController < ApplicationController
     date = DateTime.parse(params[:exact_date_from])
     valid = date_valid?(date)
 
-    if valid and ["declined", "just_added", "pending", "approved"].include?(@event.status)
+    if valid and ["denied", "just_added", "pending", "approved"].include?(@event.status)
       @event.exact_date_from = params[:exact_date_from]
       @event.exact_date_to = DateTime.parse(params[:exact_date_from]) + @event.event_length.hours
       @event.save
