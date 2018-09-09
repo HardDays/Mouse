@@ -10,7 +10,7 @@ class Comment < ApplicationRecord
 
     res[:account] = nil
     if account
-      res[:account] = account.as_json(only: [:id, :user_name, :image_id, :display_name])
+      res[:account] = account.as_json(for_message: true)
     end
 
     return res
