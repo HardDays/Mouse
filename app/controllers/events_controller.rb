@@ -449,6 +449,17 @@ class EventsController < ApplicationController
         @event.image = image
         @event.images << image
         @event.save
+
+        if @event.status == "active"
+          feed = FeedItem.new(
+            action: :update,
+            updated_by: @account.id,
+            account_id: @account.id,
+            field: :image,
+            value: image.id
+          )
+          feed.save
+        end
       end
     end
 
@@ -459,6 +470,17 @@ class EventsController < ApplicationController
         @event.image = image
         @event.images << image
         @event.save
+
+        if @event.status == "active"
+          feed = FeedItem.new(
+            action: :update,
+            updated_by: @account.id,
+            account_id: @account.id,
+            field: :image,
+            value: image.id
+          )
+          feed.save
+        end
       end
     end
 
