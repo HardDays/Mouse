@@ -11,13 +11,17 @@ class FeedItem < ApplicationRecord
   def as_json(options={})
     res = super
 
+    if options[:only]
+      return super(options)
+    end
+
     res[:comments] = feed_comments.count
     res[:likes] = likes.count
     if options[:user]
       res[:is_liked] = likes.where(user_id: options[:user].id).exists?
     end
 
-    if event_id
+    if event
       res[:type] = "event_update"
       res[:action] = [action, field].compact.join("_")
       res[:event] = event.as_json(only: [:id, :name, :comments_available])
@@ -28,7 +32,7 @@ class FeedItem < ApplicationRecord
       else
         res[:value] = value
       end
-    elsif account_id
+    elsif account
       res[:type] = "account_update"
       res[:action] = [action, field].compact.join("_")
       res[:account] = account
