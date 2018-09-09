@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
-                                   :click, :view, :verify, :set_date, :backers]
+                                   :click, :view, :verify, :set_date, :backers, :get_updates]
   before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
   before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify, :set_date]
