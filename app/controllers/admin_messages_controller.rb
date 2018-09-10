@@ -48,7 +48,7 @@ class AdminMessagesController < ApplicationController
 
     if messages.update_all(is_read: true)
       count = AdminMessage.where(is_read: false).where.not(sender_id: @admin.id).count
-      ApplicationCable::AdminMessagesChannel.broadcast_to(@admin.id, count: count)
+      AdminMessagesChannel.broadcast_to(@admin.id, count: count)
 
       render status: :ok
     else
@@ -103,7 +103,7 @@ class AdminMessagesController < ApplicationController
         )
         if message.save
           count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
-          ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
+          AdminMessagesChannel.broadcast_to(receiver.id, count: count)
         else
           topic.destroy
         end
@@ -142,7 +142,7 @@ class AdminMessagesController < ApplicationController
     )
     if message.save
       count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
-      ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
+      AdminMessagesChannel.broadcast_to(receiver.id, count: count)
 
       render status: :created
     else
@@ -186,7 +186,7 @@ class AdminMessagesController < ApplicationController
       )
       if message.save
         count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
-        ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
+        AdminMessagesChannel.broadcast_to(receiver.id, count: count)
 
         render status: :created
       else
