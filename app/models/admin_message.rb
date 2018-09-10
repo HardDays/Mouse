@@ -1,5 +1,5 @@
 class AdminMessage < ApplicationRecord
-  validates_presence_of :message
+  validates_presence_of :message, if: -> {forwarded_message == nil}
   validates_presence_of :sender_id
 
   enum forwarder_type: [:account, :admin]
