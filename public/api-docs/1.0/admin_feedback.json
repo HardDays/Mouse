@@ -246,7 +246,7 @@
             },
             {
               "paramType": "form",
-              "name": "receiver",
+              "name": "receiver_id",
               "type": "integer",
               "description": "Receiver id",
               "required": true
