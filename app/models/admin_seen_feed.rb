@@ -1,0 +1,2 @@
+class AdminSeenFeed < ApplicationRecord
+end

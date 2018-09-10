@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180910165740) do
+ActiveRecord::Schema.define(version: 20180910174716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,13 @@ ActiveRecord::Schema.define(version: 20180910165740) do
     t.datetime "updated_at", null: false
     t.string "forwarded_message"
     t.boolean "is_read", default: false
+  end
+
+  create_table "admin_seen_feeds", force: :cascade do |t|
+    t.integer "admin_id"
+    t.integer "admin_feed_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "admin_topics", force: :cascade do |t|

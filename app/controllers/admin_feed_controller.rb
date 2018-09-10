@@ -13,6 +13,11 @@ class AdminFeedController < ApplicationController
   def index
     feed = AdminFeed.all.order(created_at: :desc)
 
+    if params[:offset] == 0 or params[:offset] == nil
+      seen = AdminSeenFeed.new(admin_id: @admin.id, admin_feed_id: AdminFeed.last.id)
+      seen.save
+    end
+
     render json: feed.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
 
