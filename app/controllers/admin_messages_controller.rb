@@ -47,6 +47,9 @@ class AdminMessagesController < ApplicationController
     messages = topic.admin_messages.where(is_read: false).where.not(sender_id: @admin.id)
 
     if messages.update_all(is_read: true)
+      count = AdminMessage.where(is_read: false).where.not(sender_id: @admin.id).count
+      ApplicationCable::AdminMessagesChannel.broadcast_to(@admin.id, count: count)
+
       render status: :ok
     else
       render status: :unprocessable_entity
@@ -99,6 +102,9 @@ class AdminMessagesController < ApplicationController
           topic_id: topic.id
         )
         if message.save
+          count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
+          ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
+
           render status: :created
         else
           topic.destroy
@@ -135,6 +141,9 @@ class AdminMessagesController < ApplicationController
       topic_id: topic.id
     )
     if message.save
+      count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
+      ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
+
       render status: :created
     else
       render json: message.errors, status: :unprocessable_entity
@@ -176,6 +185,9 @@ class AdminMessagesController < ApplicationController
         topic_id: topic.id
       )
       if message.save
+        count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
+        ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
+
         render status: :created
       else
         render json: message.errors, status: :unprocessable_entity

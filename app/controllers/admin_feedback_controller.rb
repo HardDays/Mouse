@@ -183,6 +183,9 @@ class AdminFeedbackController < ApplicationController
         topic_id: topic.id
       )
       if message.save
+        count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
+        ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
+
         render status: :created
       else
         render json: message.errors, status: :unprocessable_entity
