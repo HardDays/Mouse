@@ -171,13 +171,6 @@
               "required": false
             },
             {
-              "paramType": "form",
-              "name": "topic",
-              "type": "string",
-              "description": "Topic",
-              "required": true
-            },
-            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",

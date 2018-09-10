@@ -119,7 +119,6 @@ class AdminMessagesController < ApplicationController
     param :form, :topic_id, :integer, :required, "Topic id"
     param :form, :receiver, :integer, :required, "Receiver id"
     param :form, :message, :string, :optional, "Message"
-    param :form, :topic, :string, :required, "Topic"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
     response :created
@@ -130,7 +129,7 @@ class AdminMessagesController < ApplicationController
       render json: {error: ADMIN_NOT_FOUND}, status: :not_found and return
     end
 
-    topic = AdminTopic.find(params[:id])
+    topic = AdminTopic.find(params[:topic_id])
     unless topic
       render json: {error: DIALOG_NOT_FOUND}, status: :not_found and return
     end
