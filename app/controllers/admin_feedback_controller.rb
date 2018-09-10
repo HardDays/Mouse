@@ -150,7 +150,7 @@ class AdminFeedbackController < ApplicationController
   swagger_api :forward do
     summary "Reply on question"
     param :path, :id, :integer, :required, "Id"
-    param :form, :receiver, :integer, :required, "Receiver id"
+    param :form, :receiver_id, :integer, :required, "Receiver id"
     param :form, :message, :string, :optional, "Additional message"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
