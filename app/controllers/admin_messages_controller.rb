@@ -104,13 +104,13 @@ class AdminMessagesController < ApplicationController
         if message.save
           count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
           ApplicationCable::AdminMessagesChannel.broadcast_to(receiver.id, count: count)
-
-          render status: :created
         else
           topic.destroy
         end
       end
     end
+
+    render status: :created
   end
 
   # POST /admin/messages
