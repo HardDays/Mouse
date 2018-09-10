@@ -338,6 +338,39 @@
       ]
     },
     {
+      "path": "/admin/messages/{id}/read.json",
+      "operations": [
+        {
+          "summary": "Read messages",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Topic id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "AdminMessages#read",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/admin/messages/{id}/delete.json",
       "operations": [
         {

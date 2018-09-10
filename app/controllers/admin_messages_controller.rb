@@ -36,6 +36,23 @@ class AdminMessagesController < ApplicationController
     render json: messages.limit(params[:limit]).offset(params[:offset]).reverse, status: :ok
   end
 
+  swagger_api :read do
+    summary "Read messages"
+    param :path, :id, :integer, :required, "Topic id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+  end
+  def read
+    topic = AdminTopic.find(params[:id])
+    messages = topic.admin_messages.where(is_read: false).where.not(sender_id: @admin.id)
+
+    if messages.update_all(is_read: true)
+      render status: :ok
+    else
+      render status: :unprocessable_entity
+    end
+  end
+
   # GET /admin/messages/topics
   swagger_api :topics_search do
     summary "Search for message topics"
@@ -49,7 +66,7 @@ class AdminMessagesController < ApplicationController
   def topics_search
     @topics = AdminTopic.search(params[:text])
 
-    render json: @topics.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: @topics.limit(params[:limit]).offset(params[:offset]).as_json(only: :topic), status: :ok
   end
 
   # POST /admin/messages/new
@@ -81,7 +98,9 @@ class AdminMessagesController < ApplicationController
           message: params[:message],
           topic_id: topic.id
         )
-        unless message.save
+        if message.save
+          render status: :created
+        else
           topic.destroy
         end
       end

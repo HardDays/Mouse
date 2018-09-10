@@ -242,6 +242,7 @@ Rails.application.routes.draw do
   post 'admin/messages/new', action: :new, controller: 'admin_messages'
   post 'admin/messages/:id/forward', action: :forward, controller: 'admin_messages'
   post 'admin/messages/:id/solve', action: :solve, controller: 'admin_messages'
+  post 'admin/messages/:id/read', action: :read, controller: 'admin_messages'
   delete 'admin/messages/:id/delete', action: :delete, controller: 'admin_messages'
   delete 'admin/messages/:id/delete_message', action: :delete_message, controller: 'admin_messages'
 end

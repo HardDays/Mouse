@@ -11,15 +11,23 @@ class AdminTopic < ApplicationRecord
   has_many :admin_messages, foreign_key: 'topic_id', dependent: :destroy
 
   def as_json(options={})
-    res = super
-
-    if sender_id == options[:my_id]
-      res[:with] = receiver.as_json(only: [:user_name, :first_name, :last_name])
+    if options[:only]
+      super(options)
     else
-      res[:with] = sender.as_json(only: [:user_name, :first_name, :last_name])
-    end
+      res = super
 
-    return res
+      if sender_id == options[:my_id]
+        res[:with] = receiver.as_json(only: [:user_name, :first_name, :last_name])
+      elsif receiver_id == options[:my_id]
+        res[:with] = sender.as_json(only: [:user_name, :first_name, :last_name])
+      end
+
+      if options[:my_id]
+        res[:is_read] = !admin_messages.where(is_read: false).where.not(sender_id: options[:my_id]).exists?
+      end
+
+      res
+    end
   end
 
   def self.search(text)
