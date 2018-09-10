@@ -1,7 +1,6 @@
 class AdminTopic < ApplicationRecord
   validates_presence_of :sender_id
   validates_presence_of :receiver_id
-  validates_uniqueness_of :receiver_id, scope: [:sender_id]
   validates_presence_of :topic
 
   enum topic_type: [:message, :bug]
