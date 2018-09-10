@@ -121,7 +121,6 @@ class AdminFeedbackController < ApplicationController
   swagger_api :thank_you do
     summary "Reply on question"
     param :path, :id, :integer, :required, "Id"
-    param :form, :message, :string, :required, "Message"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
     response :created
@@ -132,7 +131,7 @@ class AdminFeedbackController < ApplicationController
     feedback_reply = InboxMessage.new(
       subject: "Admin's reply to your feedback",
       message_type: "feedback",
-      message: params[:message],
+      message: "Thank you for your feedback",
       is_parent: false
     )
     feedback_reply.admin = @admin
