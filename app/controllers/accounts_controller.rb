@@ -389,7 +389,8 @@ class AccountsController < ApplicationController
               raise ActiveRecord::Rollback
               return
             end
-            
+
+            log_users_count
             #AccessHelper.grant_account_access(@account)
             render json: @account, extended: true, my: true, except: :password, status: :created
         else
@@ -1174,6 +1175,14 @@ class AccountsController < ApplicationController
           field: field,
           value: value
         )
+        feed.save
+      end
+    end
+
+    def log_users_count
+      count = Account.all.count
+      if count % 1000 == 0
+        feed = AdminFeed.new(action: :new_users, value: count)
         feed.save
       end
     end

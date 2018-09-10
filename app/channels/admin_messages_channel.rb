@@ -6,6 +6,6 @@ class AdminMessagesChannel < ApplicationCable::Channel
     count = AdminMessage.where(is_read: false).where.not(sender_id: user_id).count
     AdminMessagesChannel.broadcast_to(user_id, count: count)
   end
-  
+
 end
 

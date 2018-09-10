@@ -91,7 +91,7 @@ class AdminController < ApplicationController
 
         render json: @admin, serializer: AdminSerializer, status: :created
       else
-        @user.destroy
+        user.destroy
         render json: @admin.errors, status: :unprocessable_entity
       end
     end
