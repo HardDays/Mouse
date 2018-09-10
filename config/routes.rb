@@ -245,4 +245,6 @@ Rails.application.routes.draw do
   post 'admin/messages/:id/read', action: :read, controller: 'admin_messages'
   delete 'admin/messages/:id/delete', action: :delete, controller: 'admin_messages'
   delete 'admin/messages/:id/delete_message', action: :delete_message, controller: 'admin_messages'
+
+  get 'admin/feed', action: :index, controller: 'admin_feed'
 end

@@ -45,6 +45,11 @@ class FeedbacksController < ApplicationController
     @inbox.build_feedback_message(feedback_params)
 
     if @inbox.save!
+      if params[:feedback_type] == "bug"
+        feed = AdminFeed.new(action: :new_bug, value: @inbox.id)
+        feed.save
+      end
+
       render json: @inbox, status: :created
     else
       render json: @inbox.errors, status: :unprocessable_entity

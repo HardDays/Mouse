@@ -99,4 +99,6 @@ Rails.application.configure do
 
   Geocoder.configure(language: :en)
 
+
+  config.action_cable.allowed_request_origins = [/http:\/\/*/, /https:\/\/*/]
 end

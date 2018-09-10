@@ -86,6 +86,9 @@ class AdminController < ApplicationController
         set_base64_image
         set_phone_validation
 
+        feed = AdminFeed.new(action: :new_admin, value: @admin.id)
+        feed.save
+
         render json: @admin, serializer: AdminSerializer, status: :created
       else
         @user.destroy
