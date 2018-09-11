@@ -39,12 +39,12 @@ class FeedItemsController < ApplicationController
     my_events = Event.where(creator_id: @account.id).pluck(:id)
     
     feed = FeedItem.where(account_id: following)
-    if creator_events
+    if creator_events.count > 0
       feed = feed.or(
         FeedItem.where(event_id: creator_events)
       )
     end
-    if events_tickets
+    if events_tickets.count > 0
       feed = feed.or(
         FeedItem.where(event_id: events_tickets)
       )
