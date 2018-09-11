@@ -1,6 +1,6 @@
 class Event < ApplicationRecord
   scope :available, -> {where(is_deleted: false)}
-  scope :searchable, -> {where(status: ["active", "approved", "inactive"])}
+  scope :searchable, -> {where(status: :active)}
 
   validates :name, presence: true
   validates :hashtag, presence: true
