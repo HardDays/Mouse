@@ -265,7 +265,7 @@ class EventsController < ApplicationController
       render json: {errors: :NO_TICKETS}, status: :forbidden and return
     end
 
-    if @event.artists.where(status: Event.statuses["owner_accepted"]).empty?
+    if @event.artists.where(status: ArtistEvent.statuses["owner_accepted"]).empty?
       render json: {errors: :NO_ARTISTS}, status: :forbidden and return
     end
 
