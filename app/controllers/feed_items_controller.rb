@@ -38,11 +38,18 @@ class FeedItemsController < ApplicationController
     creator_events = Event.where(creator_id: following, status: :active).pluck(:id)
     my_events = Event.where(creator_id: @account.id).pluck(:id)
     
-    feed = FeedItem.where(account_id: following).or(
-      FeedItem.where(event_id: creator_events)
-    ).or(
-      FeedItem.where(event_id: events_tickets)
-    ).where.not(event_id: my_events).order(:created_at => :desc)
+    feed = FeedItem.where(account_id: following)
+    if creator_events
+      feed = feed.or(
+        FeedItem.where(event_id: creator_events)
+      )
+    end
+    if events_tickets
+      feed = feed.or(
+        FeedItem.where(event_id: events_tickets)
+      )
+    end
+    feed = feed.where.not(event_id: my_events).order(:created_at => :desc)
 
     render json: feed.limit(params[:limit]).offset(params[:offset]), user: @user
   end
