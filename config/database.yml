@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: Mouse_development
+  database: Mouse_dev
   username: postgres
   password: root
 
