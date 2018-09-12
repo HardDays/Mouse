@@ -37,18 +37,18 @@ class EventsController < ApplicationController
     param :query, :text, :string, :optional, "Text to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
-    param :header, 'Authorization', :string, :optional, 'Authentication token'
+    # param :header, 'Authorization', :string, :optional, 'Authentication token'
     response :ok
   end
   def backers
-    backers = Account.joins(fan_tickets: :ticket).where(tickets: {event_id: params[:id]})
+    backers = Account.joins(fan_tickets: :ticket).where(tickets: {event_id: params[:id]}).distinct
 
     if params[:text]
       backers = backers.search_fan_fullname(params[:text])
     end
 
     backers = backers.order(created_at: :desc)
-    render json: backers, backers: true, status: :ok
+    render json: backers.limit(params[:limit]).offset(params[:offset]), backers: true, status: :ok
   end
 
   # GET /events/1/updates
@@ -466,7 +466,7 @@ class EventsController < ApplicationController
     end
 
     def set_base64_image
-      if params[:image_base64]
+      if params[:image_base64] and params[:image_base64] != @event.image.base64
         image = Image.new(base64: params[:image_base64])
         image.save
         @event.image = image

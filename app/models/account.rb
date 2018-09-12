@@ -86,11 +86,13 @@ class Account < ApplicationRecord
 
 			if options[:backers]
 				attrs = {}
+				attrs[:id] = id
 				attrs[:image_id] = image_id
 				attrs[:user_name] = user_name
 
 				if fan
-					attrs[:full_name] = "#{fan.first_name} #{fan.last_name}"
+					attrs[:first_name] = fan.first_name
+					attrs[:last_name] = fan.last_name
 				end
 
 				return attrs
