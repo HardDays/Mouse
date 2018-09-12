@@ -52,6 +52,53 @@
       ]
     },
     {
+      "path": "/accounts/{account_id}/artist_audios.json",
+      "operations": [
+        {
+          "summary": "Add audio to artist",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Artist account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "audio_link",
+              "type": "string",
+              "description": "Link to audio",
+              "required": true
+            },
+            {
+              "paramType": "from",
+              "name": "song_name",
+              "type": "string",
+              "description": "Song name",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "album_name",
+              "type": "string",
+              "description": "Album name",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "nickname": "ArtistAudios#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/accounts/{account_id}/artist_audios/{id}.json",
       "operations": [
         {
@@ -93,6 +140,56 @@
           ],
           "nickname": "ArtistAudios#show",
           "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/artist_audios/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete audio",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Audio id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "ArtistAudios#destroy",
+          "method": "delete"
         }
       ]
     }

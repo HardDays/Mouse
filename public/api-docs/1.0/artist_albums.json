@@ -52,6 +52,53 @@
       ]
     },
     {
+      "path": "/accounts/{account_id}/artist_albums.json",
+      "operations": [
+        {
+          "summary": "Add album to artist",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Artist account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "album_name",
+              "type": "string",
+              "description": "Album name",
+              "required": true
+            },
+            {
+              "paramType": "from",
+              "name": "album_artwork",
+              "type": "string",
+              "description": "Album artwork",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "album_link",
+              "type": "string",
+              "description": "Album link",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "nickname": "ArtistAlbums#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/accounts/{account_id}/artist_albums/{id}.json",
       "operations": [
         {
@@ -93,6 +140,56 @@
           ],
           "nickname": "ArtistAlbums#show",
           "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/artist_albums/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete album",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Album id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "ArtistAlbums#destroy",
+          "method": "delete"
         }
       ]
     }

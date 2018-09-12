@@ -52,6 +52,39 @@
       ]
     },
     {
+      "path": "/accounts/{account_id}/venue_videos.json",
+      "operations": [
+        {
+          "summary": "Add audio to venue",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Venue account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "video_link",
+              "type": "string",
+              "description": "Link to video",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "nickname": "VenueVideos#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/accounts/{account_id}/venue_videos/{id}.json",
       "operations": [
         {
@@ -93,6 +126,56 @@
           ],
           "nickname": "VenueVideos#show",
           "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/venue_videos/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete video",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Video id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "VenueVideos#destroy",
+          "method": "delete"
         }
       ]
     }
