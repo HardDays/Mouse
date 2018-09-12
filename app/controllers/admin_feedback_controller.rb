@@ -183,6 +183,9 @@ class AdminFeedbackController < ApplicationController
         topic_id: topic.id
       )
       if message.save
+        feedback.feedback_message.is_forwarded = true
+        feedback.save
+
         count = AdminMessage.where(is_read: false).where.not(sender_id: receiver.id).count
         AdminMessagesChannel.broadcast_to(receiver.id, count: count)
 
