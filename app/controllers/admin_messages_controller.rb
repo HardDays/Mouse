@@ -117,7 +117,7 @@ class AdminMessagesController < ApplicationController
   swagger_api :create do
     summary "Send message"
     param :form, :topic_id, :integer, :required, "Topic id"
-    param :form, :receiver, :integer, :required, "Receiver id"
+    param :form, :receiver_id, :integer, :required, "Receiver id"
     param :form, :message, :string, :optional, "Message"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found

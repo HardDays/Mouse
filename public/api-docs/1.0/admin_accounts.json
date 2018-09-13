@@ -94,7 +94,7 @@
               "allowableValues": {
                 "valueType": "LIST",
                 "values": [
-                  "just_added",
+                  "unchecked",
                   "pending",
                   "approved",
                   "denied",
