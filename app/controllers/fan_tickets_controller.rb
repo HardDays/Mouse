@@ -440,10 +440,6 @@ class FanTicketsController < ApplicationController
         render json: {error: "Access forbidden"}, status: :forbidden and return
       end
 
-      if @account.status != "approved"
-        render json: {error: "Unapproved account"}, status: :forbidden and return
-      end
-
       @user = @account.user
     end
 end
