@@ -20,7 +20,7 @@ class AdminFeed < ApplicationRecord
       res = super
 
       if action == "new_admin"
-        res[:admin] = Admin.find(value).as_json(only: [:user_name, :first_name, :last_name, :image_id])
+        res[:admin] = Admin.find(value).as_json(only: [:id, :user_name, :first_name, :last_name, :image_id])
       elsif action == "new_bug"
         res[:message] = InboxMessage.find(value)
       end

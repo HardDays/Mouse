@@ -28,9 +28,9 @@ class AdminMessagesController < ApplicationController
   def show
     topic = AdminTopic.find(params[:id])
     if topic.sender == @admin
-      messages = AdminMessage.where(sender_deleted: false).order(created_at: :desc)
+      messages = AdminMessage.where(topic_id: topic.id, sender_deleted: false).order(created_at: :desc)
     else
-      messages = AdminMessage.where(receiver_deleted: false).order(created_at: :desc)
+      messages = AdminMessage.where(topic_id: topic.id, receiver_deleted: false).order(created_at: :desc)
     end
 
     render json: messages.limit(params[:limit]).offset(params[:offset]).reverse, status: :ok

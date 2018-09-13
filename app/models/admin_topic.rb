@@ -17,9 +17,14 @@ class AdminTopic < ApplicationRecord
       res = super
 
       if sender_id == options[:my_id]
-        res[:with] = receiver.as_json(only: [:user_name, :first_name, :last_name])
+        res[:with] = receiver.as_json(only: [:image_id, :user_name, :first_name, :last_name])
       elsif receiver_id == options[:my_id]
-        res[:with] = sender.as_json(only: [:user_name, :first_name, :last_name])
+        res[:with] = sender.as_json(only: [:image_id, :user_name, :first_name, :last_name])
+      end
+
+      res[:is_forwarded] = false
+      if admin_messages.where.not(forwarded_from: nil).exists?
+        res[:is_forwarded] = true
       end
 
       if options[:my_id]
