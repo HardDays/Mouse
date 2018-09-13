@@ -6,6 +6,9 @@ class Venue < ApplicationRecord
     # validates :lng, presence: true
     # validates :capacity, presence: true
 
+    VALIDATE_FIELDS = [:venue_type, :address, :description, :phone, :country, :city, :state, :capacity,
+                       :audio_description, :lighting_description, :stage_description]
+
     validates_inclusion_of :capacity, in: 1..1000000, allow_nil: true
 
     enum venue_type: [:public_venue, :private_residence]

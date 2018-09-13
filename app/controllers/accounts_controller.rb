@@ -532,10 +532,15 @@ class AccountsController < ApplicationController
     end
     def verify
       if ["just_added", "denied"].include?(@account.status)
-        @account.status = "unchecked"
-        @account.save
+        empty_fields = check_account_fields
+        if empty_fields.empty?
+          @account.status = "unchecked"
+          @account.save
 
-        render status: :ok
+          render status: :ok
+        else
+          render json: {errors: :UNFILLED_FIELDS}, status: :unprocessable_entity
+        end
       else
         render json: {error: :FORBIDDEN_STATUS}, status: :unprocessable_entity
       end
@@ -1201,6 +1206,38 @@ class AccountsController < ApplicationController
       if count % 1000 == 0
         feed = AdminFeed.new(action: :new_users, value: count)
         feed.save
+      end
+    end
+
+    def check_account_fields
+      if @account.account_type == "artist"
+        empty_fields = []
+
+        unless @account.display_name
+          empty_fields.push("display_name")
+        end
+
+        Artist::VALIDATE_FIELDS.each do |field|
+          unless @account.artist[field]
+            empty_fields.push(field)
+          end
+        end
+        empty_fields
+      elsif @account.account_type == "venue"
+        empty_fields = []
+
+        unless @account.display_name
+          empty_fields.push("display_name")
+        end
+
+        Venue::VALIDATE_FIELDS.each do |field|
+          unless @account.venue[field]
+            empty_fields.push(field)
+          end
+        end
+        empty_fields
+      else
+        []
       end
     end
 

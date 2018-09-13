@@ -4,6 +4,8 @@ class Artist < ApplicationRecord
     validates :artist_email, presence: true
     validates :about, presence: true
 
+    VALIDATE_FIELDS = [:artist_email, :about]
+
     has_many :genres, foreign_key: 'artist_id', class_name: 'ArtistGenre', dependent: :destroy
 
     has_one :account
