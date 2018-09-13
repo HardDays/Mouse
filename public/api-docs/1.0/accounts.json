@@ -2197,6 +2197,44 @@
       ]
     },
     {
+      "path": "/accounts/{id}/verify.json",
+      "operations": [
+        {
+          "summary": "Send account to verification",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#verify",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/accounts/{id}/unfollow.json",
       "operations": [
         {

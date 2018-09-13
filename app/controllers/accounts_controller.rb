@@ -2,7 +2,7 @@ class AccountsController < ApplicationController
     before_action :authorize_user, only: [:create, :get_my_accounts]
     before_action :authorize_search, only: [:search]
     before_action :authorize_account, only: [:update,  :upload_image, :follow, :unfollow, :is_followed,
-                                             :follow_multiple, :delete]
+                                             :follow_multiple, :delete, :verify]
     before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed]
     before_action :find_follower_account, only: [:follow, :unfollow, :is_followed]
     swagger_controller :accounts, "Accounts"
@@ -391,7 +391,6 @@ class AccountsController < ApplicationController
             end
 
             log_users_count
-            #AccessHelper.grant_account_access(@account)
             render json: @account, extended: true, my: true, except: :password, status: :created
         else
             render json: @account.errors, status: :unprocessable_entity
@@ -521,6 +520,24 @@ class AccountsController < ApplicationController
         else
           render json: @account.errors, status: :unprocessable_entity
         end
+      end
+    end
+
+    swagger_api :verify do
+      summary "Send account to verification"
+      param :path, :id, :integer, :required, "Account id"
+      param :header, 'Authorization', :string, :optional, 'Authentication token'
+      response :unprocessable_entity
+      response :unauthorized
+    end
+    def verify
+      if ["just_added", "denied"].include?(@account.status)
+        @account.status = "unchecked"
+        @account.save
+
+        render status: :ok
+      else
+        render json: {error: :FORBIDDEN_STATUS}, status: :unprocessable_entity
       end
     end
 
