@@ -10,6 +10,6 @@ class HistoryHelper
     # Enum in db
     ACCOUNT_FIELDS = [:address, :phone, :has_vr, :about, :user_name, :display_name, :stage_name]
     FIELDS = [:description, :address, :phone, :has_vr, :about, :user_name, :display_name, :stage_name,
-              :image, :gallery_image, :video, :audio, :album]
-    ACTIONS = [:launch_event, :add_ticket, :add_video, :add_image, :update]
+              :image, :gallery_image, :video, :audio, :album, :genre]
+    ACTIONS = [:launch_event, :add_ticket, :add_video, :add_image, :update, :add_genre]
 end

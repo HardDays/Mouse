@@ -488,23 +488,26 @@ class EventsController < ApplicationController
 
     def set_genres
       if params[:genres]
-        @event.genres.clear
-        params[:genres].each do |genre|
+        old_genres = @event.genres.pluck(:genre) & params[:genres]
+        @event.genres.where.not(genre: old_genres).destroy_all
+
+        new_genres = params[:genres] - old_genres
+        new_genres.each do |genre|
           obj = EventGenre.new(genre: genre)
           obj.save
           @event.genres << obj
           @event.save
 
-          # if @event.status == "active"
-          #   feed = FeedItem.new(
-          #     action: :update,
-          #     updated_by: @account.id,
-          #     event_id: @event.id,
-          #     field: :image,
-          #     value: image.id
-          #   )
-          #   feed.save
-          # end
+          if @event.status == "active"
+            feed = FeedItem.new(
+              action: :add_genre,
+              updated_by: @account.id,
+              event_id: @event.id,
+              field: :genre,
+              value: genre
+            )
+            feed.save
+          end
         end
       end
     end
