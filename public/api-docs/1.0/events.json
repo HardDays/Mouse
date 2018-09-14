@@ -1246,6 +1246,37 @@
           "method": "get"
         }
       ]
+    },
+    {
+      "path": "/events/{id}/save_to_calendar.json",
+      "operations": [
+        {
+          "summary": "Save event to ics file",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Events#save_to_calendar",
+          "method": "get"
+        }
+      ]
     }
   ],
   "authorizations": null

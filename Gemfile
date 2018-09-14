@@ -61,3 +61,5 @@ gem 'time_diff'
 gem 'paypal-sdk-rest'
 
 gem 'koala'
+
+gem 'icalendar'

@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
-                                   :click, :view, :verify, :set_date, :backers, :get_updates]
+                                   :click, :view, :verify, :set_date, :backers, :get_updates, :save_to_calendar]
   before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
   before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify, :set_date]
@@ -334,6 +334,26 @@ class EventsController < ApplicationController
     @event.save
 
     render status: :ok
+  end
+
+  # GET /events/1/save_to_calendar
+  swagger_api :save_to_calendar do
+    summary "Save event to ics file"
+    param :path, :id, :integer, :required, "Event id"
+    response :not_found
+    response :ok
+  end
+  def save_to_calendar
+    cal = Icalendar::Calendar.new
+    filename = "#{@event.name}.ics"
+
+    cal.event do |e|
+      e.dtstart     = Icalendar::Values::DateTime.new(@event.exact_date_from)
+      e.dtend       = Icalendar::Values::DateTime.new(@event.exact_date_to)
+      e.location    = @event.address
+    end
+
+    send_data cal.to_ical, type: 'text/calendar', disposition: 'attachment', filename: filename
   end
 
   # GET /events/my
