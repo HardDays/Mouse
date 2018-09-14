@@ -807,6 +807,7 @@ class AccountsController < ApplicationController
         @venue.public_venue.genres.clear
         params[:genres].each do |genre|
           obj = VenueGenre.new(genre: genre)
+          obj.venue_id = @venue.public_venue.id
           obj.save
           @venue.public_venue.genres << obj
         end
@@ -819,6 +820,7 @@ class AccountsController < ApplicationController
             @venue.dates.clear
             params[:dates].each do |date|
                 obj = VenueDate.new(venue_dates_params(date))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.dates << obj
             end
@@ -831,6 +833,7 @@ class AccountsController < ApplicationController
             @venue.emails.clear
             params[:emails].each do |email|
                 obj = VenueEmail.new(venue_email_params(email))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.emails << obj
             end
@@ -843,6 +846,7 @@ class AccountsController < ApplicationController
             @venue.office_hours.clear
             params[:office_hours].each do |hour|
                 obj = VenueOfficeHour.new(venue_office_hours_params(hour))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.office_hours << obj
             end
@@ -855,6 +859,7 @@ class AccountsController < ApplicationController
             @venue.operating_hours.clear
             params[:operating_hours].each do |hour|
                 obj = VenueOperatingHour.new(venue_operating_hours_params(hour))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.operating_hours << obj
             end
@@ -867,6 +872,7 @@ class AccountsController < ApplicationController
         @venue.venue_video_links.clear
         params[:venue_video_links].each do |link|
           obj = VenueVideoLink.new(video_link: link)
+          obj.venue_id = @venue.id
           if obj.save
             @venue.venue_video_links << obj
 
@@ -909,6 +915,7 @@ class AccountsController < ApplicationController
             @artist.genres.clear
             params[:genres].each do |genre|
                 obj = ArtistGenre.new(genre: genre)
+                obj.artist_id = @artist.id
                 obj.save
                 @artist.genres << obj
             end
@@ -921,6 +928,7 @@ class AccountsController < ApplicationController
         @artist.artist_videos.clear
         params[:artist_videos].each do |link|
           obj = ArtistVideo.new(artist_video_params(link))
+          obj.artist_id = @artist.id
           if obj.save
             @artist.artist_videos << obj
 
@@ -936,6 +944,7 @@ class AccountsController < ApplicationController
         @artist.artist_albums.clear
         params[:artist_albums].each do |album|
           obj = ArtistAlbum.new(artist_album_params(album))
+          obj.artist_id = @artist.id
           if obj.save
             @artist.artist_albums << obj
 
@@ -951,6 +960,7 @@ class AccountsController < ApplicationController
         @artist.artist_riders.clear
         params[:artist_riders].each do |rider|
           obj = ArtistRider.new(artist_rider_params(rider))
+          obj.artist_id = @artist.id
           if obj.save
             @artist.artist_riders << obj
           end
@@ -965,6 +975,7 @@ class AccountsController < ApplicationController
         params[:audio_links].each do |link|
           if link["audio_link"].start_with?("https://soundcloud.com/")
             obj = AudioLink.new(artist_audio_params(link))
+            obj.artist_id = @artist.id
             if obj.save
               objs << obj
 
@@ -988,6 +999,7 @@ class AccountsController < ApplicationController
         @artist.disable_dates.clear
         params[:disable_dates].each do |date_range|
           obj = ArtistDate.new(artist_dates_params(date_range))
+          obj.artist_id = @artist.id
           obj.save
           @artist.disable_dates << obj
         end
@@ -1000,6 +1012,7 @@ class AccountsController < ApplicationController
         @artist.artist_preferred_venues.clear
         params[:preferred_venues].each do |venue_type|
           obj = ArtistPreferredVenue.new(type_of_venue: ArtistPreferredVenue.type_of_venues[venue_type])
+          obj.artist_id = @artist.id
           obj.save
           @artist.artist_preferred_venues << obj
         end
