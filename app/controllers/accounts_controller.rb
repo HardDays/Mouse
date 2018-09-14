@@ -867,10 +867,11 @@ class AccountsController < ApplicationController
         @venue.venue_video_links.clear
         params[:venue_video_links].each do |link|
           obj = VenueVideoLink.new(video_link: link)
-          obj.save
-          @venue.venue_video_links << obj
+          if obj.save
+            @venue.venue_video_links << obj
 
-          log_changed_value(:video, @account, obj.id)
+            log_changed_value(:video, @account, obj.id)
+          end
         end
         @venue.save
       end
@@ -920,10 +921,11 @@ class AccountsController < ApplicationController
         @artist.artist_videos.clear
         params[:artist_videos].each do |link|
           obj = ArtistVideo.new(artist_video_params(link))
-          obj.save
-          @artist.artist_videos << obj
+          if obj.save
+            @artist.artist_videos << obj
 
-          log_changed_value(:video, @account, obj.id)
+            log_changed_value(:video, @account, obj.id)
+          end
         end
         @artist.save
       end
@@ -934,10 +936,11 @@ class AccountsController < ApplicationController
         @artist.artist_albums.clear
         params[:artist_albums].each do |album|
           obj = ArtistAlbum.new(artist_album_params(album))
-          obj.save
-          @artist.artist_albums << obj
+          if obj.save
+            @artist.artist_albums << obj
 
-          log_changed_value(:album, @account, obj.id)
+            log_changed_value(:album, @account, obj.id)
+          end
         end
         @artist.save
       end
@@ -948,8 +951,9 @@ class AccountsController < ApplicationController
         @artist.artist_riders.clear
         params[:artist_riders].each do |rider|
           obj = ArtistRider.new(artist_rider_params(rider))
-          obj.save
-          @artist.artist_riders << obj
+          if obj.save
+            @artist.artist_riders << obj
+          end
         end
         @artist.save
       end
@@ -961,10 +965,11 @@ class AccountsController < ApplicationController
         params[:audio_links].each do |link|
           if link["audio_link"].start_with?("https://soundcloud.com/")
             obj = AudioLink.new(artist_audio_params(link))
-            obj.save
-            objs << obj
+            if obj.save
+              objs << obj
 
-            log_changed_value(:audio, @account, obj.id)
+              log_changed_value(:audio, @account, obj.id)
+            end
           else
             objs.clear
             return false
