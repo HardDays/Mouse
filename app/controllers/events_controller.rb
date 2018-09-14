@@ -456,7 +456,7 @@ class EventsController < ApplicationController
           feed = FeedItem.new(
             action: :update,
             updated_by: @account.id,
-            account_id: @account.id,
+            event_id: @event.id,
             field: :image,
             value: image.id
           )
@@ -477,7 +477,7 @@ class EventsController < ApplicationController
           feed = FeedItem.new(
             action: :update,
             updated_by: @account.id,
-            account_id: @account.id,
+            event_id: @event.id,
             field: :image,
             value: image.id
           )
