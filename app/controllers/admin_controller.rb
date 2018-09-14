@@ -49,7 +49,7 @@ class AdminController < ApplicationController
     response :unauthorized
   end
   def index
-    render json: Admin.all.limit(params[:limit]).offset(params[:offset]).as_json(only: [:id, :user_name]), status: :ok
+    render json: Admin.all.limit(params[:limit]).offset(params[:offset]).as_json(only: [:id, :user_name, :image_id]), status: :ok
   end
 
   # POST /admin/create_admin
