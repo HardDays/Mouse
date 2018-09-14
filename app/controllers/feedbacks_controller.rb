@@ -42,15 +42,23 @@ class FeedbacksController < ApplicationController
     @inbox = InboxMessage.new(message_params)
     @inbox.message_type = 'feedback'
     @inbox.sender_id = Account.find(params[:account_id]).id
-    @inbox.build_feedback_message(feedback_params)
 
-    if @inbox.save!
-      if params[:feedback_type] == "bug"
-        feed = AdminFeed.new(action: :new_bug, value: @inbox.id)
-        feed.save
+    if @inbox.save
+      feedback = Feedback.new(feedback_params)
+      if feedback.save
+        @inbox.feedback_message = feedback
+        @inbox.save
+        
+        if params[:feedback_type] == "bug"
+          feed = AdminFeed.new(action: :new_bug, value: @inbox.id)
+          feed.save
+        end
+
+        render json: @inbox, status: :created
+      else
+        @inbox.destroy
+        render json: feedback.errors, status: :unprocessable_entity
       end
-
-      render json: @inbox, status: :created
     else
       render json: @inbox.errors, status: :unprocessable_entity
     end
