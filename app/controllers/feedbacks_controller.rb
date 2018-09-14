@@ -48,7 +48,7 @@ class FeedbacksController < ApplicationController
       if feedback.save
         @inbox.feedback_message = feedback
         @inbox.save
-        
+
         if params[:feedback_type] == "bug"
           feed = AdminFeed.new(action: :new_bug, value: @inbox.id)
           feed.save

@@ -1,5 +1,6 @@
 class VenueVideosController < ApplicationController
-  before_action :authorize_account, only: [:index, :show, :create, :destroy]
+  before_action :authorize_account, only: [:create, :destroy]
+  before_action :set_account, only: [:index, :show]
   swagger_controller :venue_videos, "Venue videos"
 
   swagger_api :index do
@@ -67,6 +68,10 @@ class VenueVideosController < ApplicationController
 
 
   private
+  def set_account
+    @account = Account.find(param[:account_id])
+  end
+
   def authorize_account
     @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
 
