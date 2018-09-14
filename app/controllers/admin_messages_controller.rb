@@ -172,7 +172,7 @@ class AdminMessagesController < ApplicationController
     topic = AdminTopic.new(
       sender_id: @admin.id,
       receiver_id: receiver.id,
-      topic: message.topic.topic,
+      topic: message.admin_topic.topic,
       topic_type: 'message'
     )
     if topic.save
@@ -275,7 +275,7 @@ class AdminMessagesController < ApplicationController
     message = AdminMessage.find(params[:message_id])
 
     if message
-      if message.topic.sender_id == @admin.id
+      if message.admin_topic.sender_id == @admin.id
         if message.receiver_deleted
           message.destroy
 
@@ -286,7 +286,7 @@ class AdminMessagesController < ApplicationController
 
           render status: :ok and return
         end
-      elsif message.topic.receiver_id == @admin.id
+      elsif message.admin_topic.receiver_id == @admin.id
         if message.sender_deleted
           message.destroy
 
