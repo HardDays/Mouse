@@ -70,7 +70,11 @@ class ArtistVideosController < ApplicationController
 
   private
   def set_account
-    @account = Account.find(param[:account_id])
+    @account = Account.find(params[:account_id])
+
+    unless @account.account_type == "artist"
+      render status: :forbidden and return
+    end
   end
 
   def authorize_account

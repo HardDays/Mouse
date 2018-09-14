@@ -69,7 +69,11 @@ class VenueVideosController < ApplicationController
 
   private
   def set_account
-    @account = Account.find(param[:account_id])
+    @account = Account.find(params[:account_id])
+
+    unless @account.account_type == "venue"
+      render status: :forbidden and return
+    end
   end
 
   def authorize_account
