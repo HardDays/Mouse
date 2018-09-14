@@ -19,11 +19,10 @@ class EventVenuesController < ApplicationController
     response :not_found
   end
   def create
-    unless @venue_acc.venue.capacity
-      render json: {error: :VENUE_WITHOUT_CAPACITY}, status: :unprocessable_entity
-    end
-    
     if venue_available?
+      unless @venue_acc.venue.capacity
+        render json: {error: :VENUE_WITHOUT_CAPACITY}, status: :unprocessable_entity and return
+      end
 
       if @venue_acc.venue.venue_type == 'private_residence'
         if @venue_acc.user_id == @event.creator.user_id

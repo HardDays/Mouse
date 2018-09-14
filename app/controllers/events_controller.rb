@@ -69,7 +69,7 @@ class EventsController < ApplicationController
       :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "artist"}
 
     event_updates.concat(artists_updates).concat(venue_updates).sort_by{|u| u[:created_at]}
-    render json: event_updates
+    render json: event_updates, status: :ok
   end
 
   # POST /events
@@ -494,6 +494,17 @@ class EventsController < ApplicationController
           obj.save
           @event.genres << obj
           @event.save
+
+          # if @event.status == "active"
+          #   feed = FeedItem.new(
+          #     action: :update,
+          #     updated_by: @account.id,
+          #     event_id: @event.id,
+          #     field: :image,
+          #     value: image.id
+          #   )
+          #   feed.save
+          # end
         end
       end
     end
