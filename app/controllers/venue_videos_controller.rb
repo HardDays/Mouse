@@ -39,6 +39,7 @@ class VenueVideosController < ApplicationController
   end
   def create
     obj = VenueVideoLink.new(video_link: link)
+    obj.venue_id = @account.venue.id
     if obj.save
       @account.venue.venue_video_links << obj
       @account.venue.save

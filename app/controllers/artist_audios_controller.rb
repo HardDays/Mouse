@@ -42,6 +42,7 @@ class ArtistAudiosController < ApplicationController
   def create
     if link["audio_link"].start_with?("https://soundcloud.com/")
       obj = AudioLink.new(artist_audio_params)
+      obj.artist_id = @account.artist.id
 
       if obj.save
         @account.artist.audio_links << obj

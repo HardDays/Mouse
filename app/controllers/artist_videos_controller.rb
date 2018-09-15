@@ -41,6 +41,7 @@ class ArtistVideosController < ApplicationController
   end
   def create
     obj = ArtistVideo.new(artist_video_params)
+    obj.artist_id = @account.artist.id
     if obj.save
       @account.artist.artist_videos << obj
       @account.artist.save
