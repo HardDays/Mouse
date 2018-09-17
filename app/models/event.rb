@@ -170,7 +170,7 @@ class Event < ApplicationRecord
     @events = Event.all
 
     if text
-      @events = @events.left_joins(:venue, :artist_events => :account).where(
+      @events = @events.left_joins(:venue => :public_venue, :artist_events => :account).where(
         "events.name ILIKE :query", query: "%#{sanitize_sql_like(text)}%"
       ).or(
         Event.left_joins(:venue, :artist_events => :account).where("events.tagline ILIKE :query", query: "%#{sanitize_sql_like(text)}%")

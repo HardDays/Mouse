@@ -433,8 +433,6 @@ class EventsController < ApplicationController
     search_ticket_types
     search_type_of_space
     search_date
-    # TODO: fix
-    search_only_my
 
     render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from, events.funding_from"), search: true, status: :ok
   end
@@ -610,9 +608,7 @@ class EventsController < ApplicationController
 
     def search_type_of_space
       if params[:size]
-        @events = @events.joins(
-          :venue => :public_venue
-        ).where(public_venues: {type_of_space: PublicVenue.type_of_spaces[params[:size]]})
+        @events = @events.where(public_venues: {type_of_space: PublicVenue.type_of_spaces[params[:size]]})
       end
     end
 
