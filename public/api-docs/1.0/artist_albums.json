@@ -72,7 +72,7 @@
               "required": true
             },
             {
-              "paramType": "from",
+              "paramType": "form",
               "name": "album_artwork",
               "type": "string",
               "description": "Album artwork",

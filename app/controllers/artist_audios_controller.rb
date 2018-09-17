@@ -40,7 +40,7 @@ class ArtistAudiosController < ApplicationController
     param :header, 'Authorization', :string, :optional, 'Authentication token'
   end
   def create
-    if link["audio_link"].start_with?("https://soundcloud.com/")
+    if params["audio_link"].start_with?("https://soundcloud.com/")
       obj = AudioLink.new(artist_audio_params)
       obj.artist_id = @account.artist.id
 

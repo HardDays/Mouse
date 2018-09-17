@@ -35,7 +35,7 @@ class ArtistAlbumsController < ApplicationController
     summary "Add album to artist"
     param :path, :account_id, :integer, :required, "Artist account id"
     param :form, :album_name, :string, :required, "Album name"
-    param :from, :album_artwork, :string, :required, "Album artwork"
+    param :form, :album_artwork, :string, :required, "Album artwork"
     param :form, :album_link, :string, :required, "Album link"
     param :header, 'Authorization', :string, :optional, 'Authentication token'
   end
