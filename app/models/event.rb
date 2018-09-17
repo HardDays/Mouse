@@ -173,11 +173,11 @@ class Event < ApplicationRecord
       @events = @events.left_joins(:venue => :public_venue, :artist_events => :account).where(
         "events.name ILIKE :query", query: "%#{sanitize_sql_like(text)}%"
       ).or(
-        Event.left_joins(:venue, :artist_events => :account).where("events.tagline ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
+        Event.left_joins(:venue => :public_venue, :artist_events => :account).where("events.tagline ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
       ).or(
-        Event.left_joins(:venue, :artist_events => :account).where("events.description ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
+        Event.left_joins(:venue => :public_venue, :artist_events => :account).where("events.description ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
       ).or(
-        Event.left_joins(:venue, :artist_events => :account).where("accounts.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
+        Event.left_joins(:venue => :public_venue, :artist_events => :account).where("accounts.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
       )
     end
 
