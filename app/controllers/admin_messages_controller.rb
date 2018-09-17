@@ -1,6 +1,5 @@
 class AdminMessagesController < ApplicationController
   before_action :authorize_admin
-  before_action :authorize_admin_and_set_user, only: [:get_my]
   swagger_controller :admin_messages, "AdminPanel"
 
   swagger_api :index do

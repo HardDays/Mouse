@@ -1248,6 +1248,10 @@ class AccountsController < ApplicationController
           empty_fields.push("display_name")
         end
 
+        unless @account.phone
+          empty_fields.push("phone")
+        end
+
         Venue::VALIDATE_FIELDS.each do |field|
           unless @account.venue[field]
             empty_fields.push(field)
