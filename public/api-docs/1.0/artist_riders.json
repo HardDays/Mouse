@@ -5,7 +5,117 @@
   "resourcePath": "artist_riders",
   "apis": [
     {
-      "path": "/artist_riders/{id}.json",
+      "path": "/accounts/{account_id}/artist_riders.json",
+      "operations": [
+        {
+          "summary": "Get artist riders",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Artist account id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "ArtistRiders#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/artist_riders.json",
+      "operations": [
+        {
+          "summary": "Add album to artist",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Artist account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "rider_type",
+              "type": "string",
+              "description": "Rider type",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "stage",
+                  "backstage",
+                  "hospitality",
+                  "technical"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Rider description",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "is_flexible",
+              "type": "boolean",
+              "description": "Is it flexible",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "uploaded_file_base64",
+              "type": "string",
+              "description": "file base64",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "nickname": "ArtistRiders#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/artist_riders/{id}.json",
       "operations": [
         {
           "summary": "Get full artist riders object",
@@ -27,6 +137,56 @@
           ],
           "nickname": "ArtistRiders#show",
           "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{account_id}/artist_riders/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete album",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Rider id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "ArtistRiders#destroy",
+          "method": "delete"
         }
       ]
     }

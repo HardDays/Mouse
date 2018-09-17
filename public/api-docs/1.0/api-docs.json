@@ -48,6 +48,10 @@
       "description": "Artist audios"
     },
     {
+      "path": "/api-docs/1.0/artist_riders.{format}",
+      "description": "Artist Riders"
+    },
+    {
       "path": "/api-docs/1.0/venue_videos.{format}",
       "description": "Venue videos"
     },
@@ -62,10 +66,6 @@
     {
       "path": "/api-docs/1.0/images.{format}",
       "description": "Images"
-    },
-    {
-      "path": "/api-docs/1.0/artist_riders.{format}",
-      "description": "Artist Riders"
     },
     {
       "path": "/api-docs/1.0/phone_validations.{format}",

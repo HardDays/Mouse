@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     resources :artist_videos, only: [:index, :show, :create, :destroy]
     resources :artist_albums, only: [:index, :show, :create, :destroy]
     resources :artist_audios, only: [:index, :show, :create, :destroy]
+    resources :artist_riders, only: [:index, :show, :create, :destroy]
     resources :venue_videos, only: [:index, :show, :create, :destroy]
   end
   get 'accounts', action: :get_all, controller: 'accounts'
@@ -85,9 +86,6 @@ Rails.application.routes.draw do
   get 'images/:id/info', action: :info, controller: 'images'
 
   delete 'images/:id', action: :delete_image, controller: 'images'
-
-  # artist riders routes
-  get 'artist_riders/:id', action: :show, controller: 'artist_riders'
 
   # phone validations routes
   get 'phone_validations/new_codes', action: :get_new_codes, controller: 'phone_validations'
