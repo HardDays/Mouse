@@ -1257,6 +1257,13 @@ class AccountsController < ApplicationController
             empty_fields.push(field)
           end
         end
+
+        Venue::VALIDATE_PUBLIC_FIELDS.each do |field|
+          unless @account.venue.public_venue[field]
+            empty_fields.push(field)
+          end
+        end
+
         empty_fields
       else
         []
