@@ -353,7 +353,9 @@ class EventsController < ApplicationController
       e.location    = @event.address
     end
 
-    send_data cal.to_ical, type: 'text/calendar', disposition: 'attachment', filename: filename
+    # send_data cal.to_ical, type: 'text/calendar', disposition: 'attachment', filename: filename
+    @cal = Base64.encode64(cal.to_ical.to_s)
+    render json: {file: @cal}, status: :ok
   end
 
   # GET /events/my
