@@ -58,17 +58,17 @@ class EventsController < ApplicationController
     response :ok
   end
   def get_updates
-    event_updates = @event.feed_items.select(
+    event_updates = @event.feed_items.where.not(action: :launch_event).select(
       :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "event"}
 
-    venue_updates = @event.venue.account.feed_items.select(
-      :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "venue"}
+    # venue_updates = @event.venue.account.feed_items.select(
+    #   :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "venue"}
+    #
+    # artists_ids = @event.artist_events.where(status: 'accepted').pluck(:artist_id)
+    # artists_updates = FeedItem.where(account_id: artists_ids).select(
+    #   :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "artist"}
 
-    artists_ids = @event.artist_events.where(status: 'accepted').pluck(:artist_id)
-    artists_updates = FeedItem.where(account_id: artists_ids).select(
-      :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "artist"}
-
-    event_updates.concat(artists_updates).concat(venue_updates).sort_by{|u| u[:created_at]}
+    # event_updates.concat(artists_updates).concat(venue_updates).sort_by{|u| u[:created_at]}
     render json: event_updates, status: :ok
   end
 
