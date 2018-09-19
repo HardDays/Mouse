@@ -15,7 +15,7 @@ class AdminFeedbackController < ApplicationController
     feedback = InboxMessage.joins(:feedback_message).order(:created_at => :desc)
 
     if params[:feedback_type] and params[:feedback_type] != 'all'
-      feedback = feedback.where(feedbacks: {feedback_type: params[:feedback_type]})
+      feedback = feedback.where(feedbacks: {feedback_type: Feedback.feedback_type[params[:feedback_type]]})
     end
 
     render json: feedback.limit(params[:limit]).offset(params[:offset]), status: :ok
