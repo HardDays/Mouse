@@ -44,7 +44,7 @@ class ArtistRidersController < ApplicationController
       @account.artist.artist_riders << obj
       @account.artist.save
 
-      render json: obj, status: :created
+      render json: obj, file_info: true, status: :created
     else
       render json: obj.errors, status: :unprocessable_entity
     end
