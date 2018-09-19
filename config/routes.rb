@@ -126,8 +126,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  post '
-  /:id/set_date', action: :set_date, controller: 'events'
+  post 'events/:id/set_date', action: :set_date, controller: 'events'
   post 'events/:id/verify', action: :verify, controller: 'events'
   post 'events/:id/launch', action: :launch, controller: 'events'
   post 'events/:id/deactivate', action: :set_inactive, controller: 'events'

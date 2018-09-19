@@ -905,7 +905,7 @@
       ]
     },
     {
-      "path": "/%0A%20%20/{id}/set_date.json",
+      "path": "/events/{id}/set_date.json",
       "operations": [
         {
           "summary": "Set event's exact date",
