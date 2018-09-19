@@ -19,9 +19,7 @@ class AccountsController < ApplicationController
     def get
         @extended = true
         set_extended
-
-        user = get_user
-        render json: @to_find, extended: @extended, my: authorized?, user: user, status: :ok
+        render json: @to_find, extended: @extended, my: authorized?, status: :ok
     end
 
     # GET /accounts/
@@ -659,11 +657,6 @@ class AccountsController < ApplicationController
     def authorize_user
         @user = AuthorizeHelper.authorize(request)
         render status: :unauthorized if @user == nil
-    end
-
-    def get_user
-      user = AuthorizeHelper.authorize(request)
-      return user
     end
 
     def authorize_account
