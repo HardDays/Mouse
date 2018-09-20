@@ -105,6 +105,14 @@ class EventArtistsController < ApplicationController
         send_accept_message(@artist_event.account)
         @artist_event.save
 
+        feed = FeedItem.new(
+          action: :add_artist,
+          updated_by: @account.id,
+          event_id: @event.id,
+          value: @artist_event.account.id
+        )
+        feed.save
+
         render status: :ok
       else
         render json: {errors: "Invalid date"}, status: :unprocessable_entity
