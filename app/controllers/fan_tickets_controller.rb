@@ -204,6 +204,7 @@ class FanTicketsController < ApplicationController
             @fan_ticket = FanTicket.new(account_id: @attempt.account_id, ticket_id: @ticket.id)
             @fan_ticket.price = @ticket.price
             @fan_ticket.currency = @ticket.currency
+            @fan_ticket.code = params[:paymentId]
 
             cnt += 1
             if @fan_ticket.save
