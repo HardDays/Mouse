@@ -14,7 +14,7 @@ class ArtistRidersController < ApplicationController
   def index
     riders = @account.artist.artist_riders
 
-    render json: riders.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: riders.limit(params[:limit]).offset(params[:offset]), file_info: true, status: :ok
   end
 
   # GET /artist_riders/1
