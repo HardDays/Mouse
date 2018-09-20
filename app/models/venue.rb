@@ -29,7 +29,7 @@ class Venue < ApplicationRecord
     before_validation :set_address
 
     def set_address
-        self.address = [self.zipcode, self.country, self.state, city, self.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
+        self.address = [self.zipcode, self.country, self.state, self.city, self.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
     end
 
     def as_json(options={})
