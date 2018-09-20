@@ -415,6 +415,13 @@
               "required": false
             },
             {
+              "paramType": "form",
+              "name": "message_id",
+              "type": "string",
+              "description": "Message id",
+              "required": false
+            },
+            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",

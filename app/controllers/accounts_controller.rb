@@ -1221,7 +1221,7 @@ class AccountsController < ApplicationController
 
     def log_users_count
       count = Account.all.count
-      if count % 1000 == 0
+      if count % 5 == 0
         feed = AdminFeed.new(action: :new_users, value: count)
         feed.save
       end

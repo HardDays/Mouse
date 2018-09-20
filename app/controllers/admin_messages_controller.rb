@@ -265,7 +265,7 @@ class AdminMessagesController < ApplicationController
   swagger_api :delete_message do
     summary "Solve bug"
     param :path, :id, :string, :optional, "Dialog id"
-    param :path, :message_id, :string, :optional, "Message id"
+    param :form, :message_id, :string, :optional, "Message id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
     response :created
