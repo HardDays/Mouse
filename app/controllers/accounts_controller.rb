@@ -619,6 +619,16 @@ class AccountsController < ApplicationController
     def delete
       if User.encrypt_password(params[:password].to_s) == @account.user.password
         #@account.destroy
+        @account.is_deleted = true
+        @account.status = 'inactive'
+        @account.save
+
+        @account.events.where(status: :just_added)
+          .or(@account.events.where(status: :pending))
+          .or(@account.events.where(status: :denied))
+          .or(@account.events.where(status: :inactive))
+          .update_all(is_deleted: :true)
+
         render status: :ok
       else
         render status: :forbidden
