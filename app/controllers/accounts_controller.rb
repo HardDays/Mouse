@@ -1098,10 +1098,10 @@ class AccountsController < ApplicationController
     def search_city
       if params[:city]
         if params[:type] == 'artist'
-          @arts = Artist.where("lower(city) = ?", params[:city].downcase.strip).select{|a| a.id}
+          @arts = Artist.where("lower(city) LIKE ?", '%' + params[:city].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(artist_id: @arts)
         elsif params[:type] == 'venue'
-          @vens = Venue.where("lower(city) = ?", params[:city].downcase.strip).select{|a| a.id}
+          @vens = Venue.where("lower(city) LIKE ?", '%' + params[:city].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(venue_id: @vens)
         end
       end
@@ -1110,10 +1110,10 @@ class AccountsController < ApplicationController
     def search_country
       if params[:country]
         if params[:type] == 'artist'
-          @arts = Artist.where("lower(country) = ?", params[:country].downcase.strip).select{|a| a.id}
+          @arts = Artist.where("lower(country) LIKE ?", '%' + params[:country].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(artist_id: @arts)
         elsif params[:type] == 'venue'
-          @vens = Venue.where("lower(country) = ?", params[:country].downcase.strip).select{|a| a.id}
+          @vens = Venue.where("lower(country) LIKE ?", '%' + params[:country].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(venue_id: @vens)
         end
       end
@@ -1288,7 +1288,7 @@ class AccountsController < ApplicationController
     end
 
     def public_venue_params
-      params.permit(:fax, :bank_name, :account_bank_number, :account_bank_routing_number,
+        params.permit(:fax, :bank_name, :account_bank_number, :account_bank_routing_number,
                     :num_of_bathrooms, :min_age, :has_bar, :located, :dress_code, :audio_description,
                     :lighting_description, :stage_description, :type_of_space, :price, :country, :city, :street,
                     :state, :zipcode, :minimum_notice, :is_flexible, :price_for_daytime, :price_for_nighttime,
