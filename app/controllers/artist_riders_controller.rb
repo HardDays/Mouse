@@ -21,10 +21,11 @@ class ArtistRidersController < ApplicationController
   swagger_api :show do
     summary "Get full artist riders object"
     param :path, :id, :integer, :required, "Artist rider id"
+    param :path, :account_id, :integer, :required, "Artist account id"
     response :not_found
   end
   def show
-    @rider = ArtistRider.find(params[:id])
+    @rider = @account.artist.artist_riders.find(params[:id])
     render json: @rider, file_info: true
   end
 
