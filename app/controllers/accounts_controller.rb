@@ -1098,10 +1098,10 @@ class AccountsController < ApplicationController
     def search_city
       if params[:city]
         if params[:type] == 'artist'
-          @arts = Artist.where("lower(city) LIKE %?%", params[:city].downcase.strip).select{|a| a.id}
+          @arts = Artist.where("lower(city) LIKE ?", '%' + params[:city].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(artist_id: @arts)
         elsif params[:type] == 'venue'
-          @vens = Venue.where("lower(city) LIKE %?%", params[:city].downcase.strip).select{|a| a.id}
+          @vens = Venue.where("lower(city) LIKE ?", '%' + params[:city].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(venue_id: @vens)
         end
       end
@@ -1110,10 +1110,10 @@ class AccountsController < ApplicationController
     def search_country
       if params[:country]
         if params[:type] == 'artist'
-          @arts = Artist.where("lower(country) = LIKE %?%", params[:country].downcase.strip).select{|a| a.id}
+          @arts = Artist.where("lower(country) LIKE ?", '%' + params[:country].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(artist_id: @arts)
         elsif params[:type] == 'venue'
-          @vens = Venue.where("lower(country) = LIKE %?%", params[:country].downcase.strip).select{|a| a.id}
+          @vens = Venue.where("lower(country) LIKE ?", '%' + params[:country].downcase.strip + '%').select{|a| a.id}
           @accounts = @accounts.where(venue_id: @vens)
         end
       end
