@@ -627,7 +627,7 @@ class AccountsController < ApplicationController
           .or(@account.events.where(status: :pending))
           .or(@account.events.where(status: :denied))
           .or(@account.events.where(status: :inactive))
-          .update_all(is_deleted: :true)
+          .update_all(is_deleted: :true, status: :inactive)
 
         render status: :ok
       else
