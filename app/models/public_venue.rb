@@ -32,10 +32,10 @@ class PublicVenue < ApplicationRecord
     attrs[:stage_description] = stage_description
     attrs[:genres] = genres.pluck(:genre)
     attrs[:type_of_space] = type_of_space
-    attrs[:country] = country
+    #attrs[:country] = country
     #attrs[:city] = city
-    attrs[:state] = state
-    attrs[:zipcode] = zipcode
+    #attrs[:state] = state
+    #attrs[:zipcode] = zipcode
     attrs[:other_address] = other_address
     attrs[:minimum_notice] = minimum_notice
     attrs[:is_flexible] = is_flexible
