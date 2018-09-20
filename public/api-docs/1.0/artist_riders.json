@@ -126,6 +126,13 @@
               "type": "integer",
               "description": "Artist rider id",
               "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Artist account id",
+              "required": true
             }
           ],
           "responseMessages": [
