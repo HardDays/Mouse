@@ -35,7 +35,7 @@ class ArtistAudiosController < ApplicationController
     summary "Add audio to artist"
     param :path, :account_id, :integer, :required, "Artist account id"
     param :form, :audio_link, :string, :required, "Link to audio"
-    param :from, :song_name, :string, :required, "Song name"
+    param :form, :song_name, :string, :required, "Song name"
     param :form, :album_name, :string, :required, "Album name"
     param :header, 'Authorization', :string, :optional, 'Authentication token'
   end
