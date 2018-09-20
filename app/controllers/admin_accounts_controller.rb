@@ -244,6 +244,12 @@ class AdminAccountsController < ApplicationController
     account.status = 'inactive'
     account.save
 
+    account.events.where(status: :just_added)
+      .or(account.events.where(status: :pending))
+      .or(account.events.where(status: :denied))
+      .or(account.events.where(status: :inactive))
+      .update_all(is_deleted: :true, status: :inactive)
+
     render status: :ok
   end
 

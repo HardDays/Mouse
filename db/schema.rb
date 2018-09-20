@@ -391,6 +391,16 @@ ActiveRecord::Schema.define(version: 20180912194202) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "history_actions", force: :cascade do |t|
+    t.integer "action"
+    t.integer "object_type"
+    t.integer "field"
+    t.integer "object_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "account_id"
+  end
+
   create_table "image_types", force: :cascade do |t|
     t.integer "image_id"
     t.integer "image_type"
@@ -521,6 +531,7 @@ ActiveRecord::Schema.define(version: 20180912194202) do
     t.integer "inbox_message_id"
     t.integer "event_id"
     t.datetime "expiration_date"
+    t.integer "remain_time"
     t.integer "time_frame_range", default: 0
     t.integer "time_frame_number", default: 0
     t.integer "currency", default: 0
