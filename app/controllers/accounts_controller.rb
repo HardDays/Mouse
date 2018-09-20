@@ -1288,7 +1288,7 @@ class AccountsController < ApplicationController
     end
 
     def public_venue_params
-      params.permit(:fax, :bank_name, :account_bank_number, :account_bank_routing_number,
+        params.permit(:fax, :bank_name, :account_bank_number, :account_bank_routing_number,
                     :num_of_bathrooms, :min_age, :has_bar, :located, :dress_code, :audio_description,
                     :lighting_description, :stage_description, :type_of_space, :price, :country, :city, :street,
                     :state, :zipcode, :minimum_notice, :is_flexible, :price_for_daytime, :price_for_nighttime,
