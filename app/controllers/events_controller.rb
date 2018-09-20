@@ -59,7 +59,7 @@ class EventsController < ApplicationController
   end
   def get_updates
     event_updates = @event.feed_items.where.not(action: :launch_event).select(
-      :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "event"}
+      :action, :field, :created_at).order(:created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "event"}
 
     # venue_updates = @event.venue.account.feed_items.select(
     #   :action, :field, :created_at).as_json(only: [:action, :field, :created_at]).each {|e| e[:type] = "venue"}
