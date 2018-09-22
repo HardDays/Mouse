@@ -46,7 +46,7 @@ class Venue < ApplicationRecord
         if options[:extended]
             res = super.merge(account.get_attrs(options))
             if public_venue
-                res = res.merge(public_venue.get_attrs)
+                res = res.merge(public_venue.get_attrs(options))
             end
 
             res[:video_links] = venue_video_links.pluck(:video_link)

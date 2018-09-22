@@ -1277,6 +1277,58 @@
           "method": "get"
         }
       ]
+    },
+    {
+      "path": "/events/{event_id}/account_preview/{id}.json",
+      "operations": [
+        {
+          "summary": "Account preview for event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Previewed account",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Creator id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Events#account_preview",
+          "method": "get"
+        }
+      ]
     }
   ],
   "authorizations": null

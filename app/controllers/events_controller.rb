@@ -1,9 +1,11 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
-                                   :click, :view, :verify, :set_date, :backers, :get_updates, :save_to_calendar]
+                                   :click, :view, :verify, :set_date, :backers, :get_updates,
+                                   :save_to_calendar, :account_preview]
   before_action :authorize_user, only: [:show]
   before_action :authorize_account, only: [:my, :create]
-  before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify, :set_date]
+  before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify,
+                                           :set_date, :account_preview]
   swagger_controller :events, "Events"
 
   # GET /events
@@ -28,6 +30,21 @@ class EventsController < ApplicationController
   end
   def show
     render json: @event, extended: true, user: @user, status: :ok
+  end
+
+  # GET /events/1/account_preview
+  swagger_api :account_preview do
+    summary "Account preview for event"
+    param :path, :id, :integer, :required, "Event id"
+    param :path, :preview_id, :integer, :required, "Previewed account"
+    param :query, :account_id, :integer, :required, "Creator id"
+    param :header, 'Authorization', :string, :optional, 'Authentication token'
+    response :not_found
+    response :unauthorized
+  end
+  def account_preview
+    account = Account.find(params[:preview_id])
+    render json: account, extended: true, preview: true, event: @event, status: :ok
   end
 
   # GET /events/1/backers

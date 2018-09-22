@@ -75,6 +75,11 @@ class Artist < ApplicationRecord
                 res.delete('price_from')
                 res.delete('price_to')
                 res.delete('additional_hours_price')
+            elsif not is_hide_pricing_from_profile and options[:preview]
+                attrs[:price_from_original] = price_from
+                attrs[:price_to_original] = price_to
+                attrs[:price_from] = CurrencyHelper.convert(price_from, account.user.preferred_currency, options[:event].currency)
+                attrs[:price_to] = CurrencyHelper.convert(price_to, account.user.preferred_currency, options[:event].currency)
             end
             res[:currency] = account.user.preferred_currency
 

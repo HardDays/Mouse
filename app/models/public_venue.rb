@@ -16,7 +16,7 @@ class PublicVenue < ApplicationRecord
   belongs_to :venue
   has_many :genres, foreign_key: 'venue_id', class_name: 'VenueGenre', dependent: :destroy
 
-  def get_attrs
+  def get_attrs(options={})
     attrs = {}
     attrs[:fax] = fax
     attrs[:bank_name] = bank_name
@@ -39,13 +39,21 @@ class PublicVenue < ApplicationRecord
     attrs[:other_address] = other_address
     attrs[:minimum_notice] = minimum_notice
     attrs[:is_flexible] = is_flexible
-    attrs[:price_for_daytime] = price_for_daytime
-    attrs[:price_for_nighttime] = price_for_nighttime
-    attrs[:currency] = venue.account.user.preferred_currency
     attrs[:performance_time_from] = performance_time_from
     attrs[:performance_time_to] = performance_time_to
     attrs[:other_genre_description] = other_genre_description
-    
+
+    if options[:preview]
+      attrs[:price_for_daytime_original] = price_for_daytime
+      attrs[:price_for_nighttime_original] = price_for_nighttime
+      attrs[:price_for_daytime] = CurrencyHelper.convert(price_for_daytime, venue.account.user.preferred_currency, options[:event].currency)
+      attrs[:price_for_nighttime] = CurrencyHelper.convert(price_for_nighttime, venue.account.user.preferred_currency, options[:event].currency)
+    else
+      attrs[:price_for_daytime] = price_for_daytime
+      attrs[:price_for_nighttime] = price_for_nighttime
+    end
+    attrs[:currency] = venue.account.user.preferred_currency
+
     return attrs
   end
 end
