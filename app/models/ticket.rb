@@ -23,6 +23,8 @@ class Ticket < ApplicationRecord
       res[:price] = CurrencyHelper.convert(price, currency, options[:user].preferred_currency)
     end
 
+    res[:tickets_left] = count - FanTicket.where(ticket_id: id).count
+
     return res
   end
 end

@@ -140,8 +140,6 @@ class Event < ApplicationRecord
       res[:tickets] = tickets.as_json(user: options[:user])
       res[:in_person_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'in_person'}).sum('tickets.count')
       res[:vr_tickets] = tickets.joins(:tickets_type).where(tickets_types: {name: 'vr'}).sum('tickets.count')
-      res[:in_person_left] = res[:in_person_tickets] - in_person_sold
-      res[:vr_left] = res[:vr_tickets] - vr_sold
       res[:top_backers] = Account.joins(fan_tickets: :ticket).where(tickets: {event_id: id}).distinct.order(created_at: :desc).limit(5).as_json(only: [:id, :image_id])
     elsif options[:analytics]
       res[:comments] = comments.count
