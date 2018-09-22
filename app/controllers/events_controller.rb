@@ -362,12 +362,14 @@ class EventsController < ApplicationController
   end
   def save_to_calendar
     cal = Icalendar::Calendar.new
-    filename = "#{@event.name}.ics"
+    # filename = "#{@event.name}.ics"
 
     cal.event do |e|
       e.dtstart     = Icalendar::Values::DateTime.new(@event.exact_date_from)
       e.dtend       = Icalendar::Values::DateTime.new(@event.exact_date_to)
       e.location    = @event.address
+      e.summary     = @event.name
+      e.description = @event.description
     end
 
     # send_data cal.to_ical, type: 'text/calendar', disposition: 'attachment', filename: filename
