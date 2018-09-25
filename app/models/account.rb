@@ -44,7 +44,11 @@ class Account < ApplicationRecord
 		attrs[:id] = id
 		attrs[:user_name] = user_name
 		attrs[:display_name] = display_name
-		attrs[:phone] = phone
+		if fan
+			attrs[:phone] = user.register_phone
+		else
+			attrs[:phone] = phone
+		end
 		attrs[:created_at] = created_at
 		attrs[:updated_at] = updated_at
 		attrs[:image_id] = image_id
