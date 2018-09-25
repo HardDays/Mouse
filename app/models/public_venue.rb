@@ -46,8 +46,8 @@ class PublicVenue < ApplicationRecord
     if options[:preview]
       attrs[:price_for_daytime_original] = price_for_daytime
       attrs[:price_for_nighttime_original] = price_for_nighttime
-      attrs[:price_for_daytime] = CurrencyHelper.convert(price_for_daytime, venue.account.user.preferred_currency, options[:event].currency)
-      attrs[:price_for_nighttime] = CurrencyHelper.convert(price_for_nighttime, venue.account.user.preferred_currency, options[:event].currency)
+      attrs[:price_for_daytime] = CurrencyHelper.convert(price_for_daytime, venue.account.user.preferred_currency, options[:user].currency)
+      attrs[:price_for_nighttime] = CurrencyHelper.convert(price_for_nighttime, venue.account.user.preferred_currency, options[:user].currency)
     else
       attrs[:price_for_daytime] = price_for_daytime
       attrs[:price_for_nighttime] = price_for_nighttime

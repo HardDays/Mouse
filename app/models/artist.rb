@@ -78,8 +78,8 @@ class Artist < ApplicationRecord
             elsif not is_hide_pricing_from_profile and options[:preview]
                 res[:price_from_original] = price_from
                 res[:price_to_original] = price_to
-                res[:price_from] = CurrencyHelper.convert(price_from, account.user.preferred_currency, options[:event].currency)
-                res[:price_to] = CurrencyHelper.convert(price_to, account.user.preferred_currency, options[:event].currency)
+                res[:price_from] = CurrencyHelper.convert(price_from, account.user.preferred_currency, options[:user].currency)
+                res[:price_to] = CurrencyHelper.convert(price_to, account.user.preferred_currency, options[:user].currency)
             end
             res[:currency] = account.user.preferred_currency
 

@@ -44,7 +44,7 @@ class EventsController < ApplicationController
   end
   def account_preview
     account = Account.find(params[:preview_id])
-    render json: account, extended: true, preview: true, event: @event, status: :ok
+    render json: account, extended: true, preview: true, user: @creator.user, status: :ok
   end
 
   # GET /events/1/backers
