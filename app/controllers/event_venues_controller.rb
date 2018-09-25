@@ -129,7 +129,7 @@ class EventVenuesController < ApplicationController
 
           render status: :ok
         else
-          render status: :unprocessable_entity
+          render json: {errors: "Invalid date"}, status: :unprocessable_entity
         end
       else
         render status: :not_found
