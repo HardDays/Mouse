@@ -85,7 +85,7 @@ class FanTicketsController < ApplicationController
       else
         count = param[:count] != nil ? [100, param[:count].to_i].min : 1
         sold_tickets = FanTicket.where(ticket_id: ticket.id)
-        if sold_tickets and sold_tickets.count + count >= ticket.count
+        if sold_tickets and sold_tickets.count + count > ticket.count
           render json: {ticket: :TICKETS_SOLD, ticket_id: ticket.id}, status: :unprocessable_entity and return 
         end
         
