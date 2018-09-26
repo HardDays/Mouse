@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "https://mouse-back.herokuapp.com",
+  "basePath": "https://mouse-back2.herokuapp.com",
   "resourcePath": "events",
   "apis": [
     {
@@ -1279,21 +1279,21 @@
       ]
     },
     {
-      "path": "/events/{event_id}/account_preview/{id}.json",
+      "path": "/events/{id}/account_preview/{preview_id}.json",
       "operations": [
         {
           "summary": "Account preview for event",
           "parameters": [
             {
               "paramType": "path",
-              "name": "event_id",
+              "name": "id",
               "type": "integer",
               "description": "Event id",
               "required": true
             },
             {
               "paramType": "path",
-              "name": "id",
+              "name": "preview_id",
               "type": "integer",
               "description": "Previewed account",
               "required": true

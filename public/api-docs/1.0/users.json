@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "https://mouse-back.herokuapp.com",
+  "basePath": "https://mouse-back2.herokuapp.com",
   "resourcePath": "users",
   "apis": [
     {
