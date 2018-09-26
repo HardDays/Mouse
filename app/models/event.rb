@@ -148,7 +148,7 @@ class Event < ApplicationRecord
       res[:in_person_tickets_sold] = in_person_sold
       res[:vr_tickets_sold] = vr_sold
     elsif options[:search]
-      res[:artists] = artist_events.joins(:account => :artist).where(artist_events: {status: 'active'}).pluck("artists.stage_name")
+      res[:artists] = artist_events.joins(:account => :artist).where(artist_events: {status: 'owner_accepted'}).pluck("artists.stage_name")
     else
       # res[:location] = venue.address if venue
     end
