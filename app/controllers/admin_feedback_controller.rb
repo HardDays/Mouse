@@ -187,8 +187,8 @@ class AdminFeedbackController < ApplicationController
         feedback.feedback_message.is_forwarded = true
         feedback.feedback_message.save
 
-        count = receiver.send_topics.messages.where(is_read: false).where.not(sender_id: receiver.id).count +
-          receiver.received_topics.messages.where(is_read: false).where.not(sender_id: receiver.id).count
+        count = receiver.send_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count +
+          receiver.received_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count
         AdminMessagesChannel.broadcast_to(receiver.id, count: count)
 
         render status: :created
