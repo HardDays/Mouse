@@ -591,7 +591,7 @@ class EventsController < ApplicationController
       if params[:distance] and params[:lng] and params[:lat] and params[:units]
         @events = @events.near([params[:lat], params[:lng]], params[:distance], units: params[:units])
       else
-        @vens = @events.near([params[:lat], params[:lng]], params[:distance])
+        @events = @events.near([params[:lat], params[:lng]], params[:distance])
       end
     end
 
