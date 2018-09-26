@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "ec2-18-222-193-71.us-east-2.compute.amazonaws.com",
+  "basePath": "https://mouse-back.herokuapp.com",
   "resourcePath": "fan_tickets",
   "apis": [
     {
@@ -220,16 +220,9 @@
             },
             {
               "paramType": "form",
-              "name": "ticket_id",
-              "type": "integer",
-              "description": "Ticket id",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "count",
-              "type": "integer",
-              "description": "Count of tickets",
+              "name": "tickets",
+              "type": "string",
+              "description": "Array of ftickets [{\"ticket_id\": 1, \"count\": 5}, ...]",
               "required": true
             },
             {
@@ -297,28 +290,6 @@
               "required": true
             },
             {
-              "paramType": "form",
-              "name": "price",
-              "type": "integer",
-              "description": "Ticket price",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "currency",
-              "type": "integer",
-              "description": "Preferred currency format",
-              "required": true,
-              "allowableValues": {
-                "valueType": "LIST",
-                "values": [
-                  "RUB",
-                  "USD",
-                  "EUR"
-                ]
-              }
-            },
-            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",
@@ -366,7 +337,7 @@
               "name": "time",
               "type": "string",
               "description": "Tickets time frame",
-              "required": true,
+              "required": false,
               "allowableValues": {
                 "valueType": "LIST",
                 "values": [
@@ -433,28 +404,6 @@
               "type": "integer",
               "description": "Ticket id",
               "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "price",
-              "type": "integer",
-              "description": "Ticket price",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "currency",
-              "type": "integer",
-              "description": "Preferred currency format",
-              "required": true,
-              "allowableValues": {
-                "valueType": "LIST",
-                "values": [
-                  "RUB",
-                  "USD",
-                  "EUR"
-                ]
-              }
             },
             {
               "paramType": "header",

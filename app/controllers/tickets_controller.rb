@@ -16,7 +16,7 @@ class TicketsController < ApplicationController
     response :not_found
   end
   def show
-    render json: @ticket, status: :ok
+    render json: @ticket, user: @user, status: :ok
   end
 
   # POST events/1/tickets
@@ -41,16 +41,31 @@ class TicketsController < ApplicationController
     response :not_found
   end
   def create
+    if @event.venue == nil
+      render json: {errors: :NO_VENUE}, status: :forbidden and return
+    end
+
+    unless ActiveRecord::Type::Boolean.new.cast(params[:is_for_personal_use])
+      if params[:price].to_i <= 0
+        render json: {errors: :PRICE_TOO_SMALL}, status: :unprocessable_entity and return
+      end
+    end
+
     @ticket = Ticket.new(ticket_params)
     set_type
 
     if @ticket.save
       change_event_tickets
 
-      action = EventUpdate.new(action: :add_ticket, updated_by: @account.id, event_id: @event.id)
-      action.save
+      feed = FeedItem.new(
+        action: :add_ticket,
+        updated_by: @account.id,
+        event_id: @event.id,
+        value: @ticket.id
+      )
+      feed.save
       
-      render json: @ticket, status: :created
+      render json: @ticket, user: @user, status: :created
     else
       render json: @ticket.errors, status: :unprocessable_entity
     end
@@ -79,13 +94,17 @@ class TicketsController < ApplicationController
     response :not_found
   end
   def update
-    if @ticket.update(ticket_params) and allowed?
-      set_type
-      change_event_tickets
+    if allowed?
+      if @ticket.update(ticket_params)
+        set_type
+        change_event_tickets
 
-      render json: @ticket, status: :ok
+        render json: @ticket, user: @user, status: :ok
+      else
+        render json: @ticket.errors, status: :unprocessable_entity
+      end
     else
-      render json: @ticket.errors, status: :unprocessable_entity
+      render json: {tickets: :ALREADY_BOUGHT}, status: :unprocessable_entity
     end
   end
 
@@ -188,15 +207,17 @@ class TicketsController < ApplicationController
     end
 
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
     end
 
     def auth_creator_and_set_event
       authorize_account
       @event = Event.find(params[:event_id])
       @creator = @event.creator
-      render status: :unauthorized if @creator != @account or @creator.user != @user
+      render status: :unauthorized if @creator != @account
     end
 end

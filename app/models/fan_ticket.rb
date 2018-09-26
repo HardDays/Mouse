@@ -1,4 +1,5 @@
 class FanTicket < ApplicationRecord
+  validates_presence_of :price
   enum currency: CurrencyHelper.all
 
   belongs_to :account
@@ -9,7 +10,6 @@ class FanTicket < ApplicationRecord
 
     if options[:with_tickets]
       res.delete('ticket_id')
-
       if options[:user]
         res[:original_price] = price
         res[:price] = CurrencyHelper.convert(price, currency, options[:user].preferred_currency)

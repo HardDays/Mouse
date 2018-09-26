@@ -12,7 +12,7 @@ class FeedCommentsController < ApplicationController
   end
 
   def index
-    @comments = Comment.where(feed_item_id: params[:feed_item_id])
+    @comments = FeedComment.where(feed_item_id: params[:feed_item_id])
 
     render json: @comments.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
@@ -32,7 +32,7 @@ class FeedCommentsController < ApplicationController
   def create
     feed_item = FeedItem.find(params[:feed_item_id])
 
-    @comment = Comment.new(comment_params)
+    @comment = FeedComment.new(comment_params)
     @comment.feed_item = feed_item
     if @comment.save
       render json: @comment, status: :created
@@ -47,8 +47,10 @@ class FeedCommentsController < ApplicationController
   end
 
   def authorize_account
-    @user = AuthorizeHelper.authorize(request)
-    @account = Account.find(params[:account_id])
-    render status: :unauthorized if @user == nil or @account.user != @user
+    @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+
+    if @account == nil
+      render json: {error: "Access forbidden"}, status: :forbidden and return
+    end
   end
 end

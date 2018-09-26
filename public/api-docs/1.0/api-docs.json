@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "ec2-18-222-193-71.us-east-2.compute.amazonaws.com",
+  "basePath": "https://mouse-back.herokuapp.com",
   "apis": [
     {
       "path": "/api-docs/1.0/questions.{format}",
@@ -36,6 +36,26 @@
       "description": "Inbox messages"
     },
     {
+      "path": "/api-docs/1.0/artist_videos.{format}",
+      "description": "Artist videos"
+    },
+    {
+      "path": "/api-docs/1.0/artist_albums.{format}",
+      "description": "Artist albums"
+    },
+    {
+      "path": "/api-docs/1.0/artist_audios.{format}",
+      "description": "Artist audios"
+    },
+    {
+      "path": "/api-docs/1.0/artist_riders.{format}",
+      "description": "Artist Riders"
+    },
+    {
+      "path": "/api-docs/1.0/venue_videos.{format}",
+      "description": "Venue videos"
+    },
+    {
       "path": "/api-docs/1.0/accounts.{format}",
       "description": "Accounts"
     },
@@ -46,10 +66,6 @@
     {
       "path": "/api-docs/1.0/images.{format}",
       "description": "Images"
-    },
-    {
-      "path": "/api-docs/1.0/artist_riders.{format}",
-      "description": "Artist Riders"
     },
     {
       "path": "/api-docs/1.0/phone_validations.{format}",
@@ -84,6 +100,14 @@
       "description": "FanTickets"
     },
     {
+      "path": "/api-docs/1.0/artist_invites.{format}",
+      "description": "Artist invites"
+    },
+    {
+      "path": "/api-docs/1.0/venue_invites.{format}",
+      "description": "VenueInvites"
+    },
+    {
       "path": "/api-docs/1.0/admin.{format}",
       "description": "AdminPanel"
     },
@@ -93,6 +117,10 @@
     },
     {
       "path": "/api-docs/1.0/admin_events.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_invites.{format}",
       "description": "AdminPanel"
     },
     {
@@ -109,6 +137,14 @@
     },
     {
       "path": "/api-docs/1.0/admin_revenue.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_messages.{format}",
+      "description": "AdminPanel"
+    },
+    {
+      "path": "/api-docs/1.0/admin_feed.{format}",
       "description": "AdminPanel"
     }
   ],

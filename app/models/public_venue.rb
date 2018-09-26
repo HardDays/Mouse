@@ -1,7 +1,7 @@
 class PublicVenue < ApplicationRecord
-  validates :country, presence: true
-  validates :city, presence: true
-  validates :state, presence: true
+  #validates :country, presence: true
+  #validates :city, presence: true
+  #validates :state, presence: true
   # validates :audio_description, presence: true
   # validates :stage_description, presence: true
   # validates :lighting_description, presence: true
@@ -16,7 +16,7 @@ class PublicVenue < ApplicationRecord
   belongs_to :venue
   has_many :genres, foreign_key: 'venue_id', class_name: 'VenueGenre', dependent: :destroy
 
-  def get_attrs
+  def get_attrs(options={})
     attrs = {}
     attrs[:fax] = fax
     attrs[:bank_name] = bank_name
@@ -32,19 +32,28 @@ class PublicVenue < ApplicationRecord
     attrs[:stage_description] = stage_description
     attrs[:genres] = genres.pluck(:genre)
     attrs[:type_of_space] = type_of_space
-    attrs[:country] = country
-    attrs[:city] = city
-    attrs[:state] = state
-    attrs[:zipcode] = zipcode
+    #attrs[:country] = country
+    #attrs[:city] = city
+    #attrs[:state] = state
+    #attrs[:zipcode] = zipcode
     attrs[:other_address] = other_address
     attrs[:minimum_notice] = minimum_notice
     attrs[:is_flexible] = is_flexible
-    attrs[:price_for_daytime] = price_for_daytime
-    attrs[:price_for_nighttime] = price_for_nighttime
     attrs[:performance_time_from] = performance_time_from
     attrs[:performance_time_to] = performance_time_to
     attrs[:other_genre_description] = other_genre_description
-    
+
+    if options[:preview]
+      attrs[:price_for_daytime_original] = price_for_daytime
+      attrs[:price_for_nighttime_original] = price_for_nighttime
+      attrs[:price_for_daytime] = CurrencyHelper.convert(price_for_daytime, venue.account.user.preferred_currency, options[:user].preferred_currency)
+      attrs[:price_for_nighttime] = CurrencyHelper.convert(price_for_nighttime, venue.account.user.preferred_currency, options[:user].preferred_currency)
+    else
+      attrs[:price_for_daytime] = price_for_daytime
+      attrs[:price_for_nighttime] = price_for_nighttime
+    end
+    attrs[:currency] = venue.account.user.preferred_currency
+
     return attrs
   end
 end

@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :questions, only: [:index, :create, :show]
+  resources :questions, only: [:index, :create, :show] do
+    member do
+      post :reply
+    end
+  end
   resources :feedbacks, only: [:index, :create, :show]
 
   #Auth routes
@@ -8,13 +12,16 @@ Rails.application.routes.draw do
   post 'auth/vk', action: :login_vk, controller: 'authenticate'
   post 'auth/google', action: :login_google, controller: 'authenticate'
   post 'auth/twitter', action: :login_twitter, controller: 'authenticate'
+  post 'auth/facebook', action: :login_facebook, controller: 'authenticate'
   post 'auth/logout', action: :logout, controller: 'authenticate'
 
   #User routes
   post 'users', action: :create, controller: 'users'
   post 'users/validate_phone', action: :validate_phone, controller: 'users'
   get 'users/me', action: :get_me, controller: 'users'
+  get 'users/ip_location', action: :get_location, controller: 'users'
   patch 'users/me', action: :update_me, controller: 'users'
+  patch 'users/reset_password', action: :reset_password, controller: 'users'
   patch 'users/preferences', action: :set_preferences, controller: 'users'
   get 'users/preferences', action: :get_preferences, controller: 'users'
   patch 'users/:id/email', action: :change_email, controller: 'users'
@@ -33,11 +40,18 @@ Rails.application.routes.draw do
     resources :inbox_messages do
       collection do
         get :my
+        get :unread_count
       end
       member do
         post :change_responce_time
+        post :read
       end
     end
+    resources :artist_videos, only: [:index, :show, :create, :destroy]
+    resources :artist_albums, only: [:index, :show, :create, :destroy]
+    resources :artist_audios, only: [:index, :show, :create, :destroy]
+    resources :artist_riders, only: [:index, :show, :create, :destroy]
+    resources :venue_videos, only: [:index, :show, :create, :destroy]
   end
   get 'accounts', action: :get_all, controller: 'accounts'
   get 'accounts/search', action: :search, controller: 'accounts'
@@ -69,11 +83,9 @@ Rails.application.routes.draw do
   get 'images/:id/full', action: :full, controller: 'images'
   get 'images/:id/preview', action: :preview, controller: 'images'
   get 'images/:id/size', action: :full_with_size, controller: 'images'
+  get 'images/:id/info', action: :info, controller: 'images'
 
   delete 'images/:id', action: :delete_image, controller: 'images'
-
-  # artist riders routes
-  get 'artist_riders/:id', action: :show, controller: 'artist_riders'
 
   # phone validations routes
   get 'phone_validations/new_codes', action: :get_new_codes, controller: 'phone_validations'
@@ -114,6 +126,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  post 'events/:id/set_date', action: :set_date, controller: 'events'
   post 'events/:id/verify', action: :verify, controller: 'events'
   post 'events/:id/launch', action: :launch, controller: 'events'
   post 'events/:id/deactivate', action: :set_inactive, controller: 'events'
@@ -123,6 +136,9 @@ Rails.application.routes.draw do
   get 'events/:id/view', action: :view, controller: 'events'
   get 'events/:id/analytics', action: :analytics, controller: 'events'
   get 'events/:id/updates', action: :get_updates, controller: 'events'
+  get 'events/:id/backers', action: :backers, controller: 'events'
+  get 'events/:id/save_to_calendar', action: :save_to_calendar, controller: 'events'
+  get 'events/:id/account_preview/:preview_id', action: :account_preview, controller: 'events'
 
   # genre routes
   get 'genres/all', action: :all, controller: 'genres'
@@ -143,8 +159,14 @@ Rails.application.routes.draw do
     end
   end
 
+  #artist_invites
+  post 'artist_invites', action: :create, controller: 'artist_invites'
+  
+  #venue_invites
+  post 'venue_invites', action: :create, controller: 'venue_invites'
+
   # admin routes
-  resources :admin, only: [:create, :update]
+  resources :admin, only: [:index, :create, :update]
   get 'admin/statuses', action: :statuses, controller: 'admin'
   get 'admin/:user_id/my', action: :get_my, controller: 'admin'
   post 'admin/make_superuser', action: :make_superuser, controller: 'admin'
@@ -156,6 +178,7 @@ Rails.application.routes.draw do
   get 'admin/accounts/funding', action: :funding, controller: 'admin_accounts'
   get 'admin/accounts/graph', action: :graph, controller: 'admin_accounts'
   get 'admin/accounts/:id', action: :get_account, controller: 'admin_accounts'
+  post 'admin/accounts/:id/view', action: :view, controller: 'admin_accounts'
   post 'admin/accounts/:id/approve', action: :approve, controller: 'admin_accounts'
   post 'admin/accounts/:id/deny', action: :deny, controller: 'admin_accounts'
   delete 'admin/accounts/:id', action: :destroy, controller: 'admin_accounts'
@@ -167,13 +190,20 @@ Rails.application.routes.draw do
   get 'admin/events/individual', action: :individual, controller: 'admin_events'
   get 'admin/events/graph', action: :graph, controller: 'admin_events'
   get 'admin/events/:id', action: :get_event, controller: 'admin_events'
+  post 'admin/events/:id/view', action: :view, controller: 'admin_events'
   post 'admin/events/:id/approve', action: :approve, controller: 'admin_events'
   post 'admin/events/:id/deny', action: :deny, controller: 'admin_events'
   delete 'admin/events/:id', action: :destroy, controller: 'admin_events'
 
+  get 'admin/invites', action: :index, controller: 'admin_invites'
+  get 'admin/invites/:id', action: :show, controller: 'admin_invites'
+  delete 'admin/invites/:id', action: :destroy, controller: 'admin_invites'
+
+
   get 'admin/questions', action: :index, controller: 'admin_questions'
   get 'admin/questions/:id', action: :show, controller: 'admin_questions'
   post 'admin/questions/:id/reply', action: :reply, controller: 'admin_questions'
+  post 'admin/questions/:id/close', action: :close, controller: 'admin_questions'
   delete 'admin/questions/:id', action: :destroy, controller: 'admin_questions'
 
   get 'admin/reply_templates', action: :index, controller: 'admin_reply_templates'
@@ -190,6 +220,7 @@ Rails.application.routes.draw do
   get 'admin/feedbacks/graph', action: :graph, controller: 'admin_feedback'
   get 'admin/feedbacks/:id', action: :show, controller: 'admin_feedback'
   post 'admin/feedbacks/:id/thank_you', action: :thank_you, controller: 'admin_feedback'
+  post 'admin/feedbacks/:id/forward', action: :forward, controller: 'admin_feedback'
   delete 'admin/feedbacks/:id', action: :destroy, controller: 'admin_feedback'
 
   get 'admin/revenue', action: :index, controller: 'admin_revenue'
@@ -203,4 +234,17 @@ Rails.application.routes.draw do
   get 'admin/revenue/counts/advertising', action: :advertising, controller: 'admin_revenue'
   get 'admin/revenue/counts/funding', action: :funding, controller: 'admin_revenue'
   get 'admin/revenue/:id', action: :show, controller: 'admin_revenue'
+
+  get 'admin/messages', action: :index, controller: 'admin_messages'
+  get 'admin/messages/topics', action: :topics_search, controller: 'admin_messages'
+  get 'admin/messages/:id', action: :show, controller: 'admin_messages'
+  post 'admin/messages', action: :create, controller: 'admin_messages'
+  post 'admin/messages/new', action: :new, controller: 'admin_messages'
+  post 'admin/messages/:id/forward', action: :forward, controller: 'admin_messages'
+  post 'admin/messages/:id/solve', action: :solve, controller: 'admin_messages'
+  post 'admin/messages/:id/read', action: :read, controller: 'admin_messages'
+  delete 'admin/messages/:id/delete', action: :delete, controller: 'admin_messages'
+  delete 'admin/messages/:id/delete_message', action: :delete_message, controller: 'admin_messages'
+
+  get 'admin/feed', action: :index, controller: 'admin_feed'
 end

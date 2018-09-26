@@ -9,7 +9,7 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def new_count
-    render json: Event.where(status: 'just_added').count, status: :ok
+    render json: Event.where(is_viewed: false).count, status: :ok
   end
 
   # GET /admin/events/new_status
@@ -20,21 +20,27 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def new_status
-    success = Event.left_joins(:tickets => :fan_tickets).where(
-      "events.funding_to <= :query", query: DateTime.now
+    success_crowd = Event.left_joins(tickets: :fan_tickets).where(
+      "events.funding_to is not NULL and events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
-      "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
+      "sum(fan_tickets.price) >= events.funding_goal")
+    success_not_crowd = Event.where('funding_to is NULL AND date_to <= :date_to', date_to: DateTime.now)  
+    success = (success_crowd.to_a + success_not_crowd.to_a).uniq{|e| e.id}
 
-    failed = Event.left_joins(:tickets => :fan_tickets).where(
+    failed_crowd = Event.left_joins(tickets: :fan_tickets).where(
       "events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
-      "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
+      "sum(fan_tickets.price) < events.funding_goal").pluck("COUNT(events.id)")[0].to_i
+
+    pending_crowd = Event.where("events.funding_to is not NULL AND events.funding_to > :query", query: DateTime.now)
+    pending_not_crowd = Event.where('funding_to is NULL AND (date_to > :date_to OR date_to is NULL)', date_to: DateTime.now)
+    pending = (pending_crowd.to_a + pending_not_crowd.to_a).uniq{|e| e.id}
 
     render json: {
       all: Event.count,
-      pending: Event.where("events.funding_to > :query", query: DateTime.now).count,
-      successful: success,
-      failed: failed,
+      pending: pending.count,
+      successful: success.count,
+      failed: failed_crowd,
     }, status: :ok
   end
 
@@ -45,15 +51,15 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def counts
-    success = Event.left_joins(:tickets => :fan_tickets).where(
+    success = Event.left_joins(tickets: :fan_tickets).where(
       "events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
       "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
 
-    failed = Event.left_joins(:tickets => :fan_tickets).where(
+    failed = Event.left_joins(tickets: :fan_tickets).where(
       "events.funding_to <= :query", query: DateTime.now
     ).group("events.id").having(
-      "sum(fan_tickets.price) >= events.funding_goal").pluck("COUNT(events.id)")[0].to_i
+      "sum(fan_tickets.price) < events.funding_goal").pluck("COUNT(events.id)")[0].to_i
 
     render json: {
       all: Event.count,
@@ -74,7 +80,8 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def individual
-    events_base = Event.left_joins(:likes, :comments).select('events.*, count(likes.id) as likes, count(comments.id) as comments')
+    events_base = Event.left_joins(:event_updates => {:feed_item => [:likes, :comments]}).select(
+      'events.*, count(likes.id) as likes, count(comments.id) as comments')
     events = events_base
 
     if params[:text] or not (['crowdfund', 'regular', 'successful', 'pending', 'failed'] & params[:event_type].to_a).empty?
@@ -214,6 +221,27 @@ class AdminEventsController < ApplicationController
     render json: Event.find(params[:id]), extended: true, status: :ok
   end
 
+  # POST admin/events/<id>/view
+  swagger_api :view do
+    summary "View event"
+    param :path, :id, :integer, :required, "Event id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+    response :not_found
+    response :method_not_allowed
+  end
+  def view
+    @event = Event.find(params[:id])
+
+    if @event
+      if @event.update(is_viewed: true)
+        render status: :ok
+      else
+        render json: @event.errors, status: :unprocessable_entity
+      end
+    end
+  end
+
   # POST admin/events/<id>/approve
   swagger_api :approve do
     summary "Approve event"
@@ -266,7 +294,9 @@ class AdminEventsController < ApplicationController
   end
   def destroy
     event = Event.find(params[:id])
-    event.destroy
+    event.is_deleted = true
+    event.status = 'inactive'
+    event.save
 
     render status: :ok
   end

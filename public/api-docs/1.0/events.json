@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "ec2-18-222-193-71.us-east-2.compute.amazonaws.com",
+  "basePath": "https://mouse-back.herokuapp.com",
   "resourcePath": "events",
   "apis": [
     {
@@ -10,6 +10,137 @@
         {
           "summary": "Search for event",
           "parameters": [
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Text to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "location",
+              "type": "string",
+              "description": "Address",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "city",
+              "type": "string",
+              "description": "City",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "country",
+              "type": "string",
+              "description": "Country",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "lat",
+              "type": "float",
+              "description": "Latitude (lng and distance must be present)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "lng",
+              "type": "float",
+              "description": "Longitude (lat and distance must be present)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "distance",
+              "type": "integer",
+              "description": "Artist/Venue address max distance",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "units",
+              "type": "string",
+              "description": "Artist/Venue distance units of search 'km' or 'mi'",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "from_date",
+              "type": "datetime",
+              "description": "Left bound of date (to_date must be presenty)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "to_date",
+              "type": "datetime",
+              "description": "Right bound of date (from_date must be present)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "genres",
+              "type": "string",
+              "description": "Genres list ['pop', 'rock', ...]",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "ticket_types",
+              "type": "string",
+              "description": "Array of ticket types ['in_person', 'vip']",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "size",
+              "type": "string",
+              "description": "Event's venue type of space ('night_club'|'concert_hall'|...)",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Events#search",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/events/my.json",
+      "operations": [
+        {
+          "summary": "Get my events",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
             {
               "paramType": "query",
               "name": "text",
@@ -93,60 +224,6 @@
               "type": "string",
               "description": "Event's venue type of space ('night_club'|'concert_hall'|...)",
               "required": false
-            },
-            {
-              "paramType": "query",
-              "name": "only_my",
-              "type": "boolean",
-              "description": "Search only in created by account events",
-              "required": false
-            },
-            {
-              "paramType": "query",
-              "name": "account_id",
-              "type": "integer",
-              "description": "Account id (required if :only_my parameter set True)",
-              "required": false
-            },
-            {
-              "paramType": "query",
-              "name": "limit",
-              "type": "integer",
-              "description": "Limit",
-              "required": false
-            },
-            {
-              "paramType": "query",
-              "name": "offset",
-              "type": "integer",
-              "description": "Offset",
-              "required": false
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 200,
-              "responseModel": null,
-              "message": "Ok"
-            }
-          ],
-          "nickname": "Events#search",
-          "method": "get"
-        }
-      ]
-    },
-    {
-      "path": "/events/my.json",
-      "operations": [
-        {
-          "summary": "Get my events",
-          "parameters": [
-            {
-              "paramType": "query",
-              "name": "account_id",
-              "type": "integer",
-              "description": "Account id",
-              "required": true
             },
             {
               "paramType": "query",
@@ -296,6 +373,13 @@
               "name": "funding_goal",
               "type": "integer",
               "description": "Funding goal",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "total",
+              "type": "integer",
+              "description": "Total",
               "required": false
             },
             {
@@ -599,6 +683,13 @@
             },
             {
               "paramType": "form",
+              "name": "total",
+              "type": "integer",
+              "description": "Total",
+              "required": false
+            },
+            {
+              "paramType": "form",
               "name": "currency",
               "type": "integer",
               "description": "Preferred currency format",
@@ -810,6 +901,58 @@
           ],
           "nickname": "Events#destroy",
           "method": "delete"
+        }
+      ]
+    },
+    {
+      "path": "/events/{id}/set_date.json",
+      "operations": [
+        {
+          "summary": "Set event's exact date",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Authorized account id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "exact_date_from",
+              "type": "integer",
+              "description": "Exact start date",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Events#set_date",
+          "method": "post"
         }
       ]
     },
@@ -1027,6 +1170,162 @@
             }
           ],
           "nickname": "Events#analytics",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/events/{id}/updates.json",
+      "operations": [
+        {
+          "summary": "Retrieve event updates by id",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Events#get_updates",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/events/{id}/backers.json",
+      "operations": [
+        {
+          "summary": "Retrieve list of event backers",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Text to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Events#backers",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/events/{id}/save_to_calendar.json",
+      "operations": [
+        {
+          "summary": "Save event to ics file",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Events#save_to_calendar",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/events/{event_id}/account_preview/{id}.json",
+      "operations": [
+        {
+          "summary": "Account preview for event",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "event_id",
+              "type": "integer",
+              "description": "Event id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Previewed account",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Creator id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Events#account_preview",
           "method": "get"
         }
       ]

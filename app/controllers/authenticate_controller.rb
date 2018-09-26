@@ -19,11 +19,11 @@ class AuthenticateController < ApplicationController
 	def forgot_password
 		if params[:user_name]
 			@account = Account.find_by("LOWER(user_name) = ?", params[:user_name].downcase)
-			render status: :unauthorized and return if not @account
+			render json: {error: :LOGIN_DOES_NOT_EXIST}, status: :unauthorized and return if not @account
 			@user = @account.user
 		else
 			@user = User.find_by("LOWER(email) = ?", params[:email].downcase)
-			render status: :unauthorized and return if not @user
+			render json: {error: :LOGIN_DOES_NOT_EXIST}, status: :unauthorized and return if not @user
 		end
 
 		@attempt = ForgotPassAttempt.where(user_id: @user.id, created_at: (Time.zone.now.beginning_of_day..Time.zone.now.end_of_day)).first
@@ -202,10 +202,30 @@ class AuthenticateController < ApplicationController
 	# POST /auth/login_facebook
 	swagger_api :login_facebook do
 		summary "Authorize by facebook"
+		param :form, :access_token, :string, :required, "Access token from fb"
 		response :unauthorized
 	end
 	def login_facebook
+		profile = {}
+		begin
+			graph = Koala::Facebook::API.new(params[:access_token])
+			profile = graph.get_object("me?fields=name")
+		rescue
+			render json: :unauthorized and return
+		end
 		
+		@user = User.find_by(facebook_id: profile['id'])
+		if not @user
+			@user = User.new(facebook_id: profile['id'])
+
+			if not @user.save(validate: false)
+				render status: :unauthorized and return
+			end
+		end
+
+		token = AuthenticateHelper.process_token(request, @user)
+		render json: {token: token.token} , status: :ok
+
 	end
 
 	# POST /auth/logout

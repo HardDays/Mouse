@@ -2,9 +2,9 @@ require 'paypal-sdk-rest'
 include PayPal::SDK::REST
 
 class FanTicketsController < ApplicationController
-  before_action :authorize_account, only: [:create, :create_many, :start_purchase, :destroy]
-  before_action :set_ticket, only: [:create, :create_many, :start_purchase]
-  before_action :check_ticket, only: [:create, :create_many, :start_purchase]
+  before_action :authorize_account, only: [:create, :create_many, :start_purchase, :destroy, :by_event, :show]
+  before_action :set_ticket, only: [:create, :create_many]
+  before_action :check_ticket, only: [:create, :create_many]
   before_action :set_fan_ticket, only: [:show, :destroy]
   swagger_controller :fan_ticket, "FanTickets"
 
@@ -14,7 +14,7 @@ class FanTicketsController < ApplicationController
   swagger_api :index do
     summary "Retrieve list of fan tickets"
     param :query, :account_id, :integer, :required, "Fan account id"
-    param_list :query, :time, :string, :required, "Tickets time frame", ['current', 'past']
+    param_list :query, :time, :string, :optional, "Tickets time frame", ['current', 'past']
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
@@ -22,20 +22,15 @@ class FanTicketsController < ApplicationController
     response :not_found
   end
   def index
-    if params[:time] == 'current'
-      @events = Event.joins(:tickets => :fan_tickets).where(
-        fan_tickets: {account_id: params[:account_id]}
-      ).where(
-        "(events.date_to >= :date OR events.date_to IS NULL)", {:date => DateTime.now}
-      ).group("events.id")
-    else
-      @events = Event.joins(:tickets => :fan_tickets).where(
-        fan_tickets: {account_id: params[:account_id]}
-      ).where(
-        "events.date_to < :date", {:date => DateTime.now}
-      ).group("events.id")
-
+    @events = Event.available.joins(:tickets => :fan_tickets).where(
+      fan_tickets: {account_id: params[:account_id]}
+    )
+    if params[:time]
+      filter_by_time
     end
+    @events = @events.group("events.id")
+
+
     render json: @events.limit(params[:limit]).offset(params[:offset]), fan_ticket: true, account_id: params[:account_id], status: :ok
   end
 
@@ -52,7 +47,7 @@ class FanTicketsController < ApplicationController
     render json: {
       event: Event.find(params[:event_id]),
       tickets: FanTicket.joins(:ticket).where(account_id: params[:account_id], tickets: {event_id: params[:event_id]})
-    }, fan_ticket: true, account_id: params[:account_id], user: @user, with_tickets: true, status: :ok
+    }, fan_ticket: true, account_id: params[:account_id], user: @user, with_tickets: true, by_event: true, status: :ok
   end
 
   # GET /fan_tickets/1
@@ -65,7 +60,7 @@ class FanTicketsController < ApplicationController
     response :not_found
   end
   def show
-    render json: @fan_ticket, status: :ok
+    render json: @fan_ticket, user: @user, status: :ok
   end
 
   # POST /fan_tickets/start_purchase
@@ -73,8 +68,7 @@ class FanTicketsController < ApplicationController
     summary "Buy ticket"
     param_list :form, :platform, :string, :required, "Platform", ["yandex", "paypal"]
     param :form, :account_id, :integer, :required, "Fan account id"
-    param :form, :ticket_id, :integer, :required, "Ticket id"
-    param :form, :count, :integer, :required, "Count of tickets"
+    param :form, :tickets, :string, :required, 'Array of ftickets [{"ticket_id": 1, "count": 5}, ...]'
     param :form, :redirect_url, :string, :required, "Redirect after success purchase"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
@@ -82,12 +76,38 @@ class FanTicketsController < ApplicationController
     response :forbidden
   end
   def start_purchase
-    if not @ticket.event.status == "active"
-      render status: :forbidden and return
+    @tickets = []
+
+    params[:tickets].each do |param|
+      ticket = Ticket.find(param[:ticket_id])
+      if not ticket 
+        render status: :not_found and return 
+      else
+        count = param[:count] != nil ? [100, param[:count].to_i].min : 1
+        sold_tickets = FanTicket.where(ticket_id: ticket.id)
+        if sold_tickets and sold_tickets.count + count >= ticket.count
+          render json: {ticket: :TICKETS_SOLD, ticket_id: ticket.id}, status: :unprocessable_entity and return 
+        end
+        
+        @tickets << {ticket: ticket, count: count}
+      end
     end
 
-    token = Digest::SHA256.hexdigest(@ticket.id.to_s + TOKEN_SALT)
-    count = params[:count] != nil ? [100, params[:count].to_i].min : 1
+    if @tickets.collect{|t|t[:ticket].id}.uniq.count != @tickets.collect{|t|t[:ticket].id}.count
+      render json: {ticket: :DUPLICATE}, status: :unprocessable_entity and return 
+    end
+
+    if @tickets.collect{|t|t[:ticket].event_id}.uniq.count != 1
+      render json: {ticket: :DIFFERENT_EVENTS}, status: :unprocessable_entity and return 
+    end
+
+    if not @tickets[0][:ticket].event.status == "active"
+      render json: {ticket_event: :NOT_ACTIVE}, status: :unprocessable_entity and return
+    end
+
+    price = @tickets.sum{|t| t[:count] * t[:ticket].price}
+
+    #token = Digest::SHA256.hexdigest(@ticket.id.to_s + TOKEN_SALT)
 
     if params[:platform] == "paypal"
       url = params[:redirect_url] != nil ? params[:redirect_url] : "http://localhost:3000/fan_tickets/finish_paypal"
@@ -95,7 +115,8 @@ class FanTicketsController < ApplicationController
       @payment = Payment.new({
           intent:  "sale",
           payer:  {
-            payment_method:  "paypal" },
+            payment_method:  "paypal" 
+          },
           redirect_urls: {
             return_url: params[:redirect_url],
             cancel_url: "http://localhost:3000/"
@@ -105,13 +126,18 @@ class FanTicketsController < ApplicationController
               items: [{
                 name: "fan_ticket",
                 sku: "fan_ticket",
-                price: @ticket.price,
-                currency: @ticket.currency,
-                quantity: count }]},
+                price: price,
+                currency: @tickets[0][:ticket].currency,
+                quantity: 1 
+                }
+              ]
+            },
             amount: {
-              total: @ticket.price * count,
-              currency: @ticket.currency },
-            description: "Buy ticket" }]
+              total: price,
+              currency: @tickets[0][:ticket].currency 
+            },
+            description: "Buy ticket" }
+          ]
       })
         
       if @payment.create
@@ -121,18 +147,22 @@ class FanTicketsController < ApplicationController
         render json: @payment.error and return
       end   
     else
-      rener status: :unprocessable_entity
+      render status: :unprocessable_entity and return
     end   
-    @attempt = PurchaseAttempt.new(account_id: @account.id, 
-      status: :pending, 
-      purchase_type: :fan_ticket, 
-      platform: params[:platform],
-      price: @ticket.price,
-      transaction_id: @transaction,
-      purchase_item_id: @ticket.id,
-      count: count,
-      token: token)
-    @attempt.save
+
+    @tickets.each do |ticket|
+      attempt = PurchaseAttempt.new(
+        account_id: @account.id, 
+        status: :pending, 
+        purchase_type: :fan_ticket, 
+        platform: params[:platform],
+        price: ticket[:ticket].price,
+        transaction_id: @transaction,
+        purchase_item_id: ticket[:ticket].id,
+        count: ticket[:count],
+        token: '')
+      attempt.save
+    end
     render json: {transaction_id: @transaction, url: @url}
 
   end
@@ -146,45 +176,60 @@ class FanTicketsController < ApplicationController
     response :forbidden
   end
   def finish_paypal
-    @attempt = PurchaseAttempt.find_by(
+    @attempts = PurchaseAttempt.where(
       status: :pending, 
       purchase_type: :fan_ticket, 
       transaction_id: params[:paymentId]
     )
-    @payment = Payment.find(params[:paymentId])
-    if @payment.execute(payer_id: @payment.payer.payer_info.payer_id)
-    else 
-      render json: @payment.error and return
+    if @attempts.count == 0
+      render json: {purchase_attempt: :NOT_FOUND}, status: :not_found and return
     end
-    if @attempt
-      @ticket = Ticket.find(@attempt.purchase_item_id)
+    res = []
+    PurchaseAttempt.transaction do 
+      @payment = Payment.find(params[:paymentId])
+      if @payment.execute(payer_id: @payment.payer.payer_info.payer_id)
+      else 
+        raise ActiveRecord::Rollback
+        render json: @payment.error and return
+      end
+      @attempts.each do |attempt|
+        @attempt = attempt
+        if @attempt
+          @ticket = Ticket.find(@attempt.purchase_item_id)
 
-      count = @attempt.count != nil ? @attempt.count : 1
+          count = @attempt.count != nil ? @attempt.count : 1
 
-      cnt = 0
-      res = []
-      while cnt < count do
-        @fan_ticket = FanTicket.new(account_id: @attempt.account_id, ticket_id: @ticket.id)
-        @fan_ticket.price = @ticket.price
-        @fan_ticket.currency = @ticket.currency
+          cnt = 0
+          while cnt < count do
+            @fan_ticket = FanTicket.new(account_id: @attempt.account_id, ticket_id: @ticket.id)
+            @fan_ticket.price = @ticket.price
+            @fan_ticket.currency = @ticket.currency
+            @fan_ticket.code = params[:paymentId]
 
-        cnt += 1
-        if @fan_ticket.save
-          res << @fan_ticket
-        else
-          render json: @fan_ticket.errors, status: :unprocessable_entity
-          res.each do |ticket|
-            ticket.destroy
+            cnt += 1
+            if @fan_ticket.save
+              res << @fan_ticket
+            else
+              render json: @fan_ticket.errors, status: :unprocessable_entity and return
+              res.each do |ticket|
+                ticket.destroy
+              end
+              raise ActiveRecord::Rollback
+              return
+            end
           end
-          return
+        else
+          raise ActiveRecord::Rollback
+          render json: {purchase_attempt: :NOT_FOUND}, status: :not_found and return
         end
       end
-      @attempt.status = :finished
-      @attempt.save
-      render json: res
-    else
-      render json: {PURCHASE_ATTEMPT: :NOT_FOUND}, status: :not_found
+      if @attempt
+        @attempt.status = :finished
+        @attempt.save
+        render json: res
+      end
     end
+    
   end
 
   # POST /fan_tickets
@@ -192,8 +237,6 @@ class FanTicketsController < ApplicationController
     summary "Buy ticket"
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
-    param :form, :price, :integer, :required, "Ticket price"
-    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -202,6 +245,12 @@ class FanTicketsController < ApplicationController
   def create
     if @ticket.event.status == "active"
       @fan_ticket = FanTicket.new(fan_ticket_params)
+
+      # TODO: временный фикс, пока фронт не начнет передавать нормально, или перестанет вообще это юзать
+      #unless @fan_ticket.price
+      @fan_ticket.price = @ticket.price
+      @fan_ticket.currency = @ticket.currency
+      #end
       @fan_ticket.code = generate_auth_code
 
       if @fan_ticket.save
@@ -220,8 +269,6 @@ class FanTicketsController < ApplicationController
     param :form, :account_id, :integer, :required, "Fan account id"
     param :form, :ticket_id, :integer, :required, "Ticket id"
     param :form, :count, :integer, :required, "Count of tickets"
-    param :form, :price, :integer, :required, "Ticket price"
-    param_list :form, :currency, :integer, :required, "Preferred currency format", [:RUB, :USD, :EUR]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :unauthorized
     response :unprocessable_entity
@@ -236,6 +283,8 @@ class FanTicketsController < ApplicationController
       while cnt < count do
         @fan_ticket = FanTicket.new(fan_ticket_params)
         @fan_ticket.code = code
+        @fan_ticket.price = @ticket.price
+        @fan_ticket.currency = @ticket.currency
 
         cnt += 1
         if @fan_ticket.save
@@ -283,7 +332,7 @@ class FanTicketsController < ApplicationController
     search_date
 
     @events = @events.group("events.id")
-    render json: @events.limit(params[:limit]).offset(params[:offset]), fan_ticket: true, account_id: params[:account_id], status: :ok
+    render json: @events.limit(params[:limit]).offset(params[:offset]), fan_ticket: true, account_id: params[:account_id], user: @user, status: :ok
   end
 
   # DELETE /fan_tickets/1
@@ -309,6 +358,18 @@ class FanTicketsController < ApplicationController
       @ticket = Ticket.find(params[:ticket_id])
     end
 
+    def filter_by_time
+      if params[:time] == 'current'
+        @events = @events.where(
+          "(events.exact_date_to >= :date OR events.date_to IS NULL)", {:date => DateTime.now}
+        )
+      else
+        @events = @events.where(
+          "events.exact_date_to < :date", {:date => DateTime.now}
+        )
+      end
+    end
+
     def check_ticket
       sold_tickets = FanTicket.where(ticket_id: @ticket.id)
 
@@ -324,11 +385,11 @@ class FanTicketsController < ApplicationController
     def search_time
       if params[:time] == 'current'
         @events = @events.where(
-          "(events.date_from >= :date OR events.date_from IS NULL)", {:date => DateTime.now}
+          "(events.exact_date_from >= :date OR events.exact_date_from IS NULL)", {:date => DateTime.now}
         ).group("events.id")
       else
         @events = @events.where(
-          "events.date_from < :date", {:date => DateTime.now}
+          "events.exact_date_from < :date", {:date => DateTime.now}
         ).group("events.id")
       end
     end
@@ -361,22 +422,25 @@ class FanTicketsController < ApplicationController
 
     def search_date
       if params[:from_date]
-        @events = @events.where("events.date_from >= :date",
+        @events = @events.where("events.exact_date_from >= :date",
                                 {:date => DateTime.parse(params[:from_date])})
       end
       if params[:to_date]
-        @events = @events.where("events.date_to <= :date",
+        @events = @events.where("events.exact_date_to <= :date",
                                 {:date => DateTime.parse(params[:to_date])})
       end
     end
 
     def fan_ticket_params
-      params.permit(:ticket_id, :account_id, :price, :currency)
+      params.permit(:ticket_id, :account_id)
     end
 
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user or @account.account_type != 'fan'
+      @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+      if @account == nil or @account.account_type != 'fan'
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
+
+      @user = @account.user
     end
 end

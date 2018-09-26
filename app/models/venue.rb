@@ -6,6 +6,9 @@ class Venue < ApplicationRecord
     # validates :lng, presence: true
     # validates :capacity, presence: true
 
+    VALIDATE_FIELDS = [:venue_type, :address, :description, :country, :city, :state, :capacity]
+    VALIDATE_PUBLIC_FIELDS = [:audio_description, :lighting_description, :stage_description]
+
     validates_inclusion_of :capacity, in: 1..1000000, allow_nil: true
 
     enum venue_type: [:public_venue, :private_residence]
@@ -23,7 +26,11 @@ class Venue < ApplicationRecord
     geocoded_by :address, latitude: :lat, longitude: :lng
     reverse_geocoded_by :lat, :lng, address: :address
     after_validation :geocode
+    before_validation :set_address
 
+    def set_address
+        self.address = [self.zipcode, self.country, self.state, self.city, self.street].collect{|c| c if c != nil and c != ''}.compact.join(', ')
+    end
 
     def as_json(options={})
         if options[:for_event]
@@ -32,14 +39,14 @@ class Venue < ApplicationRecord
             attrs[:user_name] = account.user_name
             attrs[:image_id] = account.image_id
 
-            attrs[:price] = nil
+            #attrs[:price] = nil
             return attrs
         end
 
         if options[:extended]
-            res = super.merge(account.get_attrs)
+            res = super.merge(account.get_attrs(options))
             if public_venue
-                res = res.merge(public_venue.get_attrs)
+                res = res.merge(public_venue.get_attrs(options))
             end
 
             res[:video_links] = venue_video_links.pluck(:video_link)

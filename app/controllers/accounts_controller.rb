@@ -1,8 +1,9 @@
 class AccountsController < ApplicationController
     before_action :authorize_user, only: [:create, :get_my_accounts]
+    before_action :authorize_search, only: [:search]
     before_action :authorize_account, only: [:update,  :upload_image, :follow, :unfollow, :is_followed,
-                                             :follow_multiple, :delete, :preferences]
-    before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed, :get_updates, :verify]
+                                             :follow_multiple, :delete, :verify]
+    before_action :find_account, only: [:get, :get_images, :upcoming_shows, :get_events, :get_followers, :get_followed]
     before_action :find_follower_account, only: [:follow, :unfollow, :is_followed]
     swagger_controller :accounts, "Accounts"
 
@@ -30,7 +31,7 @@ class AccountsController < ApplicationController
       response :ok
     end
     def get_all
-        @accounts = Account.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+        @accounts = Account.approved.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
                                                      {:public => Venue.venue_types['public_venue']})
         @extended = false
         set_extended
@@ -52,6 +53,8 @@ class AccountsController < ApplicationController
         @events = Event.where(venue_id: @to_find.venue.id)
       elsif @to_find.account_type == 'artist'
         @events = Event.joins(:artist_events).where(artist_events: {artist_id: @to_find.id, status: "owner_accepted"})
+      else 
+        @events = Event.where(creator_id: @to_find.id, status: 'active')
       end
 
       if @events
@@ -72,9 +75,10 @@ class AccountsController < ApplicationController
        @extended = false
        set_extended
 
-       accounts = @user.accounts.left_joins(:venue).where("(accounts.venue_id IS NULL OR venues.venue_type=:public)",
-                                                           {:public => Venue.venue_types['public_venue']})
-       render json: accounts.order('accounts.user_name'), extended: @extended, status: :ok
+       accounts = @user.accounts.available.left_joins(:venue).where(
+         "(accounts.venue_id IS NULL OR venues.venue_type=:public)",
+         {:public => Venue.venue_types['public_venue']})
+       render json: accounts.order('accounts.account_type DESC, accounts.user_name ASC'), extended: @extended, status: :ok
     end
 
     # GET /accounts/images/<id>
@@ -110,19 +114,19 @@ class AccountsController < ApplicationController
       response :unprocessable_entity
     end
     def upcoming_shows
-      events = Event.all
+      events = Event.available
 
       if @to_find.account_type == 'artist'
         events = events.joins(:artist_events)
                    .where(artist_events: {artist_id: @to_find.id})
                    .where(artist_events: {status: ArtistEvent.statuses['owner_accepted']})
-                   .where("events.date_from >= :date", {:date => DateTime.now})
+                   .where("events.exact_date_from >= :date", {:date => DateTime.now})
 
         render json: events.limit(params[:limit]).offset(params[:offset]), status: :ok
       elsif @to_find.account_type == 'venue'
         events = events
                    .where(venue_id: @to_find.venue.id)
-                   .where("events.date_from >= :date", {:date => DateTime.now})
+                   .where("events.exact_date_from >= :date", {:date => DateTime.now})
         render json: events.limit(params[:limit]).offset(params[:offset]), status: :ok
       else
         render status: :unprocessable_entity
@@ -267,7 +271,6 @@ class AccountsController < ApplicationController
       param :form, :display_name, :string, :optional, "Account's name to display"
       param :form, :phone, :string, :optional, "Account's phone"
       param :form, :image_base64, :string, :optional, "Image base64 string"
-      param :form, :image_description, :string, :optional, "Image description"
       param_list :form, :image_type, :string, :optional, "Image type", ["outside_venue", "stage", "seating", "bar", "audience", "dressing_room", "other"]
       param :form, :image_type_description, :string, :optional, "Image other type description"
       param_list :form, :account_type, :string, :required, "Account type", ["venue", "artist", "fan"]
@@ -276,7 +279,7 @@ class AccountsController < ApplicationController
       param :form, :artist_videos, :string, :optional, "Array of link objects [{'name': '', 'album_name': '', 'link': ''}, {...}]"
       param :form, :bio, :string, :optional, "Fan bio"
       param :form, :genres, :string, :optional, "Fan/Artist/Venue (public only) Genres ['genre1', 'genre2', ...]"
-      param :form, :address, :string, :optional, "Fan/Venue address"
+      param :form, :address, :string, :optional, "Fan address"
       param :form, :preferred_address, :string, :optional, "Artist preferred address to perform"
       param :form, :lat, :float, :optional, "Fan/Artist/Venue lat"
       param :form, :lng, :float, :optional, "Fan/Artist/Venue lng"
@@ -301,6 +304,7 @@ class AccountsController < ApplicationController
       param :form, :audio_description, :string, :optional, "Venue audio description (public_venue only)"
       param :form, :lighting_description, :string, :optional, "Venue lighting description (public_venue only)"
       param :form, :stage_description, :string, :optional, "Venue stage description (public_venue only)"
+      param :form, :web_site, :string, :optional, "Venue web site"
       param :form, :dates, :string, :optional, "Venue dates [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
                                                               'is_available': ''}, {...}]"
       param :form, :emails, :string, :optional, "Venue dates [{'name': '', 'email': ''}, {...}]"
@@ -370,12 +374,23 @@ class AccountsController < ApplicationController
         if @account.save
             set_image
             set_base64_image
-
-            return if not set_fan_params
-            return if not set_venue_params
-            return if not set_artist_params
           
-            #AccessHelper.grant_account_access(@account)
+            if not set_fan_params
+              raise ActiveRecord::Rollback
+              return
+            end
+
+            if not set_venue_params
+              raise ActiveRecord::Rollback
+              return
+            end
+
+            if not set_artist_params
+              raise ActiveRecord::Rollback
+              return
+            end
+
+            log_users_count
             render json: @account, extended: true, my: true, except: :password, status: :created
         else
             render json: @account.errors, status: :unprocessable_entity
@@ -391,7 +406,6 @@ class AccountsController < ApplicationController
       param :form, :display_name, :string, :optional, "Account's name to display"
       param :form, :phone, :string, :optional, "Account's phone"
       param :form, :image_base64, :string, :optional, "Image base64 string"
-      param :form, :image_description, :string, :optional, "Image description"
       param_list :form, :image_type, :string, :optional, "Image type", ["outside_venue", "stage", "seating", "bar", "audience", "dressing_room", "other"]
       param :form, :image_type_description, :string, :optional, "Image other type description"
       param_list :form, :account_type, :string, :required, "Account type", ["venue", "artist", "fan"]
@@ -400,7 +414,7 @@ class AccountsController < ApplicationController
       param :form, :artist_videos, :string, :optional, "Array of link objects [{'name': '', 'album_name': '', 'link': ''}, {...}]"
       param :form, :bio, :string, :optional, "Fan bio"
       param :form, :genres, :string, :optional, "Fan/Artist/Venue (public only) Genres ['genre1', 'genre2', ...]"
-      param :form, :address, :string, :optional, "Fan/Venue address - full address including city, country, state, street etc"
+      param :form, :address, :string, :optional, "Fan address - full address including city, country, state, street etc"
       param :form, :preferred_address, :string, :optional, "Artist preferred address to perform"
       param :form, :lat, :float, :optional, "Fan/Artist/Venue lat"
       param :form, :lng, :float, :optional, "Fan/Artist/Venue lng"
@@ -425,6 +439,7 @@ class AccountsController < ApplicationController
       param :form, :audio_description, :string, :optional, "Venue audio description (public_venue only)"
       param :form, :lighting_description, :string, :optional, "Venue lighting description (public_venue only)"
       param :form, :stage_description, :string, :optional, "Venue stage description (public_venue only)"
+      param :form, :web_site, :string, :optional, "Venue web site"
       param :form, :dates, :string, :optional, "Venue dates [{'date': '', 'price_for_daytime': '', 'price_for_nighttime': '',
                                                               'is_available': ''}, {...}]"
       param :form, :emails, :string, :optional, "Venue dates [{'name': '', 'email': ''}, {...}]"
@@ -490,15 +505,44 @@ class AccountsController < ApplicationController
       Account.transaction do
         set_image
         set_base64_image
-
+        
         render status: :unprocessable_entity and return if not set_fan_params
         render status: :unprocessable_entity and return if not set_venue_params
         render status: :unprocessable_entity and return if not set_artist_params
+        
+        @account.assign_attributes(account_update_params)
+        changed = @account.changed
+
         if @account.update(account_update_params)
-            render json: @account, extended: true, my: true, except: :password, status: :ok
+          log_changes(changed, @account)
+
+          render json: @account, extended: true, my: true, except: :password, status: :ok
         else
-            render json: @account.errors, status: :unprocessable_entity
+          render json: @account.errors, status: :unprocessable_entity
         end
+      end
+    end
+
+    swagger_api :verify do
+      summary "Send account to verification"
+      param :path, :id, :integer, :required, "Account id"
+      param :header, 'Authorization', :string, :optional, 'Authentication token'
+      response :unprocessable_entity
+      response :unauthorized
+    end
+    def verify
+      if ["just_added", "denied"].include?(@account.status)
+        empty_fields = check_account_fields
+        if empty_fields.empty?
+          @account.status = "unchecked"
+          @account.save
+
+          render status: :ok
+        else
+          render json: {errors: :UNFILLED_FIELDS}, status: :unprocessable_entity
+        end
+      else
+        render json: {error: :FORBIDDEN_STATUS}, status: :unprocessable_entity
       end
     end
 
@@ -509,6 +553,8 @@ class AccountsController < ApplicationController
       param :query, :price_from, :integer, :optional, "Artist/Venue price from"
       param :query, :price_to, :integer, :optional, "Artist/Venue price to"
       param :query, :address, :string, :optional, "Artist/Venue address"
+      param :query, :city, :string, :optional, "Artist/Venue city"
+      param :query, :country, :string, :optional, "Artist/Venue country"
       param :query, :distance, :integer, :optional, "Artist/Venue address max distance"
       param :query, :units, :string, :optional, "Artist/Venue distance units of search 'km' or 'mi'"
       param :query, :capacity_from, :integer, :optional, "Venue capacity from"
@@ -518,25 +564,33 @@ class AccountsController < ApplicationController
       param :query, :exclude_event_id, :integer, :optional, "Exclude artists/venues added to event"
       param :query, :extended, :boolean, :optional, "Extended info"
       param :query, :sort_by_popularity, :boolean, :optional, "Sort results by popularity"
+      param_list :query, :sort_by, :string, :optional, "Sort results", [:popularity, :stage_name]
       param :query, :limit, :integer, :optional, "Limit"
       param :query, :offset, :integer, :optional, "Offset"
+      param :query, :account_id, :integer, :optional, "Account id"
+      param :header, 'Authorization', :string, :optional, 'Authentication token'
     end
     def search
       @extended = true
       set_extended
       
-      @accounts = Account.all
+      @accounts = Account.approved
 
-      if params[:type] != 'artist'
+      if params[:type] == 'artist'
+        @accounts = @accounts.joins(:artist).group('artists.id')
+      end
+
+      if params[:type] and params[:type] == 'venue'
         if params[:exclude_event_id]
-          @accounts= Account.left_joins(:venue => {:public_venue => :genres})
+          @accounts= @accounts.left_joins(:venue => {:public_venue => :genres})
         else
-          @accounts = Account.left_joins(:venue => {:public_venue => :genres}).where(
+          @accounts = @accounts.left_joins(:venue => {:public_venue => :genres}).where(
             "(accounts.venue_id IS NULL OR venues.venue_type=:public)",
             {:public => Venue.venue_types['public_venue']})
         end   
       end
-      
+      search_city
+      search_country
       search_text
       search_type
       search_price
@@ -545,11 +599,12 @@ class AccountsController < ApplicationController
       search_capacity
       search_type_of_space
       exclude_event
+      sort_results_old
       sort_results
       order_accounts
       @accounts = @accounts.group("accounts.id")
 
-      render json: @accounts.limit(params[:limit]).offset(params[:offset]), extended: @extended, status: :ok
+      render json: @accounts.limit(params[:limit]).offset(params[:offset]), extended: @extended, account: @account, status: :ok
     end
 
     swagger_api :delete do
@@ -563,7 +618,17 @@ class AccountsController < ApplicationController
     end
     def delete
       if User.encrypt_password(params[:password].to_s) == @account.user.password
-        @account.destroy
+        #@account.destroy
+        @account.is_deleted = true
+        @account.status = 'inactive'
+        @account.save
+
+        @account.events.where(status: :just_added)
+          .or(@account.events.where(status: :pending))
+          .or(@account.events.where(status: :denied))
+          .or(@account.events.where(status: :inactive))
+          .update_all(is_deleted: :true, status: :inactive)
+
         render status: :ok
       else
         render status: :forbidden
@@ -574,10 +639,18 @@ class AccountsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def find_account
         @to_find = Account.find(params[:id])
+
+        if @to_find.is_deleted
+          render status: :not_found and return
+        end
     end
 
     def find_follower_account
       @to_find = Account.find(params[:follower_id])
+
+      if @to_find.is_deleted
+        render status: :not_found and return
+      end
     end
 
     def find_image
@@ -587,7 +660,7 @@ class AccountsController < ApplicationController
     def authorized?
       if request.headers['Authorization']
         user = AuthorizeHelper.authorize(request)
-        return (user != nil and user == @to_find.user)
+        return (user != nil and user == @to_find.user and @to_find.is_deleted == false)
       end
     end
 
@@ -597,56 +670,59 @@ class AccountsController < ApplicationController
     end
 
     def authorize_account
-        @user = AuthorizeHelper.authorize(request)
-        @account = Account.find(params[:id])
-        render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request, params[:id])
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
+    end
+
+    def authorize_search
+      if request.headers['Authorization'] and params[:account_id]
+        @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+      end
     end
 
     def set_image
         if params[:image]
-            #@account.image.delete if @account.image != nil
-            image = Image.new(description: params[:image_description], base64: Base64.encode64(File.read(params[:image].path)))
+            image = Image.new(base64: Base64.encode64(File.read(params[:image].path)))
             image.save
             @account.image = image
-            #@account.images << image
 
             set_image_type(image)
+            log_changed_value(:image, @account, image.id)
         end
     end
 
     def set_base64_image
         if params[:image_base64] and params[:image_base64] != ""
-            #@account.image.delete if @account.image != nil  
-            image = Image.new(description: params[:image_description], base64: params[:image_base64])
+            image = Image.new(base64: params[:image_base64])
             image.save
             @account.image = image
-            #@account.images << image
 
-            #set_image_type(image)
+            log_changed_value(:image, @account, image.id)
         end
     end
 
     def set_image_gallery
       if params[:image]
-        #@account.image.delete if @account.image != nil
         image = Image.new(description: params[:image_description], base64: Base64.encode64(File.read(params[:image].path)))
         image.save
-        #@account.image = image
         @account.images << image
 
         set_image_type(image)
+        log_changed_value(:gallery_image, @account, image.id)
       end
     end
 
     def set_base64_image_gallery
       if params[:image_base64] and params[:image_base64] != ""
-        #@account.image.delete if @account.image != nil
         image = Image.new(description: params[:image_description], base64: params[:image_base64])
         image.save
-        #@account.image = image
         @account.images << image
 
         set_image_type(image)
+        log_changed_value(:gallery_image, @account, image.id)
       end
     end
 
@@ -697,15 +773,12 @@ class AccountsController < ApplicationController
         if @account.account_type == 'venue'            
             if @account.venue 
                 @venue = @account.venue
+
+                @venue.assign_attributes(venue_params)
+                changed = @venue.changed
+               
                 @venue.update(venue_params)
-                params.each do |param|
-                    if HistoryHelper::VENUE_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
-                        action.save
-                        feed = FeedItem.new(account_update_id: action.id)
-                        feed.save
-                    end
-                end
+                log_changes(changed, @account)
             else
                 @venue = Venue.new(venue_params)
                 render json: @venue.errors and return false if not @venue.save
@@ -744,6 +817,7 @@ class AccountsController < ApplicationController
         @venue.public_venue.genres.clear
         params[:genres].each do |genre|
           obj = VenueGenre.new(genre: genre)
+          obj.venue_id = @venue.public_venue.id
           obj.save
           @venue.public_venue.genres << obj
         end
@@ -756,6 +830,7 @@ class AccountsController < ApplicationController
             @venue.dates.clear
             params[:dates].each do |date|
                 obj = VenueDate.new(venue_dates_params(date))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.dates << obj
             end
@@ -768,6 +843,7 @@ class AccountsController < ApplicationController
             @venue.emails.clear
             params[:emails].each do |email|
                 obj = VenueEmail.new(venue_email_params(email))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.emails << obj
             end
@@ -780,6 +856,7 @@ class AccountsController < ApplicationController
             @venue.office_hours.clear
             params[:office_hours].each do |hour|
                 obj = VenueOfficeHour.new(venue_office_hours_params(hour))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.office_hours << obj
             end
@@ -792,6 +869,7 @@ class AccountsController < ApplicationController
             @venue.operating_hours.clear
             params[:operating_hours].each do |hour|
                 obj = VenueOperatingHour.new(venue_operating_hours_params(hour))
+                obj.venue_id = @venue.id
                 obj.save
                 @venue.operating_hours << obj
             end
@@ -804,8 +882,12 @@ class AccountsController < ApplicationController
         @venue.venue_video_links.clear
         params[:venue_video_links].each do |link|
           obj = VenueVideoLink.new(video_link: link)
-          obj.save
-          @venue.venue_video_links << obj
+          obj.venue_id = @venue.id
+          if obj.save
+            @venue.venue_video_links << obj
+
+            log_changed_value(:video, @account, obj.id)
+          end
         end
         @venue.save
       end
@@ -815,15 +897,12 @@ class AccountsController < ApplicationController
         if @account.account_type == 'artist'
             if @account.artist
                 @artist = @account.artist
+               
+                @artist.assign_attributes(artist_params)
+                changed = @artist.changed
+
                 @artist.update(artist_params)
-                params.each do |param|
-                    if HistoryHelper::ARTIST_FIELDS.include?(param.to_sym)
-                        action = AccountUpdate.new(action: :update, updated_by: @account.id, account_id: @account.id, field: param)
-                        action.save
-                        feed = FeedItem.new(account_update_id: action.id)
-                        feed.save
-                    end
-                end
+                log_changes(changed, @account)
             else
                 @artist = Artist.new(artist_params)
                 render json: @artist.errors and return false if not @artist.save 
@@ -846,6 +925,7 @@ class AccountsController < ApplicationController
             @artist.genres.clear
             params[:genres].each do |genre|
                 obj = ArtistGenre.new(genre: genre)
+                obj.artist_id = @artist.id
                 obj.save
                 @artist.genres << obj
             end
@@ -858,8 +938,12 @@ class AccountsController < ApplicationController
         @artist.artist_videos.clear
         params[:artist_videos].each do |link|
           obj = ArtistVideo.new(artist_video_params(link))
-          obj.save
-          @artist.artist_videos << obj
+          obj.artist_id = @artist.id
+          if obj.save
+            @artist.artist_videos << obj
+
+            log_changed_value(:video, @account, obj.id)
+          end
         end
         @artist.save
       end
@@ -870,8 +954,12 @@ class AccountsController < ApplicationController
         @artist.artist_albums.clear
         params[:artist_albums].each do |album|
           obj = ArtistAlbum.new(artist_album_params(album))
-          obj.save
-          @artist.artist_albums << obj
+          obj.artist_id = @artist.id
+          if obj.save
+            @artist.artist_albums << obj
+
+            log_changed_value(:album, @account, obj.id)
+          end
         end
         @artist.save
       end
@@ -882,8 +970,10 @@ class AccountsController < ApplicationController
         @artist.artist_riders.clear
         params[:artist_riders].each do |rider|
           obj = ArtistRider.new(artist_rider_params(rider))
-          obj.save
-          @artist.artist_riders << obj
+          obj.artist_id = @artist.id
+          if obj.save
+            @artist.artist_riders << obj
+          end
         end
         @artist.save
       end
@@ -895,8 +985,12 @@ class AccountsController < ApplicationController
         params[:audio_links].each do |link|
           if link["audio_link"].start_with?("https://soundcloud.com/")
             obj = AudioLink.new(artist_audio_params(link))
-            obj.save
-            objs << obj
+            obj.artist_id = @artist.id
+            if obj.save
+              objs << obj
+
+              log_changed_value(:audio, @account, obj.id)
+            end
           else
             objs.clear
             return false
@@ -915,6 +1009,7 @@ class AccountsController < ApplicationController
         @artist.disable_dates.clear
         params[:disable_dates].each do |date_range|
           obj = ArtistDate.new(artist_dates_params(date_range))
+          obj.artist_id = @artist.id
           obj.save
           @artist.disable_dates << obj
         end
@@ -927,6 +1022,7 @@ class AccountsController < ApplicationController
         @artist.artist_preferred_venues.clear
         params[:preferred_venues].each do |venue_type|
           obj = ArtistPreferredVenue.new(type_of_venue: ArtistPreferredVenue.type_of_venues[venue_type])
+          obj.artist_id = @artist.id
           obj.save
           @artist.artist_preferred_venues << obj
         end
@@ -945,8 +1041,10 @@ class AccountsController < ApplicationController
     def search_text
       if params[:text]
         if params[:type] == 'artist'
-          @accounts = @accounts.joins(:artist).
-            where("(accounts.user_name ILIKE :query) OR (accounts.display_name ILIKE :query) OR (artists.first_name ILIKE :query) OR (artists.stage_name ILIKE :query) OR (artists.last_name ILIKE :query)", query: "%#{params[:text]}%")
+          @accounts = @accounts.where(
+            "(accounts.user_name ILIKE :query) OR (accounts.display_name ILIKE :query)
+              OR (artists.first_name ILIKE :query) OR (artists.stage_name ILIKE :query)
+              OR (artists.last_name ILIKE :query)", query: "%#{params[:text]}%")
         else
           @accounts = @accounts.where("accounts.user_name ILIKE :query OR accounts.display_name ILIKE :query", query: "%#{params[:text]}%")
         end
@@ -962,10 +1060,10 @@ class AccountsController < ApplicationController
     def search_price
       if params[:type] == 'artist'
         if params[:price_from]
-          @accounts = @accounts.joins(:artist).where("artists.price_from >= :price", {:price => params[:price_from]})
+          @accounts = @accounts.where("artists.price_from >= :price", {:price => params[:price_from]})
         end
         if params[:price_to]
-          @accounts = @accounts.joins(:artist).where("artists.price_to <= :price", {:price => params[:price_to]})
+          @accounts = @accounts.where("artists.price_to <= :price", {:price => params[:price_to]})
         end
       elsif params[:type] == 'venue'
         if params[:price_from]
@@ -1003,6 +1101,30 @@ class AccountsController < ApplicationController
         elsif params[:type] == 'fan'
           genres = collect_genres(FanGenre)
           @accounts = @accounts.joins(:fan => :genres).where(:fan_genres => {genre: genres})
+        end
+      end
+    end
+
+    def search_city
+      if params[:city]
+        if params[:type] == 'artist'
+          @arts = Artist.where("lower(city) LIKE ?", '%' + params[:city].downcase.strip + '%').select{|a| a.id}
+          @accounts = @accounts.where(artist_id: @arts)
+        elsif params[:type] == 'venue'
+          @vens = Venue.where("lower(city) LIKE ?", '%' + params[:city].downcase.strip + '%').select{|a| a.id}
+          @accounts = @accounts.where(venue_id: @vens)
+        end
+      end
+    end
+
+    def search_country
+      if params[:country]
+        if params[:type] == 'artist'
+          @arts = Artist.where("lower(country) LIKE ?", '%' + params[:country].downcase.strip + '%').select{|a| a.id}
+          @accounts = @accounts.where(artist_id: @arts)
+        elsif params[:type] == 'venue'
+          @vens = Venue.where("lower(country) LIKE ?", '%' + params[:country].downcase.strip + '%').select{|a| a.id}
+          @accounts = @accounts.where(venue_id: @vens)
         end
       end
     end
@@ -1055,7 +1177,7 @@ class AccountsController < ApplicationController
       end
     end
 
-    def sort_results
+    def sort_results_old
       if params[:sort_by_popularity]
         @accounts = @accounts.select(
           "accounts.*, COUNT(followers.id) as followers_count"
@@ -1063,8 +1185,99 @@ class AccountsController < ApplicationController
       end
     end
 
+    def sort_results
+      if params[:sort_by] == 'popularity'
+        @accounts = @accounts.select(
+          "accounts.*, COUNT(followers.id) as followers_count"
+        ).left_joins(:followers).group('id').order('followers_count')
+      elsif params[:sort_by] == 'stage_name' and params[:type] == 'artist'
+        @accounts = @accounts.order('artists.stage_name')
+      end
+    end
+
     def order_accounts
       @accounts = @accounts.order('accounts.display_name, accounts.user_name')
+    end
+
+    def log_changes(changed, account)
+      if @account.status == "approved"
+        changed.each do |param|
+          if HistoryHelper::ACCOUNT_FIELDS.include?(param.to_sym)
+            feed = FeedItem.new(
+              action: :update,
+              updated_by: account.id,
+              account_id: account.id,
+              field: param,
+              value: params[param]
+            )
+            feed.save
+          end
+        end
+      end
+    end
+
+    def log_changed_value(field, account, value)
+      if @account.status == "approved"
+        feed = FeedItem.new(
+          action: :update,
+          updated_by: account.id,
+          account_id: account.id,
+          field: field,
+          value: value
+        )
+        feed.save
+      end
+    end
+
+    def log_users_count
+      count = Account.all.count
+      if count % 5 == 0
+        feed = AdminFeed.new(action: :new_users, value: count)
+        feed.save
+      end
+    end
+
+    def check_account_fields
+      if @account.account_type == "artist"
+        empty_fields = []
+
+        unless @account.display_name
+          empty_fields.push("display_name")
+        end
+
+        Artist::VALIDATE_FIELDS.each do |field|
+          unless @account.artist[field]
+            empty_fields.push(field)
+          end
+        end
+        empty_fields
+      elsif @account.account_type == "venue"
+        empty_fields = []
+
+        unless @account.display_name
+          empty_fields.push("display_name")
+        end
+
+        unless @account.phone
+          empty_fields.push("phone")
+        end
+
+        Venue::VALIDATE_FIELDS.each do |field|
+          unless @account.venue[field]
+            empty_fields.push(field)
+          end
+        end
+
+        Venue::VALIDATE_PUBLIC_FIELDS.each do |field|
+          unless @account.venue.public_venue[field]
+            empty_fields.push(field)
+          end
+        end
+
+        empty_fields
+      else
+        []
+      end
     end
 
     def account_params
@@ -1080,11 +1293,12 @@ class AccountsController < ApplicationController
     end
 
     def venue_params
-        params.permit(:description, :capacity, :venue_type, :has_vr, :address, :lat, :lng, :vr_capacity)
+        params.permit(:description, :capacity, :venue_type, :has_vr, :vr_capacity,
+                      :country, :city, :street, :state, :zipcode, :web_site)
     end
 
     def public_venue_params
-      params.permit(:fax, :bank_name, :account_bank_number, :account_bank_routing_number,
+        params.permit(:fax, :bank_name, :account_bank_number, :account_bank_routing_number,
                     :num_of_bathrooms, :min_age, :has_bar, :located, :dress_code, :audio_description,
                     :lighting_description, :stage_description, :type_of_space, :price, :country, :city, :street,
                     :state, :zipcode, :minimum_notice, :is_flexible, :price_for_daytime, :price_for_nighttime,

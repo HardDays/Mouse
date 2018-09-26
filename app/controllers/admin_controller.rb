@@ -40,6 +40,18 @@ class AdminController < ApplicationController
     end
   end
 
+  # GET /admin
+  swagger_api :index do
+    summary "Get list of admins"
+    param :query, :limit, :integer, :optional, "Limit"
+    param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :unauthorized
+  end
+  def index
+    render json: Admin.all.limit(params[:limit]).offset(params[:offset]).as_json(only: [:id, :user_name, :image_id]), status: :ok
+  end
+
   # POST /admin/create_admin
   swagger_api :create do
     summary "Creates admin credential for login"
@@ -64,15 +76,23 @@ class AdminController < ApplicationController
     Admin.transaction do
       user = User.new(user_params)
       user.is_admin = true
-      user.save!
+      unless user.save
+        render json: user.errors, status: :unprocessable_entity and return
+      end
 
       @admin = Admin.new(admin_params)
       @admin.user_id = user.id
-      if @admin.save!
+      if @admin.save
         set_base64_image
         set_phone_validation
 
+        feed = AdminFeed.new(action: :new_admin, value: @admin.id)
+        feed.save
+
         render json: @admin, serializer: AdminSerializer, status: :created
+      else
+        user.destroy
+        render json: @admin.errors, status: :unprocessable_entity
       end
     end
   end
@@ -98,6 +118,11 @@ class AdminController < ApplicationController
   def update
     @admin = Admin.find(params[:id])
     if @admin.update(admin_params)
+
+      unless @admin.user.save(validate: false)
+        render json: @admin.user.errors, status: :unprocessable_entity and return
+      end
+
       set_base64_image
       render json: @admin, serializer: AdminSerializer, status: :ok
     else

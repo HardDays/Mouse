@@ -1,5 +1,7 @@
 class Account < ApplicationRecord
-	 
+	scope :available, -> {where(is_deleted: false)}
+	scope :approved, -> {where(status: 'approved')}
+
 	validates :account_type, presence: true
 	validates :user_name, presence: true, uniqueness: true, length: {:within => 3..30}
 
@@ -32,17 +34,21 @@ class Account < ApplicationRecord
 	has_many :collaborated, through: :event_collaborators, source: :event, class_name: 'Event'
 	has_many :events, foreign_key: 'creator_id', dependent: :nullify
 	has_many :likes, dependent: :nullify
-	has_many :account_updates, dependent: :nullify
+	has_many :feed_items, dependent: :nullify
 	has_many :fan_tickets, dependent: :nullify
 	has_many :comments, dependent: :nullify
 
 
-	def get_attrs
+	def get_attrs(options={})
 		attrs = {}
 		attrs[:id] = id
 		attrs[:user_name] = user_name
 		attrs[:display_name] = display_name
-		attrs[:phone] = phone
+		if fan
+			attrs[:phone] = user.register_phone
+		else
+			attrs[:phone] = phone
+		end
 		attrs[:created_at] = created_at
 		attrs[:updated_at] = updated_at
 		attrs[:image_id] = image_id
@@ -51,10 +57,17 @@ class Account < ApplicationRecord
 		attrs[:status] = status
 		attrs[:followers_count] = followers.count
 		attrs[:following_count] = following.count
+
+		if options[:account]
+			follower = Follower.find_by(by_id: options[:account].id, to_id: id)
+			attrs[:is_followed] = follower != nil
+		end
+
 		return attrs
 	end
 
-    def as_json(options={})
+	def as_json(options={})
+
 			if options[:for_message]
 				attrs = {}
 				attrs[:image_id] = image_id
@@ -63,10 +76,27 @@ class Account < ApplicationRecord
 
 				if fan
 					attrs[:full_name] = "#{fan.first_name} #{fan.last_name}"
+					attrs[:address] = fan.address
 				elsif artist
 					attrs[:full_name] = "#{artist.first_name} #{artist.last_name}"
+					attrs[:address] = artist.preferred_address
 				elsif venue
 					attrs[:full_name] = display_name
+					attrs[:address] = venue.address
+				end
+
+				return attrs
+			end
+
+			if options[:backers]
+				attrs = {}
+				attrs[:id] = id
+				attrs[:image_id] = image_id
+				attrs[:user_name] = user_name
+
+				if fan
+					attrs[:first_name] = fan.first_name
+					attrs[:last_name] = fan.last_name
 				end
 
 				return attrs
@@ -86,14 +116,14 @@ class Account < ApplicationRecord
 				end
 
 				if artist
-						return artist.as_json(options)
+					return artist.as_json(options)
 				end
 
 				#attrs[:genres] = user_genres.pluck(:name)
 				#attrs[:images] = images.pluck(:id)
 				#attrs[:followed] = followed_conn.pluck(:to_id)
 				#attrs[:followers] = followers_conn.pluck(:by_id)
-				return get_attrs
+				return get_attrs(options)
 			else
 				return super(options)
 			end
@@ -104,6 +134,14 @@ class Account < ApplicationRecord
 			"accounts.user_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%"
 		).or(
 			Account.where("accounts.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
+		)
+	end
+
+	def self.search_fan_fullname(text)
+		return self.joins(:fan).where(
+			"(fans.first_name ILIKE :query OR fans.last_name ILIKE :query)", query: "%#{sanitize_sql_like(text)}%"
+		).or(
+			Account.joins(:fan).where("accounts.display_name ILIKE :query", query: "%#{sanitize_sql_like(text)}%")
 		)
 	end
 end

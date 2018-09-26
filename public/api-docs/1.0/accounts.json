@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "ec2-18-222-193-71.us-east-2.compute.amazonaws.com",
+  "basePath": "https://mouse-back.herokuapp.com",
   "resourcePath": "accounts",
   "apis": [
     {
@@ -36,13 +36,6 @@
               "name": "image_base64",
               "type": "string",
               "description": "Image base64 string",
-              "required": false
-            },
-            {
-              "paramType": "form",
-              "name": "image_description",
-              "type": "string",
-              "description": "Image description",
               "required": false
             },
             {
@@ -125,7 +118,7 @@
               "paramType": "form",
               "name": "address",
               "type": "string",
-              "description": "Fan/Venue address",
+              "description": "Fan address",
               "required": false
             },
             {
@@ -315,6 +308,13 @@
               "name": "stage_description",
               "type": "string",
               "description": "Venue stage description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "web_site",
+              "type": "string",
+              "description": "Venue web site",
               "required": false
             },
             {
@@ -770,13 +770,6 @@
             },
             {
               "paramType": "form",
-              "name": "image_description",
-              "type": "string",
-              "description": "Image description",
-              "required": false
-            },
-            {
-              "paramType": "form",
               "name": "image_type",
               "type": "string",
               "description": "Image type",
@@ -855,7 +848,7 @@
               "paramType": "form",
               "name": "address",
               "type": "string",
-              "description": "Fan/Venue address - full address including city, country, state, street etc",
+              "description": "Fan address - full address including city, country, state, street etc",
               "required": false
             },
             {
@@ -1045,6 +1038,13 @@
               "name": "stage_description",
               "type": "string",
               "description": "Venue stage description (public_venue only)",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "web_site",
+              "type": "string",
+              "description": "Venue web site",
               "required": false
             },
             {
@@ -1548,6 +1548,20 @@
             },
             {
               "paramType": "query",
+              "name": "city",
+              "type": "string",
+              "description": "Artist/Venue city",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "country",
+              "type": "string",
+              "description": "Artist/Venue country",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "distance",
               "type": "integer",
               "description": "Artist/Venue address max distance",
@@ -1611,6 +1625,20 @@
             },
             {
               "paramType": "query",
+              "name": "sort_by",
+              "type": "string",
+              "description": "Sort results",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "popularity",
+                  "stage_name"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
               "name": "limit",
               "type": "integer",
               "description": "Limit",
@@ -1621,6 +1649,20 @@
               "name": "offset",
               "type": "integer",
               "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "account_id",
+              "type": "integer",
+              "description": "Account id",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
               "required": false
             }
           ],
@@ -2150,6 +2192,44 @@
             }
           ],
           "nickname": "Accounts#upload_image",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/accounts/{id}/verify.json",
+      "operations": [
+        {
+          "summary": "Send account to verification",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Account id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Accounts#verify",
           "method": "post"
         }
       ]

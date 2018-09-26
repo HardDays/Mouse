@@ -35,11 +35,16 @@ class VenueEvent < ApplicationRecord
         else
           res[:approximate_price] = account.venue.public_venue.price_for_daytime.to_i * event.event_length.to_i
         end
+
+        if options[:event]
+          res[:original_approximate_price] = res[:approximate_price]
+          res[:approximate_price] = CurrencyHelper.convert(res[:approximate_price], account.user.preferred_currency, options[:event].currency) 
+        end
       end
     end
 
-    if ['owner_accepted'].include?(status)
-      res[:agreement] = agreed_date_time_and_price
+    if ['accepted', 'owner_accepted'].include?(status) and account and account.venue.public_venue
+      res[:agreement] = agreed_date_time_and_price.as_json(event: event)
     end
 
     if status == 'accepted'
@@ -54,13 +59,13 @@ class VenueEvent < ApplicationRecord
         res['reason_text'] = message.decline_message.additional_text
       end
     elsif status == 'owner_declined'
-      message = event.creator.sent_messages.joins(:decline_message).where(decline_messages: {event: event}).first
+      message = event.creator.sent_messages.joins(:decline_message).where(receiver_id: venue_id, decline_messages: {event: event}).first
       if message
         res['reason'] = message.decline_message.reason
         res['reason_text'] = message.decline_message.additional_text
       end
     elsif status == 'request_send'
-      message = event.creator.sent_messages.joins(:request_message).where(request_messages: {event: event}).first
+      message = event.creator.sent_messages.joins(:request_message).where(receiver_id: venue_id, request_messages: {event: event}).first
       if message
         res['price'] = message.request_message.estimated_price
       end

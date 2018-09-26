@@ -8,9 +8,9 @@ class FeedItemsController < ApplicationController
   end
   def action_types
     actions = []
-    HistoryHelper::EVENT_ACTIONS.each do |action|
+    HistoryHelper::ACTIONS.each do |action|
       if action == :update
-        HistoryHelper::EVENT_FIELDS.each do |field|
+        HistoryHelper::FIELDS.each do |field|
           actions.push("#{action} #{field}")
         end
       else
@@ -31,32 +31,27 @@ class FeedItemsController < ApplicationController
     response :unauthorized
   end
   def index
-    following = @account.following.pluck('id')
-    feed = FeedItem.all
-
-    feed = feed.left_joins(:account_update, :event_update => :event).where(
-      "account_updates.account_id IN (:query)", query: following
-    ).or(
-      FeedItem.left_joins(:account_update, :event_update => :event).where(
-        "events.creator_id IN (:query) and events.status=:status", query: following, status: Event.statuses["active"]
-      )).order(:created_at => :desc)
-
-    # likes = Like.where(account_id: following).joins(:event).as_json(feed: true)
-    # likes.each do |e|
-    #   e[:type] = 'like'
-    #   e[:action] = ''
-    # end
-    #
-    # event_updates = EventUpdate.left_joins(:event => :comments).where(
-    #   :events => {creator_id: following, is_active: true}
-    # ).as_json(feed: true, user: @user)
-    # event_updates.each do |e|
-    #   e[:type] = "event update"
-    #   e[:action] = "#{e['action']} #{e['field']}"
-    #   e.delete('field')
-    # end
-    # #
-    # @feed = likes.concat(event_updates).sort_by{|u| u[:created_at]}.reverse
+    following = @account.following.pluck(:id)
+    events_tickets = Ticket.where(
+      id: FanTicket.where(account_id: @account.id).pluck(:ticket_id).uniq
+    ).pluck(:event_id)
+    creator_events = Event.where(creator_id: following, status: :active).pluck(:id)
+    my_events = Event.where(creator_id: @account.id).pluck(:id)
+    
+    feed = FeedItem.where(account_id: following)
+    if creator_events.count > 0
+      feed = feed.or(
+        FeedItem.where(event_id: creator_events)
+      )
+    end
+    if events_tickets.count > 0
+      feed = feed.or(
+        FeedItem.where(event_id: events_tickets)
+      )
+    end
+    feed = feed.where(
+      "feed_items.event_id NOT IN (:ids) OR feed_items.event_id IS NULL", {ids: my_events}
+    ).order(:created_at => :desc)
 
     render json: feed.limit(params[:limit]).offset(params[:offset]), user: @user
   end
@@ -64,9 +59,13 @@ class FeedItemsController < ApplicationController
 
   private
   def authorize_account
-    @user = AuthorizeHelper.authorize(request)
-    @account = Account.find(params[:account_id])
-    render status: :unauthorized if @user == nil or @account.user != @user
+    @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+
+    if @account == nil
+      render json: {error: "Access forbidden"}, status: :forbidden and return
+    end
+
+    @user = @account.user
   end
 
   def authorize

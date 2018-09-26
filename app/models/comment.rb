@@ -1,8 +1,8 @@
 class Comment < ApplicationRecord
   validates :text, presence: true
 
-  belongs_to :feed_item
-  belongs_to :account
+  belongs_to :event
+  belongs_to :account, foreign_key: 'fan_id'
 
   def as_json(options={})
     res = super
@@ -10,7 +10,7 @@ class Comment < ApplicationRecord
 
     res[:account] = nil
     if account
-      res[:account] = account.as_json(only: [:id, :user_name, :image_id, :display_name])
+      res[:account] = account.as_json(for_message: true)
     end
 
     return res

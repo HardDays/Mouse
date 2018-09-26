@@ -20,8 +20,28 @@ class EventVenuesController < ApplicationController
   end
   def create
     if venue_available?
-      @event.venues << @venue_acc
-      @event.save
+      unless @venue_acc.venue.capacity
+        render json: {error: :VENUE_WITHOUT_CAPACITY}, status: :unprocessable_entity and return
+      end
+
+      if @venue_acc.venue.venue_type == 'private_residence'
+        if @venue_acc.user_id == @event.creator.user_id
+          venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id, status: 'owner_accepted')
+          venue_evt.save
+
+          venue_evt.status = 'owner_accepted'
+          venue_evt.save
+        
+          @event.venue = @venue_acc.venue
+          @event.has_private_venue = true
+          @event.save
+        else
+          render status: :forbidden and return
+        end
+      elsif !@event.has_private_venue
+        @event.venues << @venue_acc
+        @event.save
+      end
 
       render status: :ok
     else
@@ -109,7 +129,7 @@ class EventVenuesController < ApplicationController
 
           render status: :ok
         else
-          render status: :unprocessable_entity
+          render json: {errors: "Invalid date"}, status: :unprocessable_entity
         end
       else
         render status: :not_found
@@ -143,14 +163,20 @@ class EventVenuesController < ApplicationController
         read_message
       end
 
-      if @venue_event.status == 'owner_accepted'
-        undo_change_event_date
-        undo_change_event_address
+      if @venue_event.account.venue.venue_type == 'private_residence'
+        @event.has_private_venue = false
+        @event.save
+      else
+        if @venue_event.status == 'owner_accepted'
+          undo_change_event_date
+          undo_change_event_address
+        end
+
+        send_owner_decline(@venue_event.account)
       end
 
       @venue_event.status = 'owner_declined'
       @venue_event.is_active = false
-      send_owner_decline(@venue_event.account)
       @venue_event.save
 
       render status: :ok
@@ -284,6 +310,10 @@ class EventVenuesController < ApplicationController
     @venue_acc = Account.find(params[:id])
     @venue_event = @event.venue_events.find_by(venue_id: @venue_acc.id)
 
+    if ["time_expired", "declined", "owner_declined"].include?(@venue_event.status)
+      render status: :forbidden and return
+    end
+
     if @venue_event
       @venue_event.is_active = true
       @venue_event.save!
@@ -369,12 +399,14 @@ class EventVenuesController < ApplicationController
   end
 
   def authorize_creator
-    @user = AuthorizeHelper.authorize(request)
-    @account = Account.find(params[:account_id])
-    render status: :unauthorized and return if @user == nil or @account.user != @user
+    @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+
+    if @account == nil
+      render json: {error: "Access forbidden"}, status: :forbidden and return
+    end
 
     @creator = Event.find(params[:event_id]).creator
-    render status: :unauthorized if @creator != @account or @creator.user != @user
+    render status: :unauthorized if @creator != @account
   end
 
   def authorize_venue
@@ -388,7 +420,7 @@ class EventVenuesController < ApplicationController
     request_message.expiration_date = Time.now + TimeFrameHelper.to_seconds(params[:time_frame_range]).to_i * params[:time_frame_number].to_i
     request_message.save
 
-    inbox_message = InboxMessage.new(name: "#{@event.name} request", message_type: "request")
+    inbox_message = InboxMessage.new(subject: "#{@event.name} request", message_type: "request")
     inbox_message.request_message = request_message
 
     @event.request_messages << request_message
@@ -401,7 +433,7 @@ class EventVenuesController < ApplicationController
     @accept_message = AcceptMessage.new(accept_message_params)
     @accept_message.save
 
-    inbox_message = InboxMessage.new(name: "#{account.user_name} accepted #{@event.name} invitation", message_type: "accept")
+    inbox_message = InboxMessage.new(subject: "#{account.user_name} accepted #{@event.name} invitation", message_type: "accept")
     inbox_message.accept_message = @accept_message
 
     @event.accept_messages << @accept_message
@@ -413,7 +445,7 @@ class EventVenuesController < ApplicationController
     decline_message = DeclineMessage.new(decline_message_params)
     decline_message.save
 
-    inbox_message = InboxMessage.new(name: "#{account.user_name} declined #{@event.name} invitation", message_type: "decline")
+    inbox_message = InboxMessage.new(subject: "#{account.user_name} declined #{@event.name} invitation", message_type: "decline")
     inbox_message.decline_message = decline_message
 
     @event.decline_messages << decline_message
@@ -425,7 +457,7 @@ class EventVenuesController < ApplicationController
     decline_message = DeclineMessage.new(decline_message_params)
     decline_message.save
 
-    inbox_message = InboxMessage.new(name: "#{@event.name} owner reply", message_type: "decline")
+    inbox_message = InboxMessage.new(subject: "#{@event.name} owner reply", message_type: "decline")
     inbox_message.decline_message = decline_message
 
     @event.decline_messages << decline_message
@@ -435,9 +467,9 @@ class EventVenuesController < ApplicationController
 
   def send_accept_message(account)
     inbox_message = InboxMessage.new(
-      name: "#{@event.name} owner reply",
+      subject: "#{@event.name} owner reply",
       message_type: "blank",
-      simple_message: "#{@event.name} owner accepted your conteroffer"
+      message: "#{@event.name} owner accepted your conteroffer"
     )
 
     @event.creator.sent_messages << inbox_message

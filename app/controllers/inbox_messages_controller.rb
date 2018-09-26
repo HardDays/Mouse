@@ -1,6 +1,6 @@
 class InboxMessagesController < ApplicationController
   before_action :authorize_account
-  before_action :set_message, only: [:show, :destroy, :change_responce_time]
+  before_action :set_message, only: [:show, :destroy, :change_responce_time, :read]
   swagger_controller :inbox_messages, "Inbox messages"
 
   # GET account/1/inbox_messages
@@ -18,7 +18,12 @@ class InboxMessagesController < ApplicationController
       query_now: DateTime.now, query_tomorrow: DateTime.now + 1.day
     )
 
-    messages = @account.inbox_messages
+    messages = InboxMessage.where(receiver_id: @account.id, is_parent: true).or(
+      InboxMessage.where(
+        sender_id: @account.id,
+        message_type: [InboxMessage.message_types['support'], InboxMessage.message_types['feedback']],
+        is_parent: true)
+    )
     if top_messages.count > 0
       messages = messages.where.not(id: top_messages.pluck(:id))
     end
@@ -34,7 +39,9 @@ class InboxMessagesController < ApplicationController
     end
     messages = messages.order(:created_at => :desc).limit(limit).offset(offset)
 
-    render json: (top_messages + messages), status: :ok
+    #res = (top_messages + messages).collect{|m| m.as_json(user: @user)}
+
+    render json: (top_messages + messages), user: @user, status: :ok
   end
 
   # GET account/1/inbox_messages/1
@@ -49,7 +56,7 @@ class InboxMessagesController < ApplicationController
   end
   def show
     if @message.receiver_id == params[:account_id].to_i or @message.sender_id == params[:account_id].to_i
-      render json: @message, extended: true, status: :ok
+      render json: @message, user: @user, extended: true, status: :ok
     else
       render status: :not_found
     end
@@ -68,6 +75,39 @@ class InboxMessagesController < ApplicationController
   end
   def my
     render json: @account.sent_messages.order(:created_at => :desc).limit(params[:limit]).offset(params[:offset]), status: :ok
+  end
+
+  # GET account/1/inbox_messages/unread_count
+  swagger_api :unread_count do
+    summary "Unread count"
+    param :path, :account_id, :integer, :required, "Authorized account id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :ok
+    response :not_found
+    response :unauthorized
+  end
+  def unread_count
+    render json: {count: @account.inbox_messages.where(is_receiver_read: false).count}
+  end
+
+  # POST account/1/inbox_messages/1/read
+  swagger_api :read do
+      summary "Rea message"
+      param :path, :id, :integer, :required, "Message id"
+      param :path, :account_id, :integer, :required, "Authorized account id"
+      param :header, 'Authorization', :string, :required, 'Authentication token'
+      response :ok
+      response :not_found
+      response :unauthorized
+  end
+  def read
+    if @message.receiver_id == params[:account_id].to_i
+      @message.is_receiver_read = true
+      @message.save
+      render json: @message, status: :ok
+    else
+      render status: :forbidden
+    end
   end
 
   # POST account/1/inbox_messages/1/change_responce_time
@@ -117,8 +157,11 @@ class InboxMessagesController < ApplicationController
     end
 
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
+      @user = @account.user
     end
 end

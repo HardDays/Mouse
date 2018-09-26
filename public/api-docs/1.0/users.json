@@ -1,7 +1,7 @@
 {
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
-  "basePath": "ec2-18-222-193-71.us-east-2.compute.amazonaws.com",
+  "basePath": "https://mouse-back.herokuapp.com",
   "resourcePath": "users",
   "apis": [
     {
@@ -78,6 +78,23 @@
       ]
     },
     {
+      "path": "/users/ip_location.json",
+      "operations": [
+        {
+          "summary": "Retrives user geolocation",
+          "responseMessages": [
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Users#get_location",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/users/me.json",
       "operations": [
         {
@@ -134,6 +151,53 @@
             }
           ],
           "nickname": "Users#update_me",
+          "method": "patch"
+        }
+      ]
+    },
+    {
+      "path": "/users/reset_password.json",
+      "operations": [
+        {
+          "summary": "Reset user's password",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "password",
+              "type": "password",
+              "description": "Your password",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "password_confirmation",
+              "type": "password",
+              "description": "Confirm your password",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "old_password",
+              "type": "password",
+              "description": "Old password",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Users#reset_password",
           "method": "patch"
         }
       ]

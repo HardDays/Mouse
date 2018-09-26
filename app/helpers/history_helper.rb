@@ -1,14 +1,15 @@
 class HistoryHelper 
-    EVENT_ACTIONS = [:add_event, :add_ticket, :add_video, :add_image, :update]
+    EVENT_ACTIONS = [:launch_event, :add_ticket, :add_video, :add_image, :update, :add_artist]
     ACCOUNT_ACTIONS = [:update]
 
     # Only for check
-    EVENT_FIELDS = [:name, :tagline, :description, :date_from, :date_to, :funding_goal,
-                    :event_season, :event_year, :event_length, :event_time, :address, :genres,
-                    :collaborators, :updates_available, :comments_available]
-    VENUE_FIELDS = [:name, :address, :phone, :has_vr]
-    ARTIST_FIELDS = [:name, :about]
-    # Enum to write in db
-    ACCOUNT_FIELDS = [:name, :address, :phone, :has_vr, :about]
+    EVENT_FIELDS = [:description]
+    VENUE_FIELDS = [:address, :phone, :has_vr, :user_name, :display_name]
+    ARTIST_FIELDS = [:stage_name, :about, :user_name, :display_name, :phone]
 
+    # Enum in db
+    ACCOUNT_FIELDS = [:address, :phone, :has_vr, :about, :user_name, :display_name, :stage_name]
+    FIELDS = [:description, :address, :phone, :has_vr, :about, :user_name, :display_name, :stage_name,
+              :image, :gallery_image, :video, :audio, :album, :genre]
+    ACTIONS = [:launch_event, :add_ticket, :add_video, :add_image, :update, :add_genre, :add_artist]
 end

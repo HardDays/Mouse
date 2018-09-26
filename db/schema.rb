@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801112139) do
+ActiveRecord::Schema.define(version: 20180912194202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,15 +31,6 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.integer "currency", default: 0
   end
 
-  create_table "account_updates", force: :cascade do |t|
-    t.integer "account_id"
-    t.integer "updated_by"
-    t.integer "action"
-    t.integer "field"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "accounts", force: :cascade do |t|
     t.integer "image_id"
     t.string "phone"
@@ -54,6 +45,47 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.string "display_name"
     t.integer "status", default: 0
     t.integer "processed_by"
+    t.boolean "is_deleted", default: false
+  end
+
+  create_table "admin_feeds", force: :cascade do |t|
+    t.integer "action"
+    t.integer "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "admin_messages", force: :cascade do |t|
+    t.integer "topic_id"
+    t.string "message"
+    t.integer "sender_id"
+    t.integer "forwarded_from"
+    t.integer "forwarder_type"
+    t.boolean "sender_deleted", default: false
+    t.boolean "receiver_deleted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "forwarded_message"
+    t.boolean "is_read", default: false
+  end
+
+  create_table "admin_seen_feeds", force: :cascade do |t|
+    t.integer "admin_id"
+    t.integer "admin_feed_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "admin_topics", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "receiver_id"
+    t.string "topic"
+    t.integer "topic_type"
+    t.boolean "is_solved", default: false
+    t.boolean "sender_deleted", default: false
+    t.boolean "receiver_deleted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "admins", force: :cascade do |t|
@@ -181,6 +213,11 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.float "late_cancellation_fee"
     t.string "refund_policy"
     t.string "artist_email"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
   end
 
   create_table "audio_links", force: :cascade do |t|
@@ -193,8 +230,8 @@ ActiveRecord::Schema.define(version: 20180801112139) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.integer "feed_item_id"
-    t.integer "account_id"
+    t.integer "event_id"
+    t.integer "fan_id"
     t.string "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -219,15 +256,6 @@ ActiveRecord::Schema.define(version: 20180801112139) do
   create_table "event_genres", force: :cascade do |t|
     t.integer "event_id"
     t.integer "genre"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "event_updates", force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "updated_by"
-    t.integer "action"
-    t.integer "field"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -275,6 +303,16 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.boolean "has_private_venue"
     t.integer "processed_by"
     t.integer "currency", default: 0
+    t.boolean "is_deleted", default: false
+    t.boolean "is_viewed", default: false
+    t.integer "total"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
+    t.datetime "exact_date_from"
+    t.datetime "exact_date_to"
   end
 
   create_table "fan_genres", force: :cascade do |t|
@@ -303,23 +341,40 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "last_name"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
+  end
+
+  create_table "feed_comments", force: :cascade do |t|
+    t.integer "feed_item_id"
+    t.integer "account_id"
+    t.string "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "feed_items", force: :cascade do |t|
-    t.integer "event_update_id"
-    t.integer "account_update_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "account_id"
+    t.integer "event_id"
+    t.integer "updated_by"
+    t.integer "action"
+    t.integer "field"
+    t.string "value"
   end
 
   create_table "feedbacks", force: :cascade do |t|
     t.integer "feedback_type"
-    t.string "detail", default: ""
     t.integer "rate_score"
-    t.integer "account_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "message_id"
+    t.integer "inbox_message_id"
+    t.boolean "is_forwarded", default: false
   end
 
   create_table "followers", force: :cascade do |t|
@@ -334,6 +389,16 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.integer "attempt_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "history_actions", force: :cascade do |t|
+    t.integer "action"
+    t.integer "object_type"
+    t.integer "field"
+    t.integer "object_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "account_id"
   end
 
   create_table "image_types", force: :cascade do |t|
@@ -358,11 +423,30 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.integer "message_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "name"
+    t.string "subject"
     t.integer "sender_id"
     t.boolean "is_read", default: false
-    t.string "simple_message"
+    t.string "message"
     t.integer "admin_id"
+    t.integer "message_id"
+    t.boolean "is_parent", default: true
+    t.boolean "is_receiver_read"
+    t.boolean "is_closed", default: false
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.string "description"
+    t.string "links"
+    t.integer "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "email"
+    t.string "name"
+    t.string "facebook"
+    t.string "twitter"
+    t.string "youtube"
+    t.string "vk"
+    t.integer "invited_type"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -429,15 +513,6 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.integer "purchase_item_id"
   end
 
-  create_table "questions", force: :cascade do |t|
-    t.integer "account_id"
-    t.string "subject"
-    t.string "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "message_id"
-  end
-
   create_table "reply_templates", force: :cascade do |t|
     t.string "subject"
     t.string "message"
@@ -456,6 +531,7 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.integer "inbox_message_id"
     t.integer "event_id"
     t.datetime "expiration_date"
+    t.integer "remain_time"
     t.integer "time_frame_range", default: 0
     t.integer "time_frame_number", default: 0
     t.integer "currency", default: 0
@@ -535,6 +611,7 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.integer "preferred_distance", default: 0
     t.integer "preferred_currency", default: 0
     t.string "preferred_time"
+    t.string "facebook_id"
   end
 
   create_table "venue_dates", force: :cascade do |t|
@@ -611,6 +688,19 @@ ActiveRecord::Schema.define(version: 20180801112139) do
     t.integer "venue_type"
     t.boolean "has_vr"
     t.integer "vr_capacity", default: 200
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.integer "zipcode"
+    t.string "web_site"
+  end
+
+  create_table "vk_tokens", force: :cascade do |t|
+    t.string "user_id"
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

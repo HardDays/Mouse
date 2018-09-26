@@ -13,6 +13,17 @@ class ImagesController < ApplicationController
     render json: @image
   end
 
+  # GET /images/1
+  swagger_api :info do
+    summary "Get image info object"
+    param :path, :id, :integer, :required, "Image id"
+    response :not_found
+  end
+  def info
+    @image = Image.where(id: params[:id]).select('id, account_id, created_at, updated_at, event_id, description')
+    render json: @image, image_only: true
+  end
+
   swagger_api :full do
     summary "Get full image"
     param :path, :id, :integer, :required, "Image id"
@@ -45,6 +56,7 @@ class ImagesController < ApplicationController
     }
     render json: hashed
   end
+  
 
   swagger_api :preview do
     summary "Get preview of image object"
@@ -98,9 +110,13 @@ class ImagesController < ApplicationController
 
   private
     def authorize_account
-      @user = AuthorizeHelper.authorize(request)
-      @account = Account.find(params[:account_id])
-      render status: :unauthorized if @user == nil or @account.user != @user
+      @account = AuthorizeHelper.auth_and_set_account(request, params[:account_id])
+
+      if @account == nil
+        render json: {error: "Access forbidden"}, status: :forbidden and return
+      end
+
+      @user = @account.user
     end
 
     def resize
