@@ -46,8 +46,8 @@ class AdminMessagesController < ApplicationController
     messages = topic.admin_messages.where(is_read: false).where.not(sender_id: @admin.id)
 
     if messages.update_all(is_read: true)
-      count = @admin.send_topics.admin_messages.where(is_read: false).where.not(sender_id: @admin.id).count +
-        @admin.received_topics.admin_messages.where(is_read: false).where.not(sender_id: @admin.id).count
+      count = @admin.send_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: @admin.id).count +
+        @admin.received_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: @admin.id).count
       AdminMessagesChannel.broadcast_to(@admin.id, count: count)
 
       render status: :ok
@@ -102,8 +102,8 @@ class AdminMessagesController < ApplicationController
           topic_id: topic.id
         )
         if message.save
-          count = receiver.send_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count +
-            receiver.received_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count
+          count = receiver.send_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: receiver.id).count +
+            receiver.received_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: receiver.id).count
           AdminMessagesChannel.broadcast_to(receiver.id, count: count)
         else
           topic.destroy
@@ -141,8 +141,8 @@ class AdminMessagesController < ApplicationController
       topic_id: topic.id
     )
     if message.save
-      count = receiver.send_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count +
-        receiver.received_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count
+      count = receiver.send_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: receiver.id).count +
+        receiver.received_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: receiver.id).count
       AdminMessagesChannel.broadcast_to(receiver.id, count: count)
 
       render status: :created
@@ -186,8 +186,8 @@ class AdminMessagesController < ApplicationController
         topic_id: topic.id
       )
       if message.save
-        count = receiver.send_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count +
-          receiver.received_topics.admin_messages.where(is_read: false).where.not(sender_id: receiver.id).count
+        count = receiver.send_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: receiver.id).count +
+          receiver.received_topics.joins(:admin_messages).where(admin_messages: {is_read: false}).where.not(sender_id: receiver.id).count
         AdminMessagesChannel.broadcast_to(receiver.id, count: count)
 
         render status: :created
