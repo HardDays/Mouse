@@ -122,7 +122,8 @@ class Event < ApplicationRecord
 
     res[:backers] = tickets.joins(:fan_tickets).pluck(:account_id).uniq.count
     res[:founded] = tickets.joins(:fan_tickets).sum("fan_tickets.price")
-    
+    res[:artists] = artist_events.joins(:account => :artist).where(artist_events: {status: 'owner_accepted'}).pluck("artists.stage_name")
+
     '''if options[:user]
       res[:founded_original] = res[:founded]
       res[:founded] = CurrencyHelper.convert(res[:founded], currency, options[:user].preferred_currency) if res[:founded] != nil
@@ -147,8 +148,6 @@ class Event < ApplicationRecord
       res[:purchased_tickets] = tickets.joins(:fan_tickets).count
       res[:in_person_tickets_sold] = in_person_sold
       res[:vr_tickets_sold] = vr_sold
-    elsif options[:search]
-      res[:artists] = artist_events.joins(:account => :artist).where(artist_events: {status: 'active'}).pluck("artists.stage_name")
     else
       # res[:location] = venue.address if venue
     end

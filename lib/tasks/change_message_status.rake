@@ -35,7 +35,7 @@ namespace :messages do
             request_messages: {event_id: venue.event.id},
             ).order("inbox_messages.created_at DESC").first
 
-          if inbox and inbox.request_message.expiration_date < DateTime.noww
+          if inbox and inbox.request_message.expiration_date < DateTime.now
             venue.status = "time_expired"
             venue.save!
           end

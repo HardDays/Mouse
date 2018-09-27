@@ -1541,30 +1541,23 @@
             },
             {
               "paramType": "query",
-              "name": "address",
+              "name": "lng",
               "type": "string",
-              "description": "Artist/Venue address",
+              "description": "Lng (send with lat and distance)",
               "required": false
             },
             {
               "paramType": "query",
-              "name": "city",
+              "name": "lat",
               "type": "string",
-              "description": "Artist/Venue city",
-              "required": false
-            },
-            {
-              "paramType": "query",
-              "name": "country",
-              "type": "string",
-              "description": "Artist/Venue country",
+              "description": "Lat (send with lng and distance)",
               "required": false
             },
             {
               "paramType": "query",
               "name": "distance",
               "type": "integer",
-              "description": "Artist/Venue address max distance",
+              "description": "Max distance (send with lng and lat)",
               "required": false
             },
             {
