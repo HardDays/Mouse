@@ -625,7 +625,7 @@ class AccountsController < ApplicationController
           render json: {errors: :ACCOUNT_IN_EVENT}, status: :unprocessable_entity and return
         end
       end
-      
+
       if User.encrypt_password(params[:password].to_s) == @account.user.password
         #@account.destroy
         @account.is_deleted = true

@@ -240,6 +240,19 @@ class AdminAccountsController < ApplicationController
   end
   def destroy
     account = Account.find(params[:id])
+    
+    if account.account_type == 'artist'
+      events = account.artist_events.joins(:event).where(events: {is_deleted: :false})
+      if events.exists?
+        render json: {errors: :ACCOUNT_IN_EVENT}, status: :unprocessable_entity and return
+      end
+    elsif account.account_type == 'venue'
+      events = account.venue_events.joins(:event).where(events: {is_deleted: :false})
+      if events.exists?
+        render json: {errors: :ACCOUNT_IN_EVENT}, status: :unprocessable_entity and return
+      end
+    end
+
     account.is_deleted = true
     account.status = 'inactive'
     account.save
