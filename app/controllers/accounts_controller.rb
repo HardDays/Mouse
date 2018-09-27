@@ -1273,7 +1273,7 @@ class AccountsController < ApplicationController
     end
 
     def venue_params
-        params.permit(:description, :capacity, :venue_type, :has_vr, :vr_capacity,
+        params.permit(:description, :capacity, :venue_type, :has_vr, :vr_capacity, :address,
                       :country, :city, :street, :state, :zipcode, :web_site)
     end
 
