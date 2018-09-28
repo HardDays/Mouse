@@ -88,7 +88,7 @@ class Artist < ApplicationRecord
             if options[:my]
                 res[:disable_dates] = disable_dates
                 res[:events_dates] = account.artist_events.joins(:event).where(
-                  artist_events: {status: [ArtistEvent.statuses['owner_accepted'], ArtistEvent.statuses['active']]},
+                  artist_events: {status: ArtistEvent.statuses['owner_accepted']},
                   events: {is_active: true, is_deleted: false}
                 ).as_json(dates: true)
                 res[:artist_riders] = artist_riders
