@@ -53,7 +53,7 @@ class Venue < ApplicationRecord
             res[:operating_hours] = operating_hours
             res[:office_hours] = office_hours
             res[:dates] = dates
-            res[:events_dates] = events.as_json(only: [:id, :date_from])
+            res[:events_dates] = events.as_json(only: [:id, :exact_date_from])
             res[:emails] = emails
             return res
         else
