@@ -124,7 +124,7 @@ class Event < ApplicationRecord
     res[:founded] = tickets.joins(:fan_tickets).sum("fan_tickets.price")
     res[:artists] = artist_events.joins(:account => :artist).where(
       artist_events: {status: 'owner_accepted'}
-    ).pluck("CASE WHEN artists.stage_name != '' THEN artists.stage_name ELSE concat(artists.first_name, ' ', artists.last_name) END")
+    ).pluck("CASE WHEN artists.stage_name != '' THEN artists.stage_name ELSE accounts.display_name END")
 
     '''if options[:user]
       res[:founded_original] = res[:founded]
