@@ -499,7 +499,7 @@ class EventArtistsController < ApplicationController
       end
 
       agreed_date = @artist_event.agreed_date_time_and_price
-      if @event.date_from <= agreed_date.datetime_from and @event.date_to >= agreed_date.datetime_to
+      if @event.date_from <= agreed_date.datetime_to and @event.date_to >= agreed_date.datetime_from
         return true
       end
       return false
