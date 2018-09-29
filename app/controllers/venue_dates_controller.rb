@@ -19,12 +19,12 @@ class VenueDatesController < ApplicationController
         ),
         event_dates: @venue.events.where(
           date_from: params[:current_date].to_date.beginning_of_month..params[:current_date].to_date.end_of_month
-        ).as_json(only: [:id, :date_from, :date_to])
+        ).as_json(only: [:id, :exact_date_from, :exact_date_to])
       }, status: :ok
     else
       render json: {
         dates: @venue.dates,
-        event_dates: Event.where(venue_id: @venue.id).as_json(only: [:id, :date_from, :date_to])
+        event_dates: Event.where(venue_id: @venue.id).as_json(only: [:id, :exact_date_from, :exact_date_to])
       }, status: :ok
     end
 
