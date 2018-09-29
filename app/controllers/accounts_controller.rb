@@ -1118,23 +1118,23 @@ class AccountsController < ApplicationController
       if params[:distance] and params[:lng] and params[:lat]
         if params[:type] == 'artist'
           if params[:units]
-            arts = Artist.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}
+            arts = Artist.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
           else
-            arts = Artist.near(params[:address], params[:distance]).select{|a| a.id}
+            arts = Artist.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
           end
           @accounts = @accounts.where(artist_id: arts)
         elsif params[:type] == 'venue'
           if params[:units]
-            vens = Venue.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}
+            vens = Venue.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
           else
-            vens = Venue.near(params[:address], params[:distance]).select{|a| a.id}
+            vens = Venue.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
           end
           @accounts = @accounts.where(venue_id: vens)
         elsif params[:type] == 'fan'
           if params[:units]
-            fans = Fan.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}
+            fans = Fan.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
           else
-            fans = Fan.near(params[:address], params[:distance]).select{|a| a.id}
+            fans = Fan.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
           end
           @accounts = @accounts.where(fan_id: fans)
         end
