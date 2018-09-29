@@ -226,7 +226,7 @@ class AdminMessagesController < ApplicationController
 
   # DELETE /admin/messages/1/delete
   swagger_api :delete do
-    summary "Solve bug"
+    summary "Delete dialog"
     param :path, :id, :string, :optional, "Dialog id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
@@ -236,7 +236,11 @@ class AdminMessagesController < ApplicationController
     topic = AdminTopic.find(params[:id])
 
     if topic
-      if topic.sender_id == @admin.id
+      if topic.sender_id == topic.receiver_id and topic.sender_id == @admin.id
+        topic.destroy
+
+        render status: :ok and return
+      elsif topic.sender_id == @admin.id
         if topic.receiver_deleted
           topic.destroy
 
