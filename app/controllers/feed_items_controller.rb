@@ -49,9 +49,12 @@ class FeedItemsController < ApplicationController
         FeedItem.where(event_id: events_tickets)
       )
     end
-    feed = feed.where(
-      "feed_items.event_id NOT IN (:ids) OR feed_items.event_id IS NULL", {ids: my_events}
-    ).order(:created_at => :desc)
+    if my_events.count > 0
+      feed = feed.where(
+        "feed_items.event_id NOT IN (:ids) OR feed_items.event_id IS NULL", {ids: my_events}
+      )
+    end
+    feed = feed.order(:created_at => :desc)
 
     render json: feed.limit(params[:limit]).offset(params[:offset]), user: @user
   end
