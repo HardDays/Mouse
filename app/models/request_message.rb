@@ -26,7 +26,8 @@ class RequestMessage < ApplicationRecord
       res[:price] = CurrencyHelper.convert(estimated_price, currency, options[:user].preferred_currency) if estimated_price != nil
     end
 
-    res[:info_send] = inbox_message.receiver.sent_messages.joins(:accept_message).where(accept_messages: {event: event})
+    res[:info_send] = inbox_message.receiver.sent_messages.joins(:accept_message).where(
+      accept_messages: {event: event}).as_json(for_request: :true)
 
     res[:event_info] = event.as_json(user: options[:user])
       if expiration_date < DateTime.now

@@ -26,6 +26,14 @@ class InboxMessage < ApplicationRecord
   end
 
   def as_json(options = {})
+    if options[:for_request]
+      attrs = {}
+      attrs[:preffered_date_from] = accept_message.preferred_date_from
+      attrs[:preffered_date_to] = accept_message.preferred_date_to
+      attrs[:price] = accept_message.price
+      attrs[:currency] = accept_message.currency
+    end
+
     res = super
     res.delete('admin_id')
     res.delete('updated_at')
