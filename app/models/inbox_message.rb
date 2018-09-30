@@ -32,6 +32,8 @@ class InboxMessage < ApplicationRecord
       attrs[:preffered_date_to] = accept_message.preferred_date_to
       attrs[:price] = accept_message.price
       attrs[:currency] = accept_message.currency
+
+      return attrs
     end
 
     res = super
