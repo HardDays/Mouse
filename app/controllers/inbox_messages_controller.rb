@@ -101,19 +101,21 @@ class InboxMessagesController < ApplicationController
       response :unauthorized
   end
   def read
-    @message.get_ancestor.each do |message|
-      if message.receiver_id == params[:account_id].to_i and message.is_receiver_read == false
-        message.is_receiver_read = true
-        message.save
+    if @message.receiver_id == params[:account_id].to_i
+      @message.is_receiver_read = true
+      @message.save
+
+      @message.get_ancestor.each do |message|
+        if message.receiver_id == params[:account_id].to_i and message.is_receiver_read == false
+          message.is_receiver_read = true
+          message.save
+        end
       end
-    end
-    # if @message.receiver_id == params[:account_id].to_i
-    #   @message.is_receiver_read = true
-    #   @message.save
+
       render json: @message, status: :ok
-    # else
-    #   render status: :forbidden
-    # end
+    else
+      render status: :forbidden
+    end
   end
 
   # POST account/1/inbox_messages/1/change_responce_time
