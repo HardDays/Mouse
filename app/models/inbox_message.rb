@@ -28,8 +28,8 @@ class InboxMessage < ApplicationRecord
   def as_json(options = {})
     if options[:for_request]
       attrs = {}
-      attrs[:preffered_date_from] = accept_message.preferred_date_from
-      attrs[:preffered_date_to] = accept_message.preferred_date_to
+      attrs[:preferred_date_from] = accept_message.preferred_date_from
+      attrs[:preferred_date_to] = accept_message.preferred_date_to
       attrs[:price] = accept_message.price
       attrs[:currency] = accept_message.currency
 
