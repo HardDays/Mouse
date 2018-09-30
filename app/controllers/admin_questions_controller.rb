@@ -49,7 +49,7 @@ class AdminQuestionsController < ApplicationController
       message: params[:message],
       is_parent: false
     )
-    question_reply.admin = @admin
+    question_reply.admin_id = @admin.id
     question_reply.receiver_id = question.sender_id
     if question_reply.save!
       question.reply = question_reply
