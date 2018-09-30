@@ -704,7 +704,7 @@ class AccountsController < ApplicationController
     end
 
     def set_base64_image
-        if params[:image_base64] and params[:image_base64] != "" and params[:image_base64] != @account.image.base64
+        if params[:image_base64] and params[:image_base64] != "" and (@account.image == nil or params[:image_base64] != @account.image.base64)
             image = Image.new(base64: params[:image_base64])
             image.save
             @account.image = image
