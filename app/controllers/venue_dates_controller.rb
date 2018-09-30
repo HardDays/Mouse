@@ -18,7 +18,7 @@ class VenueDatesController < ApplicationController
           date: params[:current_date].to_date.beginning_of_month..params[:current_date].to_date.end_of_month
         ),
         event_dates: @venue.events.where(
-          date_from: params[:current_date].to_date.beginning_of_month..params[:current_date].to_date.end_of_month
+          exact_date_from: params[:current_date].to_date.beginning_of_month..params[:current_date].to_date.end_of_month
         ).as_json(only: [:id, :exact_date_from, :exact_date_to])
       }, status: :ok
     else
