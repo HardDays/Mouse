@@ -136,7 +136,7 @@ class AdminFeedbackController < ApplicationController
       is_parent: false
     )
     feedback_reply.admin = @admin
-    feedback_reply.receiver = feedback.sender
+    feedback_reply.receiver_id = feedback.sender_id
     if feedback_reply.save!
       feedback.reply = feedback_reply
       feedback.save
