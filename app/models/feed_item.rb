@@ -30,7 +30,7 @@ class FeedItem < ApplicationRecord
       if action == 'add_ticket'
         res[:ticket] = event.tickets.where(id: value.to_i)
       elsif action == 'add_artist'
-          res[:ticket] = Account.where(id: value.to_i).first
+          res[:artist] = Account.where(id: value.to_i).first
       else
         res[:value] = value
       end

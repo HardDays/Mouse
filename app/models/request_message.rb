@@ -26,6 +26,12 @@ class RequestMessage < ApplicationRecord
       res[:price] = CurrencyHelper.convert(estimated_price, currency, options[:user].preferred_currency) if estimated_price != nil
     end
 
+    if artist_event
+      res[:info_sent] = event.accept_messages.where(sender_id: artist_event.artist_id)
+    elsif venue_event
+      res[:info_sent] = event.accept_messages.where(sender_id: venue_event.venue_id)
+    end
+
     res[:event_info] = event.as_json(user: options[:user])
       if expiration_date < DateTime.now
         res[:status] = 'time_expired'
