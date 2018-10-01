@@ -80,7 +80,7 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def individual
-    events_base = Event.left_joins(:feed_item => [:likes, :comments]).select(
+    events_base = Event.left_joins(:feed_items => [:likes, :comments]).select(
       'events.*, count(likes.id) as likes, count(comments.id) as comments')
     events = events_base
 
