@@ -794,9 +794,9 @@ class AccountsController < ApplicationController
                 log_changes(changed, @account)
             else
                 @venue = Venue.new(venue_params)
-                render json: @venue.errors and return false if not @venue.save
+                render json: @venue.errors, status: :unprocessable_entity and return false if not @venue.save
                 @account.venue_id = @venue.id
-                render json: @account.errors and return false if not @account.save!
+                render json: @account.errors, status: :unprocessable_entity and return false if not @account.save!
             end
             
             return false if not set_public_venue
@@ -818,7 +818,7 @@ class AccountsController < ApplicationController
         else
           @public_venue = PublicVenue.new(public_venue_params)
           @public_venue.venue_id = @venue.id
-          render json: @public_venue.errors and return false if not @public_venue.save
+          render json: @public_venue.errors, status: :unprocessable_entity and return false if not @public_venue.save
         end
         @venue.public_venue = @public_venue
       end
@@ -918,9 +918,9 @@ class AccountsController < ApplicationController
                 log_changes(changed, @account)
             else
                 @artist = Artist.new(artist_params)
-                render json: @artist.errors and return false if not @artist.save 
+                render json: @artist.errors, status: :unprocessable_entity and return false if not @artist.save
                 @account.artist_id = @artist.id
-                render json: @account.errors and return false if not @account.save
+                render json: @account.errors, status: :unprocessable_entity and return false if not @account.save
             end
             set_artist_genres
             return false if not set_artist_audios
