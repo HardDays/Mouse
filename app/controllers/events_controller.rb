@@ -506,7 +506,7 @@ class EventsController < ApplicationController
 
     def set_base64_image
       if params[:image_base64]
-        if params[:image_base64] == ""
+        if params[:image_base64] == "" and @event.image
           @event.image.destroy
         elsif params[:image_base64] != "" and (@event.image == nil or params[:image_base64] != @event.image.base64)
           image = Image.new(base64: params[:image_base64])
