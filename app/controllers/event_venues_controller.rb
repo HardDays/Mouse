@@ -24,9 +24,10 @@ class EventVenuesController < ApplicationController
         render json: {error: :VENUE_WITHOUT_CAPACITY}, status: :unprocessable_entity and return
       end
 
-      if @venue_acc.venue.venue_type == 'private_residence'
+      venues = VenueEvent.where(status: :owner_accepted)
+      if @venue_acc.venue.venue_type == 'private_residence' and venues.empty?
         if @venue_acc.user_id == @event.creator.user_id
-          venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id, status: 'owner_accepted')
+          venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id)
           venue_evt.save
 
           venue_evt.status = 'owner_accepted'
@@ -38,6 +39,8 @@ class EventVenuesController < ApplicationController
         else
           render status: :forbidden and return
         end
+      elsif @venue_acc.venue.venue_type == 'private_residence' and not venues.empty?
+        render json: {errors: :HAS_ACCEPTED_VENUE}, status: :forbidden and return
       elsif !@event.has_private_venue
         @event.venues << @venue_acc
         @event.save
