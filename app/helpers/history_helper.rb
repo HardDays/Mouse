@@ -8,7 +8,7 @@ class HistoryHelper
     ARTIST_FIELDS = [:stage_name, :about, :user_name, :display_name, :phone]
 
     # Enum in db
-    ACCOUNT_FIELDS = [:address, :phone, :has_vr, :about, :user_name, :display_name, :stage_name]
+    ACCOUNT_FIELDS = [:address, :phone, :has_vr, :about, :user_name, :display_name, :stage_name, :description]
     FIELDS = [:description, :address, :phone, :has_vr, :about, :user_name, :display_name, :stage_name,
               :image, :gallery_image, :video, :audio, :album, :genre]
     ACTIONS = [:launch_event, :add_ticket, :add_video, :add_image, :update, :add_genre, :add_artist]
