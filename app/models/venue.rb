@@ -42,6 +42,7 @@ class Venue < ApplicationRecord
             attrs[:display_name] = account.display_name
             attrs[:user_name] = account.user_name
             attrs[:image_id] = account.image_id
+            attrs[:capacity] = capacity
 
             #attrs[:price] = nil
             return attrs
