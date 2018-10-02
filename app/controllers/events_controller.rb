@@ -505,22 +505,26 @@ class EventsController < ApplicationController
     end
 
     def set_base64_image
-      if params[:image_base64] and (@event.image == nil or params[:image_base64] != @event.image.base64)
-        image = Image.new(base64: params[:image_base64])
-        image.save
-        @event.image = image
-        @event.images << image
-        @event.save
+      if params[:image_base64]
+        if params[:image_base64] == "" and @event.image
+          @event.image.destroy
+        elsif params[:image_base64] != "" and (@event.image == nil or params[:image_base64] != @event.image.base64)
+          image = Image.new(base64: params[:image_base64])
+          image.save
+          @event.image = image
+          @event.images << image
+          @event.save
 
-        if @event.status == "active"
-          feed = FeedItem.new(
-            action: :update,
-            updated_by: @account.id,
-            event_id: @event.id,
-            field: :image,
-            value: image.id
-          )
-          feed.save
+          if @event.status == "active"
+            feed = FeedItem.new(
+              action: :update,
+              updated_by: @account.id,
+              event_id: @event.id,
+              field: :image,
+              value: image.id
+            )
+            feed.save
+          end
         end
       end
     end

@@ -552,6 +552,7 @@ class AccountsController < ApplicationController
       param_list :query, :type, :string, :optional, "Account type to display", ["venue", "artist", "fan"]
       param :query, :price_from, :integer, :optional, "Artist/Venue price from"
       param :query, :price_to, :integer, :optional, "Artist/Venue price to"
+      param :query, :address, :string, :optional, "Address (with distance and units or without)"
       param :query, :lng, :string, :optional, "Lng (send with lat and distance)"
       param :query, :lat, :string, :optional, "Lat (send with lng and distance)"
       param :query, :distance, :integer, :optional, "Max distance (send with lng and lat)"
@@ -593,6 +594,7 @@ class AccountsController < ApplicationController
       search_price
       search_genres
       search_address
+      search_distance
       search_capacity
       search_type_of_space
       exclude_event
@@ -704,12 +706,16 @@ class AccountsController < ApplicationController
     end
 
     def set_base64_image
-        if params[:image_base64] and params[:image_base64] != "" and (@account.image == nil or params[:image_base64] != @account.image.base64)
+        if params[:image_base64]
+          if params[:image_base64] == "" and @account.image
+            @account.image.destroy
+          elsif params[:image_base64] != "" and (@account.image == nil or params[:image_base64] != @account.image.base64)
             image = Image.new(base64: params[:image_base64])
             image.save
             @account.image = image
 
             log_changed_value(:image, @account, image.id)
+          end
         end
     end
 
@@ -790,9 +796,9 @@ class AccountsController < ApplicationController
                 log_changes(changed, @account)
             else
                 @venue = Venue.new(venue_params)
-                render json: @venue.errors and return false if not @venue.save
+                render json: @venue.errors, status: :unprocessable_entity and return false if not @venue.save
                 @account.venue_id = @venue.id
-                render json: @account.errors and return false if not @account.save!
+                render json: @account.errors, status: :unprocessable_entity and return false if not @account.save!
             end
             
             return false if not set_public_venue
@@ -814,7 +820,7 @@ class AccountsController < ApplicationController
         else
           @public_venue = PublicVenue.new(public_venue_params)
           @public_venue.venue_id = @venue.id
-          render json: @public_venue.errors and return false if not @public_venue.save
+          render json: @public_venue.errors, status: :unprocessable_entity and return false if not @public_venue.save
         end
         @venue.public_venue = @public_venue
       end
@@ -914,9 +920,9 @@ class AccountsController < ApplicationController
                 log_changes(changed, @account)
             else
                 @artist = Artist.new(artist_params)
-                render json: @artist.errors and return false if not @artist.save 
+                render json: @artist.errors, status: :unprocessable_entity and return false if not @artist.save
                 @account.artist_id = @artist.id
-                render json: @account.errors and return false if not @account.save
+                render json: @account.errors, status: :unprocessable_entity and return false if not @account.save
             end
             set_artist_genres
             return false if not set_artist_audios
@@ -1114,7 +1120,7 @@ class AccountsController < ApplicationController
       end
     end
 
-    def search_address
+    def search_distance
       if params[:distance] and params[:lng] and params[:lat]
         if params[:type] == 'artist'
           if params[:units]
@@ -1137,6 +1143,26 @@ class AccountsController < ApplicationController
             fans = Fan.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
           end
           @accounts = @accounts.where(fan_id: fans)
+        end
+      end
+    end
+
+    def search_address
+      if params[:address]
+        if params[:type] == 'artist'
+          if params[:distance] and params[:units]
+            @arts = Artist.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}
+          else
+            @arts = Artist.near(params[:address]).select{|a| a.id}
+          end
+          @accounts = @accounts.where(artist_id: @arts)
+        elsif params[:type] == 'venue'
+          if params[:distance] and params[:units]
+            @vens = Venue.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}
+          else
+            @vens = Venue.near(params[:address]).select{|a| a.id}
+          end
+          @accounts = @accounts.where(venue_id: @vens)
         end
       end
     end

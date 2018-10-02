@@ -80,8 +80,8 @@ class AdminEventsController < ApplicationController
     response :unauthorized
   end
   def individual
-    events_base = Event.left_joins(:event_updates => {:feed_item => [:likes, :comments]}).select(
-      'events.*, count(likes.id) as likes, count(comments.id) as comments')
+    events_base = Event.left_joins(:feed_items => [:likes, :feed_comments]).select(
+      'events.*, count(likes.id) as likes, count(feed_comments.id) as comments')
     events = events_base
 
     if params[:text] or not (['crowdfund', 'regular', 'successful', 'pending', 'failed'] & params[:event_type].to_a).empty?

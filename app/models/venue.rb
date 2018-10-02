@@ -1,7 +1,13 @@
 class Venue < ApplicationRecord
+    enum venue_type: [:public_venue, :private_residence]
+
     validates :venue_type, presence: true
     validates :address, presence: true
-    validates :description, presence: true
+    validates :description, presence: true, if: :public_venue?
+
+    def public_venue?
+        venue_type == "public_venue"
+    end
     # validates :lat, presence: true
     # validates :lng, presence: true
     # validates :capacity, presence: true
@@ -10,8 +16,6 @@ class Venue < ApplicationRecord
     VALIDATE_PUBLIC_FIELDS = [:audio_description, :lighting_description, :stage_description]
 
     validates_inclusion_of :capacity, in: 1..1000000, allow_nil: true
-
-    enum venue_type: [:public_venue, :private_residence]
 
     has_many :operating_hours, foreign_key: 'venue_id', class_name: 'VenueOperatingHour', dependent: :destroy
     has_many :office_hours, foreign_key: 'venue_id', class_name: 'VenueOfficeHour', dependent: :destroy
@@ -38,6 +42,7 @@ class Venue < ApplicationRecord
             attrs[:display_name] = account.display_name
             attrs[:user_name] = account.user_name
             attrs[:image_id] = account.image_id
+            attrs[:capacity] = capacity
 
             #attrs[:price] = nil
             return attrs

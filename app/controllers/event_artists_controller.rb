@@ -105,13 +105,15 @@ class EventArtistsController < ApplicationController
         send_accept_message(@artist_event.account)
         @artist_event.save
 
-        feed = FeedItem.new(
-          action: :add_artist,
-          updated_by: @account.id,
-          event_id: @event.id,
-          value: @artist_event.account.id
-        )
-        feed.save
+        if @event.status == "active"
+          feed = FeedItem.new(
+            action: :add_artist,
+            updated_by: @account.id,
+            event_id: @event.id,
+            value: @artist_event.account.id
+          )
+          feed.save
+        end
 
         render status: :ok
       else

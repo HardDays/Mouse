@@ -15,6 +15,7 @@ class FeedItem < ApplicationRecord
       return super(options)
     end
 
+    res[:deleted] = false
     res[:comments] = feed_comments.count
     res[:likes] = likes.count
     if options[:user]
@@ -28,9 +29,26 @@ class FeedItem < ApplicationRecord
       res[:account] = event.creator.as_json(:only => [:id, :user_name, :image_id])
 
       if action == 'add_ticket'
-        res[:ticket] = event.tickets.where(id: value.to_i)
+        ticket = event.tickets.where(id: value.to_i).first
+        if ticket
+          res[:ticket] = ticket
+        else
+          res[:deleted] = true
+        end
       elsif action == 'add_artist'
-          res[:artist] = Account.where(id: value.to_i).first
+        artist = Account.where(id: value.to_i).first
+        if artist
+          res[:artist] = artist
+        else
+          res[:deleted] = true
+        end
+      elsif action == 'update' and field == 'image'
+        image = Image.where(id: value.to_i).first
+        if image
+          res[:value] = value
+        else
+          res[:deleted] = true
+        end
       else
         res[:value] = value
       end
@@ -38,7 +56,44 @@ class FeedItem < ApplicationRecord
       res[:type] = "account_update"
       res[:action] = [action, field].compact.join("_")
       res[:account] = account
-      res[:value] = value
+
+      if action == "update"
+        if field == 'gallery_image' or field == 'image'
+          image = Image.where(id: value.to_i).first
+          if image
+            res[:value] = value
+          else
+            res[:deleted] = true
+          end
+        elsif field == "video"
+          artist_video = ArtistVideo.where(id: value.to_i).first
+          venue_video = VenueVideoLink.where(id: value.to_i).first
+
+          if artist_video or venue_video
+            res[:value] = value
+          else
+            res[:deleted] = true
+          end
+        elsif field == "audio"
+          audio = AudioLink.where(id: value.to_i).first
+
+          if audio
+            res[:value] = value
+          else
+            res[:deleted] = true
+          end
+        elsif field == "album"
+          album = ArtistAlbum.where(id: value.to_i).first
+
+          if album
+            res[:value] = value
+          else
+            res[:deleted] = true
+          end
+        end
+      else
+        res[:value] = value
+      end
     end
 
     return res
