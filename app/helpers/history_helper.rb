@@ -4,7 +4,7 @@ class HistoryHelper
 
     # Only for check
     EVENT_FIELDS = [:description]
-    VENUE_FIELDS = [:address, :phone, :has_vr, :user_name, :display_name]
+    VENUE_FIELDS = [:address, :phone, :has_vr, :user_name, :display_name, :description]
     ARTIST_FIELDS = [:stage_name, :about, :user_name, :display_name, :phone]
 
     # Enum in db
