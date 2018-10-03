@@ -552,7 +552,6 @@ class AccountsController < ApplicationController
       param_list :query, :type, :string, :optional, "Account type to display", ["venue", "artist", "fan"]
       param :query, :price_from, :integer, :optional, "Artist/Venue price from"
       param :query, :price_to, :integer, :optional, "Artist/Venue price to"
-      param :query, :address, :string, :optional, "Address (with distance and units or without)"
       param :query, :lng, :string, :optional, "Lng (send with lat and distance)"
       param :query, :lat, :string, :optional, "Lat (send with lng and distance)"
       param :query, :distance, :integer, :optional, "Max distance (send with lng and lat)"
@@ -593,7 +592,6 @@ class AccountsController < ApplicationController
       search_type
       search_price
       search_genres
-      search_address
       search_distance
       search_capacity
       search_type_of_space
@@ -1121,48 +1119,41 @@ class AccountsController < ApplicationController
     end
 
     def search_distance
-      if params[:distance] and params[:lng] and params[:lat]
-        if params[:type] == 'artist'
-          if params[:units]
-            arts = Artist.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
-          else
-            arts = Artist.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
+      if params[:lng] and params[:lat]
+        if params[:distance]
+          if params[:type] == 'artist'
+            if params[:units]
+              arts = Artist.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
+            else
+              arts = Artist.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
+            end
+            @accounts = @accounts.where(artist_id: arts)
+          elsif params[:type] == 'venue'
+            if params[:units]
+              vens = Venue.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
+            else
+              vens = Venue.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
+            end
+            @accounts = @accounts.where(venue_id: vens)
+          elsif params[:type] == 'fan'
+            if params[:units]
+              fans = Fan.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
+            else
+              fans = Fan.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
+            end
+            @accounts = @accounts.where(fan_id: fans)
           end
-          @accounts = @accounts.where(artist_id: arts)
-        elsif params[:type] == 'venue'
-          if params[:units]
-            vens = Venue.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
-          else
-            vens = Venue.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
+        else
+          if params[:type] == 'artist'
+            arts = Artist.near([params[:lat], params[:lng]]).select{|a| a.id}
+            @accounts = @accounts.where(artist_id: arts)
+          elsif params[:type] == 'venue'
+            vens = Venue.near([params[:lat], params[:lng]]).select{|a| a.id}
+            @accounts = @accounts.where(venue_id: vens)
+          elsif params[:type] == 'fan'
+            fans = Fan.near([params[:lat], params[:lng]]).select{|a| a.id}
+            @accounts = @accounts.where(fan_id: fans)
           end
-          @accounts = @accounts.where(venue_id: vens)
-        elsif params[:type] == 'fan'
-          if params[:units]
-            fans = Fan.near([params[:lat], params[:lng]], params[:distance], units: params[:units]).select{|a| a.id}
-          else
-            fans = Fan.near([params[:lat], params[:lng]], params[:distance]).select{|a| a.id}
-          end
-          @accounts = @accounts.where(fan_id: fans)
-        end
-      end
-    end
-
-    def search_address
-      if params[:address]
-        if params[:type] == 'artist'
-          if params[:distance] and params[:units]
-            @arts = Artist.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}
-          else
-            @arts = Artist.near(params[:address]).select{|a| a.id}
-          end
-          @accounts = @accounts.where(artist_id: @arts)
-        elsif params[:type] == 'venue'
-          if params[:distance] and params[:units]
-            @vens = Venue.near(params[:address], params[:distance], units: params[:units]).select{|a| a.id}
-          else
-            @vens = Venue.near(params[:address]).select{|a| a.id}
-          end
-          @accounts = @accounts.where(venue_id: @vens)
         end
       end
     end
