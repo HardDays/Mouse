@@ -510,8 +510,8 @@ class EventArtistsController < ApplicationController
     def change_event_date
       @event.old_date_from = @event.date_from
       @event.old_date_to = @event.date_to
-      @event.date_from = min(@artist_event.agreed_date_time_and_price.datetime_from, @event.date_from)
-      @event.date_to = min(@artist_event.agreed_date_time_and_price.datetime_to, @event.date_to)
+      @event.date_from = [@artist_event.agreed_date_time_and_price.datetime_from, @event.date_from].min
+      @event.date_to = [@artist_event.agreed_date_time_and_price.datetime_to, @event.date_to].min
       @event.save!
     end
 
