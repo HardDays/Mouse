@@ -167,6 +167,7 @@ class EventVenuesController < ApplicationController
 
       if @venue_event.account.venue.venue_type == 'private_residence'
         @event.has_private_venue = false
+        @event.venue = nil
         @event.save
       else
         if @venue_event.status == 'owner_accepted'
