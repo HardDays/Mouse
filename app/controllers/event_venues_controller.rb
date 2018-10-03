@@ -24,8 +24,7 @@ class EventVenuesController < ApplicationController
         render json: {error: :VENUE_WITHOUT_CAPACITY}, status: :unprocessable_entity and return
       end
 
-      venues = VenueEvent.where(status: :owner_accepted)
-      if @venue_acc.venue.venue_type == 'private_residence' and venues.empty?
+      if @venue_acc.venue.venue_type == 'private_residence' and @event.venue == nil
         if @venue_acc.user_id == @event.creator.user_id
           venue_evt = VenueEvent.new(event_id: @event.id, venue_id: @venue_acc.id)
           venue_evt.save
@@ -39,7 +38,7 @@ class EventVenuesController < ApplicationController
         else
           render status: :forbidden and return
         end
-      elsif @venue_acc.venue.venue_type == 'private_residence' and not venues.empty?
+      elsif @event.venue != nil
         render json: {errors: :HAS_ACCEPTED_VENUE}, status: :forbidden and return
       elsif !@event.has_private_venue
         @event.venues << @venue_acc
@@ -113,7 +112,7 @@ class EventVenuesController < ApplicationController
       @venue_event = @event.venue_events.find_by(venue_id: params[:id])
 
       if @event.venue_events.where(status: 'owner_accepted').count > 0
-        render status: :unprocessable_entity and return
+        render json: {errors: :ALREADY_HAS_VENUE}, status: :unprocessable_entity and return
       end
       #TODO: check here pls
       #if @message.is_read
@@ -168,6 +167,7 @@ class EventVenuesController < ApplicationController
 
       if @venue_event.account.venue.venue_type == 'private_residence'
         @event.has_private_venue = false
+        @event.venue = nil
         @event.save
       else
         if @venue_event.status == 'owner_accepted'
@@ -532,8 +532,19 @@ class EventVenuesController < ApplicationController
   def change_event_date
     @event.old_date_from = @event.date_from
     @event.old_date_to = @event.date_to
-    @event.date_from = @venue_event.agreed_date_time_and_price.datetime_from
-    @event.date_to = @venue_event.agreed_date_time_and_price.datetime_to
+
+    if @event.date_from
+      @event.date_from = [@venue_event.agreed_date_time_and_price.datetime_from, @event.date_from].max
+    else
+      @event.date_from = @venue_event.agreed_date_time_and_price.datetime_from
+    end
+
+    if @event.date_to
+      @event.date_to = [@venue_event.agreed_date_time_and_price.datetime_to, @event.date_to].min
+    else
+      @event.date_to = @venue_event.agreed_date_time_and_price.datetime_to
+    end
+
     @event.save!
   end
 
