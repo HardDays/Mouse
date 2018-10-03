@@ -46,11 +46,10 @@ class AdminRevenueController < ApplicationController
   end
   def cities
     cities = FanTicket.all
-    total = FanTicket.sum(:price)
+    total = filter_and_count(FanTicket.all, params[:type], params[:by], 'price')
 
     if params[:type] == 'total'
       cities = cities.select("fans.address, sum(fan_tickets.price * 0.1) as price")
-      total = total * 0.1
     else
       cities = cities.select("fans.address, sum(fan_tickets.price) as price")
     end
