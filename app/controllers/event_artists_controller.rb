@@ -512,7 +512,7 @@ class EventArtistsController < ApplicationController
       @event.old_date_to = @event.date_to
 
       if @event.date_from
-        @event.date_from = [@artist_event.agreed_date_time_and_price.datetime_from, @event.date_from].min
+        @event.date_from = [@artist_event.agreed_date_time_and_price.datetime_from, @event.date_from].max
       else
         @event.date_from = @artist_event.agreed_date_time_and_price.datetime_from
       end
