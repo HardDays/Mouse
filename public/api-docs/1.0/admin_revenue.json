@@ -65,6 +65,23 @@
               }
             },
             {
+              "paramType": "query",
+              "name": "by",
+              "type": "string",
+              "description": "Data by",
+              "required": false,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "day",
+                  "week",
+                  "month",
+                  "year",
+                  "all"
+                ]
+              }
+            },
+            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",

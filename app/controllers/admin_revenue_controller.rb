@@ -39,16 +39,28 @@ class AdminRevenueController < ApplicationController
   swagger_api :cities do
     summary "Get revenue by cities"
     param_list :query, :type, :string, :required, "Type of revenue", [:total, :sales]
+    param_list :query, :by, :string, :optional, "Data by", [:day, :week, :month, :year, :all]
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
     response :ok
   end
   def cities
-    cities = FanTicket.select(
-      "fans.address, sum(fan_tickets.price) as price"
-    ).joins(account: :fan).where('fan_tickets.price is not NULL').group("fans.address").order('price')
+    cities = FanTicket.all
+    total = FanTicket.sum(:price)
+
+    if params[:type] == 'total'
+      cities = cities.select("fans.address, sum(fan_tickets.price * 0.1) as price")
+      total = total * 0.1
+    else
+      cities = cities.select("fans.address, sum(fan_tickets.price) as price")
+    end
+
+    cities = cities.joins(account: :fan).where('fan_tickets.price is not NULL')
+    cities = filter_date(cities, params[:by])
+    cities = cities.group("fans.address").order('price')
+
     render json: {
-      total: FanTicket.sum(:price),
+      total: total,
       cities: cities.as_json(only: [:address, :price])
     }, status: :ok
   end
@@ -188,10 +200,10 @@ class AdminRevenueController < ApplicationController
     @admin = user.admin
   end
 
-  def filter_and_count(entity, type, by, sum)
+  def filter_date(entity, by)
     if by
       if by == 'day'
-        entity = entity.where(created_at: DateTime.now)
+        entity = entity.where(created_at: DateTime.now.beginning_of_day..DateTime.now.end_of_day)
       elsif by == 'week'
         entity = entity.where(created_at: 1.week.ago..DateTime.now)
       elsif by == 'month'
@@ -200,6 +212,12 @@ class AdminRevenueController < ApplicationController
         entity = entity.where(created_at: 1.year.ago..DateTime.now)
       end
     end
+
+    return entity
+  end
+
+  def filter_and_count(entity, type, by, sum)
+    entity = filter_date(entity, by)
     entity = entity.sum(sum)
 
     if type == 'total'

@@ -367,7 +367,7 @@
       "path": "/admin/messages/{id}/delete.json",
       "operations": [
         {
-          "summary": "Solve bug",
+          "summary": "Delete dialog",
           "parameters": [
             {
               "paramType": "path",
