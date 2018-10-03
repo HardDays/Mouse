@@ -38,7 +38,7 @@ class EventVenuesController < ApplicationController
         else
           render status: :forbidden and return
         end
-      elsif @venue_acc.venue.venue_type == 'private_residence' and not @event.venue == nil
+      elsif @event.venue != nil
         render json: {errors: :HAS_ACCEPTED_VENUE}, status: :forbidden and return
       elsif !@event.has_private_venue
         @event.venues << @venue_acc
