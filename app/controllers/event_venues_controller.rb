@@ -112,7 +112,7 @@ class EventVenuesController < ApplicationController
       @venue_event = @event.venue_events.find_by(venue_id: params[:id])
 
       if @event.venue_events.where(status: 'owner_accepted').count > 0
-        render status: :unprocessable_entity and return
+        render json: {erors: :ALREADY_HAS_VENUE}, status: :unprocessable_entity and return
       end
       #TODO: check here pls
       #if @message.is_read
