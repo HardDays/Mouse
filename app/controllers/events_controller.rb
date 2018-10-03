@@ -58,7 +58,7 @@ class EventsController < ApplicationController
     response :ok
   end
   def backers
-    backers = Account.joins(fan_tickets: :ticket).where(tickets: {event_id: params[:id]}).distinct
+    backers = Account.available.joins(fan_tickets: :ticket).where(tickets: {event_id: params[:id]}).distinct
 
     if params[:text]
       backers = backers.search_fan_fullname(params[:text])
