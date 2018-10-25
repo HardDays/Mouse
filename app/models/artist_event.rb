@@ -31,6 +31,7 @@ class ArtistEvent < ApplicationRecord
       res.delete("is_active")
       res.delete("event_id")
       res[:id] = event.id
+      res[:image_id] = event.image_id
       res[:date] = event.exact_date_from
       res[:name] = event.name
       res[:address] = event.address
