@@ -440,7 +440,7 @@ class EventsController < ApplicationController
     param :query, :genres, :string, :optional, "Genres list ['pop', 'rock', ...]"
     param :query, :ticket_types, :string, :optional, "Array of ticket types ['in_person', 'vip']"
     param :query, :size, :string, :optional, "Event's venue type of space ('night_club'|'concert_hall'|...)"
-    param :query, :extended, :boolean, :optional, "Extended"
+    param :query, :mobile, :boolean, :optional, "Mobile"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     response :ok
@@ -448,10 +448,8 @@ class EventsController < ApplicationController
   def search
     @events = Event.searchable.search(params[:text])
 
-    extended = false
-    if params[:extended]
-      extended = true
-    end
+    mobile = false
+    mobile = true if params[:mobile]
 
     search_genre
     search_city
@@ -462,7 +460,7 @@ class EventsController < ApplicationController
     search_type_of_space
     search_date
 
-    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from, events.funding_from"), extended: extended, status: :ok
+    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from, events.funding_from"), mobile: mobile, status: :ok
   end
 
   private

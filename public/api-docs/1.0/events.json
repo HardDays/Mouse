@@ -103,9 +103,9 @@
             },
             {
               "paramType": "query",
-              "name": "extended",
+              "name": "mobile",
               "type": "boolean",
-              "description": "Extended",
+              "description": "Mobile",
               "required": false
             },
             {
