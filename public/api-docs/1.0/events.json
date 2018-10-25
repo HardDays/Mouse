@@ -103,6 +103,13 @@
             },
             {
               "paramType": "query",
+              "name": "extended",
+              "type": "boolean",
+              "description": "Extended",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "limit",
               "type": "integer",
               "description": "Limit",

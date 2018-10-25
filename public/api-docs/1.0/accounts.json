@@ -1541,13 +1541,6 @@
             },
             {
               "paramType": "query",
-              "name": "address",
-              "type": "string",
-              "description": "Address (with distance and units or without)",
-              "required": false
-            },
-            {
-              "paramType": "query",
               "name": "lng",
               "type": "string",
               "description": "Lng (send with lat and distance)",

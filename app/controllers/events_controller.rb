@@ -440,6 +440,7 @@ class EventsController < ApplicationController
     param :query, :genres, :string, :optional, "Genres list ['pop', 'rock', ...]"
     param :query, :ticket_types, :string, :optional, "Array of ticket types ['in_person', 'vip']"
     param :query, :size, :string, :optional, "Event's venue type of space ('night_club'|'concert_hall'|...)"
+    param :query, :extended, :boolean, :optional, "Extended"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     response :ok
