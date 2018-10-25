@@ -80,6 +80,9 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  config.twilio_account_sid = 'AC0cea907e7dafbf6cfa92bf4dd283b033'
+  config.twilio_auth_token = '5d471f5cb8a041d5b00ddf88df4be738'
+
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :address              => "smtp.gmail.com",

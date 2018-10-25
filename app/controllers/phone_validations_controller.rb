@@ -33,10 +33,18 @@ class PhoneValidationsController < ApplicationController
     end
 
     @phone_validation = PhoneValidation.find_or_create_by(phone_validation_params)
-    @phone_validation.code = '0000'
+    @phone_validation.code = SecureRandom.hex[0..4]
     @phone_validation.is_validated = false
     @phone_validation.is_used = false
+    
     if @phone_validation.save
+      @client = Twilio::REST::Client.new(Rails.configuration.twilio_account_sid, Rails.configuration.twilio_auth_token)
+      @client.api.account.messages.create(
+        from: '+12402215552',
+        to: params[:phone],
+        body: 'Code: ' + @phone_validation.code
+      )
+
       render json: @phone_validation, except: :code, status: :created
     else
       render json: @phone_validation.errors, status: :unprocessable_entity

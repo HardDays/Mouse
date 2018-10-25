@@ -53,6 +53,9 @@ Rails.application.configure do
     config.api_version = '5.73'
   end
 
+  config.twilio_account_sid = 'AC0cea907e7dafbf6cfa92bf4dd283b033'
+  config.twilio_auth_token = '5d471f5cb8a041d5b00ddf88df4be738'
+
   Geocoder.configure(language: :en)
 
   # Raises error for missing translations

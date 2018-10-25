@@ -446,6 +446,12 @@ class EventsController < ApplicationController
   end
   def search
     @events = Event.searchable.search(params[:text])
+
+    extended = false
+    if params[:extended]
+      extended = true
+    end
+
     search_genre
     search_city
     search_country
@@ -455,7 +461,7 @@ class EventsController < ApplicationController
     search_type_of_space
     search_date
 
-    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from, events.funding_from"), search: true, status: :ok
+    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from, events.funding_from"), extended: extended, status: :ok
   end
 
   private
