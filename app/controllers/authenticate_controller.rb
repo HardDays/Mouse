@@ -102,10 +102,11 @@ class AuthenticateController < ApplicationController
 		@password = User.encrypt_password(params[:password])
 
 		@account = Account.find_by("LOWER(user_name) = ?", params[:user_name].downcase)
-		@user = @account.user
 
 		if not @account
 			@user = User.find_by("LOWER(email) = ?", params[:email].downcase)
+		else
+			@user = @account.user
 		end
 		
 		if not @user
