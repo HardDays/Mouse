@@ -100,14 +100,18 @@ class AuthenticateController < ApplicationController
 	end
 	def login
 		@password = User.encrypt_password(params[:password])
-		if params[:user_name]
-			@account = Account.find_by("LOWER(user_name) = ?", params[:user_name].downcase)
-			render status: :forbidden and return if not @account
-			@user = @account.user
-		else
+
+		@account = Account.find_by("LOWER(user_name) = ?", params[:user_name].downcase)
+		@user = @account.user
+
+		if not @account
 			@user = User.find_by("LOWER(email) = ?", params[:email].downcase)
-			render status: :forbidden and return if not @user
 		end
+		
+		if not @user
+			render status: :forbidden and return
+		end
+		
 		render status: :forbidden and return if @user.password != @password
 
 		token = AuthenticateHelper.process_token(request, @user)
