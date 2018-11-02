@@ -67,66 +67,65 @@ class Account < ApplicationRecord
 	end
 
 	def as_json(options={})
+		if options[:for_message]
+			attrs = {}
+			attrs[:image_id] = image_id
+			attrs[:user_name] = user_name
+			attrs[:account_type] = account_type
 
-			if options[:for_message]
-				attrs = {}
-				attrs[:image_id] = image_id
-				attrs[:user_name] = user_name
-				attrs[:account_type] = account_type
-
-				if fan
-					attrs[:full_name] = "#{fan.first_name} #{fan.last_name}"
-					attrs[:address] = fan.address
-				elsif artist
-					attrs[:full_name] = "#{artist.first_name} #{artist.last_name}"
-					attrs[:address] = artist.preferred_address
-				elsif venue
-					attrs[:full_name] = display_name
-					attrs[:address] = venue.address
-				end
-
-				return attrs
+			if fan
+				attrs[:full_name] = "#{fan.first_name} #{fan.last_name}"
+				attrs[:address] = fan.address
+			elsif artist
+				attrs[:full_name] = "#{artist.first_name} #{artist.last_name}"
+				attrs[:address] = artist.preferred_address
+			elsif venue
+				attrs[:full_name] = display_name
+				attrs[:address] = venue.address
 			end
 
-			if options[:backers]
-				attrs = {}
-				attrs[:id] = id
-				attrs[:image_id] = image_id
-				attrs[:user_name] = user_name
+			return attrs
+		end
 
-				if fan
-					attrs[:first_name] = fan.first_name
-					attrs[:last_name] = fan.last_name
-				end
+		if options[:backers]
+			attrs = {}
+			attrs[:id] = id
+			attrs[:image_id] = image_id
+			attrs[:user_name] = user_name
 
-				return attrs
+			if fan
+				attrs[:first_name] = fan.first_name
+				attrs[:last_name] = fan.last_name
 			end
 
-			if not options[:only]
-				if fan
-					return fan.as_json(options)
-				end
+			return attrs
+		end
 
-				if venue
-					return venue.as_json(options)
-			#   venue_attrs = venue.as_json
-			#   venue_attrs.each do |att|
-			# 	  attrs[att[0]] = att[1] if not attrs.key?(att[0])
-			#   end
-				end
-
-				if artist
-					return artist.as_json(options)
-				end
-
-				#attrs[:genres] = user_genres.pluck(:name)
-				#attrs[:images] = images.pluck(:id)
-				#attrs[:followed] = followed_conn.pluck(:to_id)
-				#attrs[:followers] = followers_conn.pluck(:by_id)
-				return get_attrs(options)
-			else
-				return super(options)
+		if not options[:only]
+			if fan
+				return fan.as_json(options)
 			end
+
+			if venue
+				return venue.as_json(options)
+		#   venue_attrs = venue.as_json
+		#   venue_attrs.each do |att|
+		# 	  attrs[att[0]] = att[1] if not attrs.key?(att[0])
+		#   end
+			end
+
+			if artist
+				return artist.as_json(options)
+			end
+
+			#attrs[:genres] = user_genres.pluck(:name)
+			#attrs[:images] = images.pluck(:id)
+			#attrs[:followed] = followed_conn.pluck(:to_id)
+			#attrs[:followers] = followers_conn.pluck(:by_id)
+			return get_attrs(options)
+		else
+			return super(options)
+		end
 	end
 
 	def self.search(text)

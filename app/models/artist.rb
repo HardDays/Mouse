@@ -84,6 +84,7 @@ class Artist < ApplicationRecord
                 res[:additional_hours_price] = CurrencyHelper.convert(additional_hours_price, account.user.preferred_currency, options[:user].preferred_currency)
             end
             res[:currency] = account.user.preferred_currency
+            res[:images] = account.images.as_json(image_only: true)
 
             if options[:my]
                 res[:disable_dates] = disable_dates
