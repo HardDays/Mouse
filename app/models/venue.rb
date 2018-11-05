@@ -49,7 +49,7 @@ class Venue < ApplicationRecord
         end
 
         if options[:extended]
-            res = super.merge(account.get_attrs(options))
+            res = super.except('id').merge(account.get_attrs(options))
             if public_venue
                 res = res.merge(public_venue.get_attrs(options))
             end
