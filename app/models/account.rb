@@ -72,6 +72,7 @@ class Account < ApplicationRecord
 			attrs[:image_id] = image_id
 			attrs[:user_name] = user_name
 			attrs[:account_type] = account_type
+			attrs[:display_name] = display_name
 
 			if fan
 				attrs[:full_name] = "#{fan.first_name} #{fan.last_name}"
