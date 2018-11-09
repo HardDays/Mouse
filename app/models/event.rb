@@ -98,6 +98,7 @@ class Event < ApplicationRecord
       res[:in_person_tickets] = in_person_sold > 0
       res[:vr_tickets] = vr_sold > 0
       res[:tickets_count] = tickets.joins(:fan_tickets).where(fan_tickets: {account_id: options[:account_id]}).count
+      res[:venue] = venue.as_json()
       if venue and venue.public_venue
         res[:country] = venue.public_venue.country
         res[:city] = venue.public_venue.city
