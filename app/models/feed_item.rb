@@ -25,7 +25,7 @@ class FeedItem < ApplicationRecord
     if event
       res[:type] = "event_update"
       res[:action] = [action, field].compact.join("_")
-      res[:event] = event.as_json(only: [:id, :name, :comments_available, :display_name])
+      res[:event] = event.as_json(only: [:id, :name, :comments_available])
       res[:account] = event.creator.as_json(:only => [:id, :user_name, :image_id, :display_name])
 
       if action == 'add_ticket'
