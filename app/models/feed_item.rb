@@ -24,7 +24,9 @@ class FeedItem < ApplicationRecord
 
     if event
       res[:type] = "event_update"
+       #нахуя это здесь????
       res[:action] = [action, field].compact.join("_")
+      res[:true_action] = action
       res[:event] = event.as_json(only: [:id, :name, :comments_available])
       res[:account] = event.creator.as_json(:only => [:id, :user_name, :image_id, :display_name])
 
@@ -54,7 +56,9 @@ class FeedItem < ApplicationRecord
       end
     elsif account
       res[:type] = "account_update"
+      #нахуя это здесь????
       res[:action] = [action, field].compact.join("_")
+      res[:true_action] = action
       res[:account] = account
 
       if action == "update"
