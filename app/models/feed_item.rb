@@ -70,8 +70,15 @@ class FeedItem < ApplicationRecord
             res[:deleted] = true
           end
         elsif field == "video"
+          #надо же возвращать это значение сразу чтобы не делать 1000050000 тысяч запросов по каждому айтему в фиде
           artist_video = ArtistVideo.where(id: value.to_i).first
           venue_video = VenueVideoLink.where(id: value.to_i).first
+          
+          if artist_video
+            res[:video] = artist_video
+          elsif venue_video
+            res[:video] = venue_video
+          end
 
           if artist_video or venue_video
             res[:value] = value
@@ -80,8 +87,9 @@ class FeedItem < ApplicationRecord
           end
         elsif field == "audio"
           audio = AudioLink.where(id: value.to_i).first
-
+            
           if audio
+            res[:audio] = audio
             res[:value] = value
           else
             res[:deleted] = true
@@ -90,6 +98,7 @@ class FeedItem < ApplicationRecord
           album = ArtistAlbum.where(id: value.to_i).first
 
           if album
+            res[:album] = album
             res[:value] = value
           else
             res[:deleted] = true
