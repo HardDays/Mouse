@@ -459,8 +459,8 @@ class EventsController < ApplicationController
     search_ticket_types
     search_type_of_space
     search_date
-    #events.funding_from
-    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from DESC"), mobile: mobile, status: :ok
+
+    render json: @events.distinct.limit(params[:limit]).offset(params[:offset]).order("events.exact_date_from, events.funding_from"), mobile: mobile, status: :ok
   end
 
   private
