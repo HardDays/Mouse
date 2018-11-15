@@ -2,7 +2,7 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy, :launch, :set_inactive, :analytics,
                                    :click, :view, :verify, :set_date, :backers, :get_updates,
                                    :save_to_calendar, :account_preview]
-  before_action :authorize_user, only: [:show]
+  before_action :authorize_user, only: [:show, :search]
   before_action :authorize_account, only: [:my, :create]
   before_action :authorize_creator, only: [:update, :destroy, :launch, :set_inactive, :verify,
                                            :set_date, :account_preview]
@@ -443,6 +443,7 @@ class EventsController < ApplicationController
     param :query, :mobile, :boolean, :optional, "Mobile"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, "Auth token"
     response :ok
   end
   def search
