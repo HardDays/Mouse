@@ -220,7 +220,7 @@ class AuthenticateController < ApplicationController
 			graph = Koala::Facebook::API.new(params[:access_token])
 			profile = graph.get_object("me?fields=name")
 		rescue
-			render json: :unauthorized and return
+			render status: :unauthorized and return
 		end
 		
 		@user = User.find_by(facebook_id: profile['id'])
