@@ -76,10 +76,11 @@ class UsersController < ApplicationController
     response :unprocessable_entity
   end
   def update_me
-    if params[:register_phone]
-      @phone_validation = PhoneValidation.find_by(phone: params[:register_phone])
-      render json: {register_phone: [:NOT_VALIDATED]}, status: :unprocessable_entity and return if not @phone_validation or @phone_validation.is_validated == false
-    end
+    # пока не нужно
+    # if params[:register_phone]
+    #   @phone_validation = PhoneValidation.find_by(phone: params[:register_phone])
+    #   render json: {register_phone: [:NOT_VALIDATED]}, status: :unprocessable_entity and return if not @phone_validation or @phone_validation.is_validated == false
+    # end
 
     if @user.update(user_update_params)
       render json: @user, except: :password, status: :ok

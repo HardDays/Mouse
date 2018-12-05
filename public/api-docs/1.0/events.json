@@ -121,6 +121,13 @@
               "type": "integer",
               "description": "Offset",
               "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Auth token",
+              "required": true
             }
           ],
           "responseMessages": [

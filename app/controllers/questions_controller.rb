@@ -1,6 +1,6 @@
 class QuestionsController < ApplicationController
   before_action :set_question, only: [:show, :reply]
-  before_action :authorize_user_and_set_account, only: [:create, :reply]
+  before_action :authorize_user_and_set_account, only: [:create, :reply, :my]
   swagger_controller :questions, "Questions"
 
   # GET /questions
@@ -12,6 +12,20 @@ class QuestionsController < ApplicationController
   end
   def index
     @questions = InboxMessage.where(message_type: 'support', is_parent: true)
+
+    render json: @questions.limit(params[:limit]).offset(params[:offset]), status: :ok
+  end
+
+  # GET /questions/my
+  swagger_api :my do
+    summary "Retrieve questions list"
+    param :query, :limit, :integer, :optional, "Limit"
+    param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :ok
+  end
+  def my
+    @questions = InboxMessage.where(message_type: 'support', is_parent: true, sender_id: @account.id)
 
     render json: @questions.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
