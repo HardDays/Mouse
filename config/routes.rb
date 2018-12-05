@@ -4,6 +4,9 @@ Rails.application.routes.draw do
       post :reply
     end
   end
+  get 'questions/my', action: :my, controller: 'questions'
+
+
   resources :feedbacks, only: [:index, :create, :show]
 
   #Auth routes
