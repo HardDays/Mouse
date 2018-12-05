@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
-  resources :questions, only: [:index, :create, :show, :my] do
+  resources :questions, only: [:index, :create, :show] do
     member do
       post :reply
     end
+    collection do
+      get :my
+    end
   end
-  get 'questions/my', action: :my, controller: 'questions'
 
 
   resources :feedbacks, only: [:index, :create, :show]
