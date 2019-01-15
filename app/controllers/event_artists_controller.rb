@@ -355,20 +355,15 @@ class EventArtistsController < ApplicationController
     @artist_event = @event.artist_events.find_by(artist_id: @artist_acc.id)
 
     if @artist_event
-      if ['ready', 'pending'].include?(@artist_event.status)
-        @artist_event.destroy
-        render status: :ok
-      elsif @artist_event.status == 'request_send'
+      if ['ready', 'pending', 'request_send', 'time_expired'].include?(@artist_event.status)
         message = InboxMessage.joins(:request_message).find_by(
           request_messages: {event_id: @artist_event.event.id},
           sender_id: @artist_event.event.creator_id)
         if message
-             message.destroy
+          message.destroy
         end
 
-        @artist_event.status = 'ready'
-        @artist_event.save
-
+        @artist_event.destroy
         render status: :ok
       else
         render status: :forbidden

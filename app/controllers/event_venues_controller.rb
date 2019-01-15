@@ -367,10 +367,7 @@ class EventVenuesController < ApplicationController
     @venue_event = @event.venue_events.find_by(venue_id: @venue_acc.id)
 
     if @venue_event
-      if ['ready', 'pending'].include?(@venue_event.status)
-        @venue_event.destroy
-        render status: :ok
-      elsif @venue_event.status == 'request_send'
+      if ['ready', 'pending', 'request_send', 'time_expired'].include?(@venue_event.status)
         message = InboxMessage.joins(:request_message).find_by(
           request_messages: {event_id: @venue_event.event.id},
           sender_id: @venue_event.event.creator_id)
@@ -378,9 +375,7 @@ class EventVenuesController < ApplicationController
           message.destroy
         end
 
-        @venue_event.status = 'ready'
-        @venue_event.save
-
+        @venue_event.destroy
         render status: :ok
       else
         render status: :forbidden
