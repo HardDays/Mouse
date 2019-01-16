@@ -185,7 +185,9 @@ class FanTicketsController < ApplicationController
         render :json => response, status: :unprocessable_entity and return
       elsif response
         @transaction = response[:id]
-        @url = response[:confirmation][:confirmation_url]
+        if response[:confirmation]
+          @url = response[:confirmation][:confirmation_url]
+        end
       else
         render status: :ok and return
       end
