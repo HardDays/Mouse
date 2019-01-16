@@ -159,6 +159,7 @@ Rails.application.routes.draw do
       get :by_event
       get :search
       get :finish_paypal
+      get :finish_yandex
       post :start_purchase, path: 'start_purchase'
       post :create_many, path: "many"
     end

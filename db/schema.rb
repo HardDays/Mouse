@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180912194202) do
+ActiveRecord::Schema.define(version: 20190116083524) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -391,16 +391,6 @@ ActiveRecord::Schema.define(version: 20180912194202) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "history_actions", force: :cascade do |t|
-    t.integer "action"
-    t.integer "object_type"
-    t.integer "field"
-    t.integer "object_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "account_id"
-  end
-
   create_table "image_types", force: :cascade do |t|
     t.integer "image_id"
     t.integer "image_type"
@@ -531,7 +521,6 @@ ActiveRecord::Schema.define(version: 20180912194202) do
     t.integer "inbox_message_id"
     t.integer "event_id"
     t.datetime "expiration_date"
-    t.integer "remain_time"
     t.integer "time_frame_range", default: 0
     t.integer "time_frame_number", default: 0
     t.integer "currency", default: 0
@@ -612,6 +601,8 @@ ActiveRecord::Schema.define(version: 20180912194202) do
     t.integer "preferred_currency", default: 0
     t.string "preferred_time"
     t.string "facebook_id"
+    t.string "payment_method_id"
+    t.string "payment_method_title"
   end
 
   create_table "venue_dates", force: :cascade do |t|
