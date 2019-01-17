@@ -117,10 +117,13 @@ class AccountsController < ApplicationController
       events = Event.available
 
       if @to_find.account_type == 'artist'
+        # events = events.joins(:artist_events)
+        #            .where(artist_events: {artist_id: @to_find.id})
+        #            .where(artist_events: {status: ArtistEvent.statuses['owner_accepted']})
+        #            .where("events.exact_date_from >= :date", {:date => DateTime.now})
         events = events.joins(:artist_events)
-                   .where(artist_events: {artist_id: @to_find.id})
-                   .where(artist_events: {status: ArtistEvent.statuses['owner_accepted']})
-                   .where("events.exact_date_from >= :date", {:date => DateTime.now})
+          .where(artist_events: {artist_id: @to_find.id})
+          .where("events.exact_date_from >= :date", {:date => DateTime.now})
 
         render json: events.limit(params[:limit]).offset(params[:offset]), status: :ok
       elsif @to_find.account_type == 'venue'

@@ -3,9 +3,6 @@ Rails.application.routes.draw do
     member do
       post :reply
     end
-    collection do
-      get :my
-    end
   end
 
 
