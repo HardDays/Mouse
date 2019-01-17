@@ -101,6 +101,7 @@ class Artist < ApplicationRecord
             attrs = account.get_attrs(options)
             attrs[:first_name] = first_name
             attrs[:last_name] = last_name
+            attrs[:stage_name] = stage_name
             return attrs
         end
     end

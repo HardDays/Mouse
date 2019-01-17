@@ -64,6 +64,46 @@
       ]
     },
     {
+      "path": "/questions/my.json",
+      "operations": [
+        {
+          "summary": "Retrieve questions list",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Questions#my",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/questions.json",
       "operations": [
         {

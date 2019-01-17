@@ -66,4 +66,6 @@ Rails.application.configure do
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   #
   config.action_cable.allowed_request_origins = [/http:\/\/*/, /https:\/\/*/]
+
+  config.ykassa_uri = 'https://payment.yandex.net/api/v3/payments'
 end
