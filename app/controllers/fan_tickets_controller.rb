@@ -82,7 +82,7 @@ class FanTicketsController < ApplicationController
   def start_purchase
     @tickets = []
     @transaction = nil
-    @idempotence_key = nil
+    @payment_id = nil
     @url = nil
 
     params[:tickets].each do |param|
@@ -151,6 +151,8 @@ class FanTicketsController < ApplicationController
       end
     elsif params[:platform] == "yandex"
       price_in_rub = CurrencyHelper.convert(price, @tickets[0][:ticket].currency, "RUB")
+      idempotence_key = SecureRandom.uuid
+
       data = {
         "amount": {
           "value": price_in_rub,
@@ -165,7 +167,7 @@ class FanTicketsController < ApplicationController
         data[:payment_token] = params[:payment_token]
         data[:confirmation] = {
           "type": "redirect",
-          "return_url": params[:redirect_url]
+          "return_url": "#{params[:redirect_url]}?payment_id=#{idempotence_key}"
         }
       else
         data[:payment_method_data] = {
@@ -173,18 +175,18 @@ class FanTicketsController < ApplicationController
         }
         data[:confirmation] = {
           "type": "redirect",
-          "return_url": params[:redirect_url]
+          "return_url": "#{params[:redirect_url]}?payment_id=#{idempotence_key}"
         }
       end
 
-      @idempotence_key = SecureRandom.uuid
       uri = URI.parse(Rails.configuration.ykassa_uri)
-      response = eval(ykassa_send_post(uri, @idempotence_key, data))
+      response = eval(ykassa_send_post(uri, idempotence_key, data))
 
       if response[:type] == "error"
         render :json => response, status: :unprocessable_entity and return
       elsif response
-        @transaction = response[:id]
+        @transaction = idempotence_key
+        @payment_id = response[:id]
         if response[:confirmation]
           @url = response[:confirmation][:confirmation_url]
         end
@@ -203,6 +205,7 @@ class FanTicketsController < ApplicationController
         platform: params[:platform],
         price: ticket[:ticket].price,
         transaction_id: @transaction,
+        purchase_payment_id: @payment_id,
         purchase_item_id: ticket[:ticket].id,
         count: ticket[:count],
         token: '')
@@ -295,13 +298,14 @@ class FanTicketsController < ApplicationController
     end
 
     # check status in kassa
-    uri = URI.parse("#{Rails.configuration.ykassa_uri}/#{params[:paymentId]}")
+    payment_id = @attempts[0].purchase_payment_id
+    uri = URI.parse("#{Rails.configuration.ykassa_uri}/#{payment_id}")
     response = eval(ykassa_send_get(uri))
     if response[:status] == "waiting_for_capture"
       data = response[:amount]
 
       idempotence_key = SecureRandom.uuid
-      uri = URI.parse("#{Rails.configuration.ykassa_uri}/#{params[:paymentId]}/capture")
+      uri = URI.parse("#{Rails.configuration.ykassa_uri}/#{payment_id}/capture")
       response = eval(ykassa_send_post(uri, idempotence_key, data))
       if response[:status] == "succeeded"
         PurchaseAttempt.transaction do
