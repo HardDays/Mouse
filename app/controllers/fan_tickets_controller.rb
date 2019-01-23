@@ -121,7 +121,7 @@ class FanTicketsController < ApplicationController
             payment_method:  "paypal" 
           },
           redirect_urls: {
-            return_url: params[:redirect_url],
+            return_url: "#{params[:redirect_url]}?platform=#{params[:platform]}",
             cancel_url: "http://localhost:3000/"
           },
           transactions:  [{
@@ -167,7 +167,7 @@ class FanTicketsController < ApplicationController
         data[:payment_token] = params[:payment_token]
         data[:confirmation] = {
           "type": "redirect",
-          "return_url": "#{params[:redirect_url]}?payment_id=#{idempotence_key}"
+          "return_url": "#{params[:redirect_url]}?payment_id=#{idempotence_key}&platform=#{params[:platform]}"
         }
       else
         data[:payment_method_data] = {
