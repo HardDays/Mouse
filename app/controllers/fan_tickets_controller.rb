@@ -175,7 +175,7 @@ class FanTicketsController < ApplicationController
         }
         data[:confirmation] = {
           "type": "redirect",
-          "return_url": "#{params[:redirect_url]}?payment_id=#{idempotence_key}"
+          "return_url": "#{params[:redirect_url]}?payment_id=#{idempotence_key}&platform=#{params[:platform]}"
         }
       end
 
